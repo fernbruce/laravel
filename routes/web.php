@@ -42,3 +42,5 @@ Route::get('getUrl', function(){
 });
 
 Route::get('getProduct', 'HomeController@modelTest')->name('getProduct');
+
+Route::get('testCollection','HomeController@testCollection')->name('testCollection');

@@ -203,4 +203,40 @@ class HomeController extends Controller
 
 
     }
+
+    public function testCollection(){
+        //  $collect = collect(['k1'=>1, 'k2'=>2, 3, 4, 5]);
+        // $product = Product::all();
+        // $res = $product->pluck('title')->implode(',');
+        // var_dump($res);
+        // $product->plunk('title')->dump();
+        // $products = Product::query()->get()->pluck('price');
+        // var_dump($products->count(),
+        // $products->sum(),
+        // $products->average(),
+        // $products->max(),
+        // $products->min());
+        $collection = collect(['v1','v2','v3']);
+        $exists = collect(['v1','v2','v3'])->contains('v4');
+        $diff = collect(['v1','v2','v3'])->diff('v3','v4');
+        $collection->isEmpty();
+        $products = Product::all();
+        // $pro = $products->where('id',3);
+        // $products->each(function($item){
+            //   var_dump($item);
+            //   var_dump($item->id);
+        // });
+        // $keyBy = $products->keyBy('id')->toArray();
+        // $keyBy = $products->groupBy('category_id');
+        // $pro = $products->filter(function($item){
+            // return $item->id >3;
+        // });
+        // $collection = collect([12,4,5,2,77]);
+        // $collection->sort()->dump();
+        $products->sortBy('price')->dump();
+        $products->sortByDesc('price')->dump();
+        // collect(['k1','k2'])->combine(['v1','v2'])->dd();
+        collect(['k1','k2'])->crossJoin(['v1','v2'])->dd();
+
+    }
 }
