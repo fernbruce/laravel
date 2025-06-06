@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -238,5 +239,12 @@ class HomeController extends Controller
         // collect(['k1','k2'])->combine(['v1','v2'])->dd();
         collect(['k1','k2'])->crossJoin(['v1','v2'])->dd();
 
+    }
+
+
+    public function cacheTest(){
+         Cache::put('key1', 'value1', 100);
+         $res = Cache::get('key1');
+         var_dump($res);
     }
 }
