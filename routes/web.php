@@ -30,19 +30,23 @@ Route::get('there', function () {
 // Route::get('getOrder/{id?}/{name?}', 'HomeController@getOrder')->name('getOrder');
 
 
-Route::get('getOrder/{id?}/{name?}',function($id,$name){
-    return 'Order ID: '.$id.' and name: '.$name;
+Route::get('getOrder/{id?}/{name?}', function ($id, $name) {
+    return 'Order ID: ' . $id . ' and name: ' . $name;
 })->name('getOrderWithClosure')->where('id', '[0-9]+');
 
 Route::get('getUser', 'HomeController@getUser')->name('getUser');
-Route::get('getUrl', function(){
+Route::get('getUrl', function () {
     // return redirect()->route('getUser', ['id' => 30]);
-    return \route('getUser', ['id' => 30],false);
+    return \route('getUser', ['id' => 30], false);
     // return redirect()->to(\route('getUser', ['id' => 3]));
 });
 
 Route::get('getProduct', 'HomeController@modelTest')->name('getProduct');
 
-Route::get('testCollection','HomeController@testCollection')->name('testCollection');
+Route::get('testCollection', 'HomeController@testCollection')->name('testCollection');
 
-Route::get('cacheTest','HomeController@cacheTest');
+Route::get('cacheTest', 'HomeController@cacheTest');
+
+Route::get('facadeTest', 'HomeController@facadeTest');
+
+// Route::get('goods/{version}/list', '{version}\v1\GoodsController@list');

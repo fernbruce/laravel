@@ -29,5 +29,6 @@
         <server name="MAIL_DRIVER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
+        <!-- <ini name="memory_limit" value="-1" /> 危险！不限制内存 -->
     </php>
 </phpunit>

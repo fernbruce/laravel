@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
+use App\Facades\Product;
+// use App\Product;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -246,5 +247,18 @@ class HomeController extends Controller
          Cache::put('key1', 'value1', 100);
          $res = Cache::get('key1');
          var_dump($res);
+    }
+
+    public function facadeTest(){
+        // $product = Product::query()->find(1);
+        // $product = Product::find(1);
+        // $product = Product::findOrFail(1);
+        // $product = Product::query()->where('id',1)->first();
+        // $product = Product::query()->where('id',1)->firstOrFail();
+        // $product = Product::query()->where('id',1)->firstOr()
+        Product::getProduct(123);
+
+
+
     }
 }

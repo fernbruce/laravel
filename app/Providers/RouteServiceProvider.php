@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\VersionRouter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -40,6 +41,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapWebRoutes();
 
         $this->mapAdminRoutes();
+        $this->mapWxRoutes();
+        $this->registerVersionRouter();
     }
 
     /**
@@ -77,5 +80,20 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('admin')
             ->namespace($this->namespace)
             ->group(base_path('routes/admin.php'));
+    }
+
+    protected function mapWxRoutes()
+    {
+        Route::prefix('wx')
+            ->middleware('wx')
+            ->namespace($this->namespace . '\Wx')
+            ->group(base_path('routes/wx.php'));
+    }
+
+    protected function registerVersionRouter()
+    {
+        $this->app->singleton('versionRouter', function ($app) {
+            return new VersionRouter($app['events'], $app);
+        });
     }
 }

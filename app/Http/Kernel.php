@@ -39,7 +39,7 @@ class Kernel extends HttpKernel
             // \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-        'admin'=>[
+        'admin' => [
             'admin1',
             'benchmark',
         ],
@@ -47,11 +47,12 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
         ],
-        'group1'=>[
+        'group1' => [
             'admin1',
             'benchmark',
         ],
-        
+        'wx' => []
+
     ];
 
     /**
@@ -73,7 +74,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin1' => Admin::class,
         'benchmark' => Benchmark::class,
-        
+
     ];
 
     /**
@@ -91,4 +92,11 @@ class Kernel extends HttpKernel
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
     ];
+
+    protected function dispatchToRouter()
+    {
+        // $this->router = $this->app['versionRouter'];
+
+        return parent::dispatchToRouter();
+    }
 }
