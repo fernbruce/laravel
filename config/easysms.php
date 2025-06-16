@@ -32,9 +32,9 @@ return [
 
         // 云片
         'aliyun' => [
-            'access_key_id' => '',
-            'access_key_secret' => '',
-            'sign_name' => '阿里云短信测试',
+            // 'access_key_id' => '',
+            // 'access_key_secret' => '',
+            // 'sign_name' => '阿里云短信测试',
         ],
 
     ],
