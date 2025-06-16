@@ -32,8 +32,8 @@ return [
 
         // 云片
         'aliyun' => [
-            'access_key_id' => 'LTAI5tAfopdVUw6qYL3MuMJy',
-            'access_key_secret' => 'wb5Yu6PSzXUFw6o45o5PdmJJRtDgqH',
+            'access_key_id' => '',
+            'access_key_secret' => '',
             'sign_name' => '阿里云短信测试',
         ],
 
