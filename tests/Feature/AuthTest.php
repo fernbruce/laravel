@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Services\UserServices;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -25,11 +26,13 @@ class AuthTest extends TestCase
     public function testRegister()
     {
 
+        $mobile = '13800000002';
+        $code = (new UserServices)->setCaptcha($mobile);
         $response = $this->post('/wx/auth/register', [
             'username' => 'test12',
             'password' => 'password',
-            'mobile' => '13800000001',
-            'code' => '123456'
+            'mobile' => $mobile,
+            'code' => $code
         ]);
         // print_r($response);
         // print_r($response->getContent());
@@ -56,14 +59,35 @@ class AuthTest extends TestCase
 
     public function testRegisterMobileExists()
     {
+        $mobile = '13800000001';
+        $code = (new UserServices)->setCaptcha($mobile);
         $response = $this->json('POST', '/wx/auth/register', [
             'username' => 'test12',
             'password' => 'password',
-            'mobile' => '13800000001',
-            'code' => '123456'
+            'mobile' => $mobile,
+            'code' => $code
         ]);
         $response->assertStatus(200);
         $ret = $response->getOriginalContent();
         $this->assertEquals(705, $ret['errno']);
+    }
+
+    public function testSendMobileCode()
+    {
+        $response = $this->json('POST', '/wx/auth/regCaptcha', [
+            'mobile' => '13776559149',
+        ]);
+        // $response->assertStatus(200);
+        // $ret = $response->getOriginalContent();
+        // $this->assertEquals(0, $ret['errno']);
+        $response->assertJson([
+            'errno' => 0,
+            'errmsg' => '发送成功',
+            'data' => null,
+        ]);
+        $response = $this->json('POST', '/wx/auth/regCaptcha', [
+            'mobile' => '13776559149',
+        ]);
+        $response->assertJson(['errno' => 702, 'errmsg' => '验证码未超时1分钟，不能发送']);
     }
 }
