@@ -74,19 +74,19 @@ class AuthTest extends TestCase
 
     public function testSendMobileCode()
     {
+        $mobile = '13012345672';
         $response = $this->json('POST', '/wx/auth/regCaptcha', [
-            'mobile' => '13776559149',
+            'mobile' => $mobile,
         ]);
         // $response->assertStatus(200);
         // $ret = $response->getOriginalContent();
         // $this->assertEquals(0, $ret['errno']);
         $response->assertJson([
             'errno' => 0,
-            'errmsg' => '发送成功',
-            'data' => null,
+            'errmsg' => '成功',
         ]);
         $response = $this->json('POST', '/wx/auth/regCaptcha', [
-            'mobile' => '13776559149',
+            'mobile' => $mobile,
         ]);
         $response->assertJson(['errno' => 702, 'errmsg' => '验证码未超时1分钟，不能发送']);
     }

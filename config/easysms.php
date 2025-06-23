@@ -9,38 +9,38 @@
 
 return [
     // HTTP 请求的超时时间（秒）
-    // 'timeout' => 5.0,
+    'timeout' => 5.0,
 
-    // // 默认发送配置
-    // 'default' => [
-    //     // 网关调用策略，默认：顺序调用
-    //     'strategy' => \Overtrue\EasySms\Strategies\OrderStrategy::class,
+    // 默认发送配置
+    'default' => [
+        // 网关调用策略，默认：顺序调用
+        'strategy' => \Overtrue\EasySms\Strategies\OrderStrategy::class,
 
-    //     // 默认可用的发送网关
-    //     'gateways' => [
-    //         'aliyun',
-    //         'errorlog',
-    //     ],
-    // ],
+        // 默认可用的发送网关
+        'gateways' => [
+            'aliyun',
+            'errorlog',
+        ],
+    ],
 
-    // // 可用的网关配置
-    // 'gateways' => [
-    //     // 失败日志
-    //     'errorlog' => [
-    //         'channel' => 'smslog',
-    //     ],
+    // 可用的网关配置
+    'gateways' => [
+        // 失败日志
+        'errorlog' => [
+            'channel' => 'smslog',
+        ],
 
-    //     // // 云片
-    //     // 'aliyun' => [
-    //     //     // 'access_key_id' => '',
-    //     //     // 'access_key_secret' => '',
-    //     //     // 'sign_name' => '阿里云短信测试',
-    //     // ],
+        // // 云片
+        // 'aliyun' => [
+        //     // 'access_key_id' => '',
+        //     // 'access_key_secret' => '',
+        //     // 'sign_name' => '阿里云短信测试',
+        // ],
 
-    // ],
+    ],
 
-    // 'custom_gateways' => [
-    //     'errorlog' => \Leonis\Notifications\EasySms\Gateways\ErrorLogGateway::class,
-    //     'winic' => \Leonis\Notifications\EasySms\Gateways\WinicGateway::class,
-    // ],
+    'custom_gateways' => [
+        'errorlog' => \Leonis\Notifications\EasySms\Gateways\ErrorLogGateway::class,
+        'winic' => \Leonis\Notifications\EasySms\Gateways\WinicGateway::class,
+    ],
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Wx;
 
+use App\CodeResponse;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\VerificationCode;
@@ -16,8 +17,14 @@ use Leonis\Notifications\EasySms\Channels\EasySmsChannel;
 use Notification;
 use Overtrue\EasySms\PhoneNumber;
 
-class AuthController extends Controller
+class AuthController extends WxController
 {
+    /**
+     * 用户注册
+     *
+     * @param Request $request
+     * @return jsonResponse
+     */
     public function register(Request  $request)
     {
         $username = $request->input('username');
@@ -25,12 +32,12 @@ class AuthController extends Controller
         $mobile = $request->input('mobile');
         $code = $request->input('code');
         if (empty($username) || empty($password) || empty($mobile) || empty($code)) {
-            return response()->json(['errno' => '1001', 'errmsg' => '参数错误']);
+            return $this->fail(CodeResponse::PARAM_ILLEGAL);
         }
 
         $user = (new UserServices())->getByUser($username);
         if (!is_null($user)) {
-            return ['errno' => 704, 'errmsg' => '用户名已经注册'];
+            return $this->fail(CodeResponse::AUTH_NAME_REGISTERED);
         }
 
         $validator = Validator::make([
@@ -39,17 +46,17 @@ class AuthController extends Controller
             'mobile' => ['regex:/^1[0-9]{10}$/'],
         ]);
         if ($validator->fails()) {
-            return ['errno' => 707, 'errmsg' => '手机格式不正确'];
+            return $this->fail(CodeResponse::AUTH_INVALID_MOBILE);
         }
 
         $userInfo = (new UserServices())->getByMobile($mobile);
         if (!is_null($userInfo)) {
-            return ['errno' => 705, 'errmsg' => '手机号已经存在'];
+            return $this->fail(CodeResponse::AUTH_MOBILE_REGISTERED);
         }
         // todo 验证验证码是否正确
         $isPass = (new UserServices())->checkCaptcha($mobile, $code);
         if (!$isPass) {
-            return ['errno' => 703, 'errmsg' => '验证码错误'];
+            return $this->fail(CodeResponse::AUTH_CAPTCHA_UNMATCH);
         }
         //写入用户表
         $user = new User();
@@ -65,7 +72,7 @@ class AuthController extends Controller
             'userInfo' => $username,
             'avatarUrl' => $user->avatar,
         ];
-        return ['errno' => 0, 'errmsg' => '注册成功', 'phpversion' => phpversion(), 'timezone' => date_default_timezone_get(), 'data' => $data];
+        return $this->success($data);
     }
 
     public function regCaptcha(Request $request)
@@ -74,22 +81,22 @@ class AuthController extends Controller
         $mobile = $request->input('mobile');
         // todo 验手机号是否合法
         if (empty($mobile)) {
-            return ['errno' => 401, 'errmsg' => '参数不'];
+            return $this->fail(CodeResponse::PARAM_ILLEGAL);
         }
         // todo 验证手机号是否已经被注册
         $user = (new UserServices)->getByMobile($mobile);
         if (!is_null($user)) {
-            return ['errno' => 705, 'errmsg' => '手机号已经被注册'];
+            return $this->fail(CodeResponse::AUTH_MOBILE_REGISTERED);
         }
         // todo 保存手机号与验证码的关系
         $key = 'register_captcha_' . $mobile;
         $lock = Cache::add('register_captcha_lock' . $mobile, 1, 60);
         if (!$lock) {
-            return ['errno' => 702, 'errmsg' => '验证码未超时1分钟，不能发送'];
+            return $this->fail(CodeResponse::AUTH_CAPTCHA_FREQUENCY);
         }
         $isPass = (new UserServices())->checkMobileSendCaptchaCount($mobile);
         if (!$isPass) {
-            return ['errno' => 703, 'errmsg' => '验证码当天发送次数超过10次'];
+            return $this->fail(CodeResponse::AUTH_CAPTCHA_FREQUENCY, "验证码当前发送不应该超过10次");
         }
 
         // todo 防刷验证
@@ -100,7 +107,8 @@ class AuthController extends Controller
         // todo 随机生成6位验证码
         $code = (new UserServices())->setCaptcha($mobile);
         // todo 发送短信
-        (new UserServices)->sendCaptchaMsg($mobile, $code);
-        return ['errno' => 0, 'errmsg' => '发送成功', 'data' => null];
+        // (new UserServices)->sendCaptchaMsg($mobile, $code);
+        // $data =  ['errno' => 0, 'errmsg' => '发送成功', 'data' => null];
+        return $this->success();
     }
 }
