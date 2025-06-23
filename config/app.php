@@ -176,6 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Leonis\Notifications\EasySms\EasySmsChannelServiceProvider::class,
+        Fruitcake\Cors\CorsServiceProvider::class,
     ],
 
     /*

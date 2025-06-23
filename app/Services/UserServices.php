@@ -81,6 +81,9 @@ class UserServices extends BaseServices
      */
     public function checkCaptcha(string $mobile, string $code)
     {
+        if (!app()->environment('production')) {
+            return true;
+        }
         $key = 'register_captcha_' . $mobile;
         $isPass = Cache::get($key) === $code;
         if ($isPass) {
