@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\Notification;
 use Leonis\Notifications\EasySms\Channels\EasySmsChannel;
 use Overtrue\EasySms\PhoneNumber;
 
-class UserServices
+class UserServices extends BaseServices
 {
+
     /**
      *
      * @param [string] $username

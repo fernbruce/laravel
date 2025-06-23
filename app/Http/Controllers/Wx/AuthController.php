@@ -19,6 +19,7 @@ use Overtrue\EasySms\PhoneNumber;
 
 class AuthController extends WxController
 {
+
     /**
      * 用户注册
      *
@@ -35,7 +36,7 @@ class AuthController extends WxController
             return $this->fail(CodeResponse::PARAM_ILLEGAL);
         }
 
-        $user = (new UserServices())->getByUser($username);
+        $user = UserServices::getInstance()->getByUser($username);
         if (!is_null($user)) {
             return $this->fail(CodeResponse::AUTH_NAME_REGISTERED);
         }
@@ -49,12 +50,12 @@ class AuthController extends WxController
             return $this->fail(CodeResponse::AUTH_INVALID_MOBILE);
         }
 
-        $userInfo = (new UserServices())->getByMobile($mobile);
+        $userInfo = UserServices::getInstance()->getByMobile($mobile);
         if (!is_null($userInfo)) {
             return $this->fail(CodeResponse::AUTH_MOBILE_REGISTERED);
         }
         // todo 验证验证码是否正确
-        (new UserServices())->checkCaptcha($mobile, $code);
+        UserServices::getInstance()->checkCaptcha($mobile, $code);
         //写入用户表
         $user = new User();
         $user->username = $username;
@@ -81,7 +82,7 @@ class AuthController extends WxController
             return $this->fail(CodeResponse::PARAM_ILLEGAL);
         }
         // todo 验证手机号是否已经被注册
-        $user = (new UserServices)->getByMobile($mobile);
+        $user = UserServices::getInstance()->getByMobile($mobile);
         if (!is_null($user)) {
             return $this->fail(CodeResponse::AUTH_MOBILE_REGISTERED);
         }
@@ -91,7 +92,7 @@ class AuthController extends WxController
         if (!$lock) {
             return $this->fail(CodeResponse::AUTH_CAPTCHA_FREQUENCY);
         }
-        $isPass = (new UserServices())->checkMobileSendCaptchaCount($mobile);
+        $isPass = UserServices::getInstance()->checkMobileSendCaptchaCount($mobile);
         if (!$isPass) {
             return $this->fail(CodeResponse::AUTH_CAPTCHA_FREQUENCY, "验证码当前发送不应该超过10次");
         }
@@ -102,9 +103,9 @@ class AuthController extends WxController
         }
 
         // todo 随机生成6位验证码
-        $code = (new UserServices())->setCaptcha($mobile);
+        $code = UserServices::getInstance()->setCaptcha($mobile);
         // todo 发送短信
-        // (new UserServices)->sendCaptchaMsg($mobile, $code);
+        // UserServices::getInstance()->sendCaptchaMsg($mobile, $code);
         // $data =  ['errno' => 0, 'errmsg' => '发送成功', 'data' => null];
         return $this->success();
     }

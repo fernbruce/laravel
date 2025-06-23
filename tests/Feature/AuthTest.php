@@ -41,7 +41,7 @@ class AuthTest extends TestCase
     {
 
         $mobile = '13800000002';
-        $code = (new UserServices)->setCaptcha($mobile);
+        $code = UserServices::getInstance()->setCaptcha($mobile);
         $response = $this->post('/wx/auth/register', [
             'username' => 'test12',
             'password' => 'password',
@@ -69,7 +69,7 @@ class AuthTest extends TestCase
     public function testRegisterMobileExists()
     {
         $mobile = '13800000001';
-        $code = (new UserServices)->setCaptcha($mobile);
+        $code = UserServices::getInstance()->setCaptcha($mobile);
         $response = $this->json('POST', '/wx/auth/register', [
             'username' => 'test12',
             'password' => 'password',
