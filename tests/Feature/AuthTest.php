@@ -23,6 +23,20 @@ class AuthTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testRegisterErrCode()
+    {
+        $mobile = '13800000002';
+        $code = '123';
+        $response = $this->post('/wx/auth/register', [
+            'username' => 'test12',
+            'password' => 'password',
+            'mobile' => $mobile,
+            'code' => $code
+        ]);
+
+        $response->assertJson(['errno' => 703, 'errmsg' => '验证码错误']);
+    }
+
     public function testRegister()
     {
 
@@ -34,13 +48,8 @@ class AuthTest extends TestCase
             'mobile' => $mobile,
             'code' => $code
         ]);
-        // print_r($response);
-        // print_r($response->getContent());
-        // print_r($ret = $response->getOriginalContent());
         $ret = $response->getOriginalContent();
         $response->assertStatus(200);
-        // $this->assertEquals(0, $ret['errno']);
-        print_r($ret);
         $this->assertNotEmpty($ret['data'] ?? '');
     }
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\BusinessException;
 use App\Services\UserServices;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -41,7 +42,8 @@ class AuthTest extends TestCase
         $code = (new UserServices)->setCaptcha($mobile);
         $isPass = (new UserServices)->checkCaptcha($mobile, $code);
         $this->assertTrue($isPass);
+        $this->expectException(BusinessException::class);
+        $this->expectExceptionCode(703);
         $isPass = (new UserServices)->checkCaptcha($mobile, $code);
-        $this->assertFalse($isPass);
     }
 }

@@ -54,10 +54,7 @@ class AuthController extends WxController
             return $this->fail(CodeResponse::AUTH_MOBILE_REGISTERED);
         }
         // todo 验证验证码是否正确
-        $isPass = (new UserServices())->checkCaptcha($mobile, $code);
-        if (!$isPass) {
-            return $this->fail(CodeResponse::AUTH_CAPTCHA_UNMATCH);
-        }
+        (new UserServices())->checkCaptcha($mobile, $code);
         //写入用户表
         $user = new User();
         $user->username = $username;

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\CodeResponse;
+use App\Exceptions\BusinessException;
 use App\Models\User;
 use App\Notifications\VerificationCode;
 use Illuminate\Support\Carbon;
@@ -82,8 +84,10 @@ class UserServices
         $isPass = Cache::get($key) === $code;
         if ($isPass) {
             Cache::forget($key);
+            return true;
+        } else {
+            throw new BusinessException(CodeResponse::AUTH_CAPTCHA_UNMATCH);
         }
-        return $isPass;
     }
 
     /**
