@@ -177,6 +177,7 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Leonis\Notifications\EasySms\EasySmsChannelServiceProvider::class,
         Fruitcake\Cors\CorsServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ],
 
     /*

@@ -53,8 +53,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserLevel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereWeixinOpenid($value)
+ * @mixin \Eloquent
  */
-	class User extends \Eloquent {}
+	class User extends \Eloquent implements \Tymon\JWTAuth\Contracts\JWTSubject {}
 }
 
 namespace App{
@@ -68,6 +69,7 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|Product query()
  * @method static \Illuminate\Database\Query\Builder|Product withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Product withoutTrashed()
+ * @mixin \Eloquent
  */
 	class Product extends \Eloquent {}
 }

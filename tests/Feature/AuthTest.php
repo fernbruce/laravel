@@ -99,4 +99,15 @@ class AuthTest extends TestCase
         ]);
         $response->assertJson(['errno' => 702, 'errmsg' => '验证码未超时1分钟，不能发送']);
     }
+
+    public function testLogin()
+    {
+        $response = $this->json('POST', '/wx/auth/login', [
+            'username' => 'user123',
+            'password' => 'user123'
+        ]);
+        dump($response->getContent());
+        $response->assertJson(['errno' => 0, 'errmsg' => '成功']);
+        $this->assertNotEmpty($response->getOriginalContent()['data']['token'] ?? '');
+    }
 }

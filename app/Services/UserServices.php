@@ -20,7 +20,7 @@ class UserServices extends BaseServices
      * @param [string] $username
      * @return User|null|Model
      */
-    public function getByUser($username)
+    public function getByUsername($username)
     {
         return User::query()->where('username', $username)->where('deleted', 0)->first();
     }

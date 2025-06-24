@@ -9,6 +9,7 @@ use App\Notifications\VerificationCode;
 use App\Services\UserServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification as FacadesNotification;
@@ -20,6 +21,41 @@ use Overtrue\EasySms\PhoneNumber;
 class AuthController extends WxController
 {
 
+    public function login(Request $request)
+    {
+        //获取账号密码
+        $username = $request->input('username');
+        $password = $request->input('password');
+        //数据验证
+        if (empty($username) || empty($password)) {
+            return $this->fail(CodeResponse::PARAM_ILLEGAL);
+        }
+        //验证账号是否存在
+        $user = UserServices::getInstance()->getByUsername($username);
+        if (is_null($user)) {
+            return $this->fail(CodeResponse::AUTH_INVALID_ACCOUNT);
+        }
+        //对密码进行验证
+        $isPass = Hash::check($password, $user->getAuthPassword());
+        if (!$isPass) {
+            return $this->fail(CodeResponse::AUTH_INVALID_ACCOUNT, '账号密码不对');
+        }
+        //更新登录的信息
+        $user->last_login_time = now()->toDateTimeString();
+        $user->last_login_ip = $request->getClientIp();
+        if (!$user->save()) {
+            return $this->fail(CodeResponse::UPDATED_FAIL);
+        }
+        //获取token
+        $token = Auth::guard('wx')->login($user);
+        //组装数据并返回
+        $data =  [
+            'token' => $token,
+            'userInfo' => $username,
+            'avatarUrl' => $user->avatar,
+        ];
+        return $this->success($data);
+    }
     /**
      * 用户注册
      *
@@ -36,7 +72,7 @@ class AuthController extends WxController
             return $this->fail(CodeResponse::PARAM_ILLEGAL);
         }
 
-        $user = UserServices::getInstance()->getByUser($username);
+        $user = UserServices::getInstance()->getByUsername($username);
         if (!is_null($user)) {
             return $this->fail(CodeResponse::AUTH_NAME_REGISTERED);
         }
