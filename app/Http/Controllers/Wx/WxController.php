@@ -12,11 +12,11 @@ class WxController extends Controller
     public function __construct()
     {
         $options = [];
-        if (!is_null($only)) {
-            $options['only'] = $only;
+        if (!is_null($this->only)) {
+            $options['only'] = $this->only;
         }
-        if (!is_null($except)) {
-            $options['except'] = $except;
+        if (!is_null($this->except)) {
+            $options['except'] = $this->except;
         }
         $this->middleware('auth:wx', $options);
     }
