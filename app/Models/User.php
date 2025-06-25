@@ -99,6 +99,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+            'iss' => env('JWT_ISSUER'),
+            'userId' => $this->getKey()
+        ];
     }
 }

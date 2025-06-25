@@ -20,7 +20,13 @@ use Overtrue\EasySms\PhoneNumber;
 
 class AuthController extends WxController
 {
+    protected $only = ['user'];
 
+    public function user()
+    {
+        $user = Auth::guard('wx')->user();
+        return $this->success($user);
+    }
     public function login(Request $request)
     {
         //获取账号密码
