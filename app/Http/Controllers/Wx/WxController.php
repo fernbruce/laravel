@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class WxController extends Controller
 {
@@ -41,5 +42,23 @@ class WxController extends Controller
     protected function fail(array $codeResponse, $info = "")
     {
         return $this->codeReturn($codeResponse, null, $info);
+    }
+
+    protected function failOrSuccess($isSuccess, array $codeResponse, $data = null, $info = "")
+    {
+        if ($isSuccess) {
+            return $this->success($data);
+        } else {
+            return $this->fail($codeResponse, $info);
+        }
+    }
+
+    /**
+     *
+     * @return User|null
+     */
+    protected function user()
+    {
+        return Auth::guard('wx')->user();
     }
 }
