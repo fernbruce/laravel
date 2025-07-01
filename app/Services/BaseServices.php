@@ -30,4 +30,9 @@ class BaseServices
     private function __construct() {}
 
     private function __clone() {}
+
+    public function throwBusinessException(array $codeResponse)
+    {
+        throw new BusinessException($codeResponse);
+    }
 }

@@ -194,4 +194,6 @@ class AuthTest extends TestCase
         $user = UserServices::getInstance()->getByUsername('user123');
         $this->assertEquals($user->nickname, 'user1234');
     }
+
+
 }
