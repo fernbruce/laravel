@@ -1,14 +1,20 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use App\Models\BaseModel;
 
 /**
- * App\Models\User
+ * App\Models\User\User
  *
  * @property int $id
  * @property string $username 用户名称
@@ -51,9 +57,12 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereWeixinOpenid($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable implements JWTSubject
+class User extends BaseModel implements
+    JWTSubject,
+    AuthenticatableContract,
+    AuthorizableContract
 {
-    use Notifiable;
+    use Authenticatable, Authorizable,  Notifiable;
     // public $timestamps = false;
     public const CREATED_AT = 'add_time';
     public const UPDATED_AT = 'update_time';

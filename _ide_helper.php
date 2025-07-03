@@ -1629,7 +1629,7 @@
                     /**
          * Get the currently authenticated user.
          *
-         * @return \App\Models\User|null 
+         * @return \App\Models\User\User|null 
          * @static 
          */ 
         public static function user()
@@ -1641,7 +1641,7 @@
          * Get the currently authenticated user or throws an exception.
          *
          * @throws \Tymon\JWTAuth\Exceptions\UserNotDefinedException
-         * @return \App\Models\User 
+         * @return \App\Models\User\User 
          * @static 
          */ 
         public static function userOrFail()
@@ -1855,7 +1855,7 @@
                     /**
          * Return the currently cached user.
          *
-         * @return \App\Models\User|null 
+         * @return \App\Models\User\User|null 
          * @static 
          */ 
         public static function getUser()
@@ -1889,7 +1889,7 @@
                     /**
          * Get the last user we attempted to authenticate.
          *
-         * @return \App\Models\User 
+         * @return \App\Models\User\User 
          * @static 
          */ 
         public static function getLastAttempted()
@@ -1900,7 +1900,7 @@
                     /**
          * Determine if current user is authenticated. If not, throw an exception.
          *
-         * @return \App\Models\User 
+         * @return \App\Models\User\User 
          * @throws \Illuminate\Auth\AuthenticationException
          * @static 
          */ 

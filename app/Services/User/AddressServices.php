@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\User;
 
-use App\Models\Address;
+use App\Models\User\Address;
+use App\Services\BaseServices;
 
 class AddressServices extends BaseServices
 {

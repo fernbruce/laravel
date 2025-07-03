@@ -53,6 +53,85 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\BaseModel
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|BaseModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BaseModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BaseModel query()
+ */
+	class BaseModel extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\Brand
+ *
+ * @property int $id
+ * @property string $name 品牌商名称
+ * @property string $desc 品牌商简介
+ * @property string $pic_url 品牌商页的品牌商图片
+ * @property int|null $sort_order
+ * @property float|null $floor_price 品牌商的商品低价，仅用于页面展示
+ * @property \Illuminate\Support\Carbon|null $add_time 创建时间
+ * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property bool|null $deleted 逻辑删除
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereDesc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereFloorPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand wherePicUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereSortOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereUpdateTime($value)
+ */
+	class Brand extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\Category
+ *
+ * @property int $id
+ * @property string $name 类目名称
+ * @property string $keywords 类目关键字，以JSON数组格式
+ * @property string|null $desc 类目广告语介绍
+ * @property int $pid 父类目ID
+ * @property string|null $icon_url 类目图标
+ * @property string|null $pic_url 类目图片
+ * @property string|null $level
+ * @property int|null $sort_order 排序
+ * @property \Illuminate\Support\Carbon|null $add_time 创建时间
+ * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property bool|null $deleted 逻辑删除
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Category newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereDesc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereIconUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category wherePicUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category wherePid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereSortOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereUpdateTime($value)
+ */
+	class Category extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\User
  *
  * @property int $id
@@ -96,7 +175,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereWeixinOpenid($value)
  * @mixin \Eloquent
  */
-	class User extends \Eloquent implements \Tymon\JWTAuth\Contracts\JWTSubject {}
+	class User extends \Eloquent implements \Tymon\JWTAuth\Contracts\JWTSubject, \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\Access\Authorizable {}
 }
 
 namespace App{

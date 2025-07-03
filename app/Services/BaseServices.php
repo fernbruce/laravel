@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\CodeResponse;
 use App\Exceptions\BusinessException;
-use App\Models\User;
+use App\Models\User\User;
 use App\Notifications\VerificationCode;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
