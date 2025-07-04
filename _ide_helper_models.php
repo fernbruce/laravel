@@ -12,7 +12,168 @@
 
 namespace App\Models{
 /**
- * App\Models\Address
+ * App\Models\BaseModel
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|BaseModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BaseModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BaseModel query()
+ */
+	class BaseModel extends \Eloquent {}
+}
+
+namespace App\Models\Goods{
+/**
+ * App\Models\Goods\Brand
+ *
+ * @property int $id
+ * @property string $name 品牌商名称
+ * @property string $desc 品牌商简介
+ * @property string $pic_url 品牌商页的品牌商图片
+ * @property int|null $sort_order
+ * @property float|null $floor_price 品牌商的商品低价，仅用于页面展示
+ * @property \Illuminate\Support\Carbon|null $add_time 创建时间
+ * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property bool|null $deleted 逻辑删除
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereDesc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereFloorPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand wherePicUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereSortOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereUpdateTime($value)
+ */
+	class Brand extends \Eloquent {}
+}
+
+namespace App\Models\Goods{
+/**
+ * App\Models\Goods\Category
+ *
+ * @property int $id
+ * @property string $name 类目名称
+ * @property string $keywords 类目关键字，以JSON数组格式
+ * @property string|null $desc 类目广告语介绍
+ * @property int $pid 父类目ID
+ * @property string|null $icon_url 类目图标
+ * @property string|null $pic_url 类目图片
+ * @property string|null $level
+ * @property int|null $sort_order 排序
+ * @property \Illuminate\Support\Carbon|null $add_time 创建时间
+ * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property bool|null $deleted 逻辑删除
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Category newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereDesc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereIconUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category wherePicUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category wherePid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereSortOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereUpdateTime($value)
+ */
+	class Category extends \Eloquent {}
+}
+
+namespace App\Models\Goods{
+/**
+ * App\Models\Goods\Goods
+ *
+ * @property int $id
+ * @property string $goods_sn 商品编号
+ * @property string $name 商品名称
+ * @property int|null $category_id 商品所属类目ID
+ * @property int|null $brand_id
+ * @property string|null $gallery 商品宣传图片列表，采用JSON数组格式
+ * @property string|null $keywords 商品关键字，采用逗号间隔
+ * @property string|null $brief 商品简介
+ * @property int|null $is_on_sale 是否上架
+ * @property int|null $sort_order
+ * @property string|null $pic_url 商品页面商品图片
+ * @property string|null $share_url 商品分享海报
+ * @property bool|null $is_new 是否新品首发，如果设置则可以在新品首发页面展示
+ * @property bool|null $is_hot 是否人气推荐，如果设置则可以在人气推荐页面展示
+ * @property string|null $unit 商品单位，例如件、盒
+ * @property float|null $counter_price 专柜价格
+ * @property float|null $retail_price 零售价格
+ * @property string|null $detail 商品详细介绍，是富文本格式
+ * @property \Illuminate\Support\Carbon|null $add_time 创建时间
+ * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property bool|null $deleted 逻辑删除
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereBrandId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereBrief($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereCounterPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereDetail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereGallery($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereGoodsSn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereIsHot($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereIsNew($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereIsOnSale($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods wherePicUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereRetailPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereShareUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereSortOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Goods whereUpdateTime($value)
+ */
+	class Goods extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\SearchHistory
+ *
+ * @property int $id
+ * @property int $user_id 用户表的用户ID
+ * @property string $keyword 搜索关键字
+ * @property string $from 搜索来源，如pc、wx、app
+ * @property \Illuminate\Support\Carbon|null $add_time 创建时间
+ * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property bool|null $deleted 逻辑删除
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereKeyword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereUpdateTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereUserId($value)
+ */
+	class SearchHistory extends \Eloquent {}
+}
+
+namespace App\Models\User{
+/**
+ * App\Models\User\Address
  *
  * @property int $id
  * @property string $name 收货人名称
@@ -51,88 +212,9 @@ namespace App\Models{
 	class Address extends \Eloquent {}
 }
 
-namespace App\Models{
+namespace App\Models\User{
 /**
- * App\Models\BaseModel
- *
- * @method static \Illuminate\Database\Eloquent\Builder|BaseModel newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BaseModel newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BaseModel query()
- */
-	class BaseModel extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * App\Models\Brand
- *
- * @property int $id
- * @property string $name 品牌商名称
- * @property string $desc 品牌商简介
- * @property string $pic_url 品牌商页的品牌商图片
- * @property int|null $sort_order
- * @property float|null $floor_price 品牌商的商品低价，仅用于页面展示
- * @property \Illuminate\Support\Carbon|null $add_time 创建时间
- * @property \Illuminate\Support\Carbon|null $update_time 更新时间
- * @property bool|null $deleted 逻辑删除
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder|Brand newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Brand newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Brand query()
- * @method static \Illuminate\Database\Eloquent\Builder|Brand whereAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Brand whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Brand whereDesc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Brand whereFloorPrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Brand whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Brand whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Brand wherePicUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Brand whereSortOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Brand whereUpdateTime($value)
- */
-	class Brand extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * App\Models\Category
- *
- * @property int $id
- * @property string $name 类目名称
- * @property string $keywords 类目关键字，以JSON数组格式
- * @property string|null $desc 类目广告语介绍
- * @property int $pid 父类目ID
- * @property string|null $icon_url 类目图标
- * @property string|null $pic_url 类目图片
- * @property string|null $level
- * @property int|null $sort_order 排序
- * @property \Illuminate\Support\Carbon|null $add_time 创建时间
- * @property \Illuminate\Support\Carbon|null $update_time 更新时间
- * @property bool|null $deleted 逻辑删除
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder|Category newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Category query()
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereDesc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereIconUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereKeywords($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category wherePicUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category wherePid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereSortOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereUpdateTime($value)
- */
-	class Category extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * App\Models\User
+ * App\Models\User\User
  *
  * @property int $id
  * @property string $username 用户名称

@@ -38,4 +38,17 @@ class CatalogServices extends BaseServices
     {
         return Category::query()->where('level', 'L1')->where('deleted', 0)->where('id', $id)->first();
     }
+
+    public function getCategory(int $id)
+    {
+        return Category::query()->where('id', $id)->where('deleted', 0)->first();
+    }
+
+    public function getL2ListByIds($ids)
+    {
+        if (empty($ids)) {
+            return collect([]);
+        }
+        return Category::query()->whereIn('id', $ids)->get();
+    }
 }

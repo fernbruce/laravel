@@ -35,7 +35,8 @@ abstract class TestCase extends BaseTestCase
     {
         $client = new Client();
         if ($method == 'get') {
-            $response1 = $this->get($uri, $this->getAuthHeader());
+            // $response1 = $this->get($uri, $this->getAuthHeader());
+            $response1 = $this->get($uri);
             $response2 = $client->get('http://47.99.102.217:8080/' . $uri, ['headers' => ['X-Litemall-Token' => $this->token]]);
         } else {
             $response1 = $this->post($uri, $data, $this->getAuthHeader());
@@ -52,12 +53,17 @@ abstract class TestCase extends BaseTestCase
         // $content = json_decode($content, true);
         // $response1->assertJson($content);
         $content1 = json_decode($response1->getContent(), true);
+        echo "laravel=>";
+        print_r($content1);
         $content2 = json_decode($response2->getBody()->getContents(), true);
+        echo "litemall=>";
+        print_r($content2);
 
         foreach ($ignore as $key) {
             unset($content1[$key]);
             unset($content2[$key]);
         }
+
         $this->assertEquals($content2, $content1);
     }
 }

@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class BaseModel extends \Illuminate\Database\Eloquent\Model
 {
+
+    // public $timestamps = false;
+    public const CREATED_AT = 'add_time';
+    public const UPDATED_AT = 'update_time';
     // 2. 创建访问器（命名规范：get[字段名]Attribute）
     protected function getAddTimeAttribute($value)
     {
@@ -33,5 +38,10 @@ class BaseModel extends \Illuminate\Database\Eloquent\Model
         }, $keys);
         $values = array_values($items);
         return array_combine($keys, $values);
+    }
+
+    public function serializeDate(DateTimeInterface $date)
+    {
+        return Carbon::instance($date)->toDateString();
     }
 }

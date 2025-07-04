@@ -3,21 +3,20 @@
 namespace App\Models\Goods;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Models\BaseModel;
+
 
 /**
  *
  */
-class Category extends BaseModel
+class Goods extends BaseModel
 {
     use Notifiable;
 
 
 
 
-    protected $table = 'category';
+    protected $table = 'goods';
     /**
      * The attributes that are mass assignable.
      *
@@ -38,6 +37,11 @@ class Category extends BaseModel
      * @var array
      */
     protected $casts = [
-        'deleted' => 'boolean'
+        'deleted' => 'boolean',
+        'counter_price' => 'float',
+        'retail_price' => 'float',
+        'is_new' => 'boolean',
+        'is_hot' => 'boolean',
+
     ];
 }

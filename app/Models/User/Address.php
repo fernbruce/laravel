@@ -15,9 +15,6 @@ class Address extends BaseModel
     use Notifiable;
 
 
-    // public $timestamps = false;
-    public const CREATED_AT = 'add_time';
-    public const UPDATED_AT = 'update_time';
 
     protected $table = 'address';
     /**

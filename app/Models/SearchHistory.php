@@ -1,30 +1,33 @@
 <?php
 
-namespace App\Models\Goods;
+namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Models\BaseModel;
+
 
 /**
  *
  */
-class Category extends BaseModel
+class SearchHistory extends BaseModel
 {
     use Notifiable;
 
 
 
 
-    protected $table = 'category';
+    protected $table = 'search_history';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     // protected $fillable = [];
-    protected $fillable = [];
+    protected $fillable = [
+        'user_id',
+        'keyword',
+        'from'
+    ];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -38,6 +41,7 @@ class Category extends BaseModel
      * @var array
      */
     protected $casts = [
-        'deleted' => 'boolean'
+        'deleted' => 'boolean',
+
     ];
 }
