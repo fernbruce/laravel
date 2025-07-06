@@ -16,6 +16,13 @@ use Overtrue\EasySms\PhoneNumber;
 class UserServices extends BaseServices
 {
 
+    public function getUsers(array $userIds)
+    {
+        if (empty($userIds)) {
+        return collect([]);
+        }
+        return User::query()->whereIn('id', $userIds)->where('deleted', 0)->get();
+    }
     /**
      *
      * @param [string] $username

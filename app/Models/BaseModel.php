@@ -40,8 +40,8 @@ class BaseModel extends \Illuminate\Database\Eloquent\Model
         return array_combine($keys, $values);
     }
 
-    public function serializeDate(DateTimeInterface $date)
-    {
-        return Carbon::instance($date)->toDateString();
-    }
+    //     public function serializeDate(DateTimeInterface $date)
+    //     {
+    //         return Carbon::instance($date)->toDateString();
+    //     }
 }

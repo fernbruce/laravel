@@ -4,7 +4,12 @@ namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
 use App\Constant;
+use App\Models\Comment;
+use App\Models\Goods\Goods;
 use App\Models\SearchHistory;
+use App\Services\CollectServices;
+use App\Services\CommentServices;
+use App\Services\Goods\BrandServices;
 use App\Services\Goods\CatalogServices;
 use App\Services\Goods\GoodsServices;
 use App\Services\SearchHistoryServices;
@@ -87,5 +92,44 @@ class GoodsController extends WxController
         $goodsList = $this->paginate($goodsList);
         $goodsList['filterCategoryList'] = $categoryList;
         return $this->success($goodsList);
+    }
+
+    public function detail(Request $request)
+    {
+        $id = $request->input('id', 0);
+        if (empty($id)) {
+            return $this->fail(CodeResponse::PARAM_ILLEGAL);
+        }
+        $info = GoodsServices::getInstance()->getGoods($id);
+        if (empty($info)) {
+            return $this->fail(CodeResponse::PARAM_VALUE_ILLEGAL);
+        }
+
+        $attr = GoodsServices::getInstance()->getGoodsAttribute($id);
+        $spec = GoodsServices::getInstance()->getGoodsSpecification($id);
+        $product = GoodsServices::getInstance()->getGoodsProduct($id);
+        $issue = GoodsServices::getInstance()->getGoodsIssue();
+        $brand = $info->brand_id ? BrandServices::getInstance()->getBrand($info->brand_id) : (object)[];
+        $comment = CommentServices::getInstance()->getCommentWithUserInfo($id);
+        $userHasCollect = 0;
+        if ($this->isLogin()) {
+            $userHasCollect = CollectServices::getInstance()->countByGoodsId($this->userId(), $id);
+            GoodsServices::getInstance()->saveFootprint($this->userId(), $id);
+        }
+        //todo 团购信息
+        //todo 系统配置
+        return $this->success([
+            'info' => $info,
+            'userHasCollect' => $userHasCollect,
+            'issue' => $issue,
+            'comment' => $comment,
+            'specificationList' => $spec,
+            'productList' => $product,
+            'attribute' => $attr,
+            'brand' => $brand,
+            'groupon' => [],
+            'share' => false,
+            'shareImage' => $info->share_url
+        ]);
     }
 }

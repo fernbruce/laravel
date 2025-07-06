@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Goods;
+namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use App\Models\BaseModel;
@@ -9,14 +9,14 @@ use App\Models\BaseModel;
 /**
  *
  */
-class Goods extends BaseModel
+class Comment extends BaseModel
 {
     use Notifiable;
 
 
 
 
-    protected $table = 'goods';
+    protected $table = 'comment';
     /**
      * The attributes that are mass assignable.
      *
@@ -38,11 +38,6 @@ class Goods extends BaseModel
      */
     protected $casts = [
         'deleted' => 'boolean',
-        'counter_price' => 'float',
-        'retail_price' => 'float',
-        'is_new' => 'boolean',
-        'is_hot' => 'boolean',
-        'gallery' => 'array',
-        'is_on_sale' => 'boolean'
+        'pic_urls' => 'array',
     ];
 }

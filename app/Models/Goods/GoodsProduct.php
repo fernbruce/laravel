@@ -9,20 +9,18 @@ use App\Models\BaseModel;
 /**
  *
  */
-class Goods extends BaseModel
+class GoodsProduct extends BaseModel
 {
     use Notifiable;
 
 
 
-
-    protected $table = 'goods';
+    protected $table = 'goods_product';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    // protected $fillable = [];
     protected $fillable = [];
     /**
      * The attributes that should be hidden for arrays.
@@ -38,11 +36,7 @@ class Goods extends BaseModel
      */
     protected $casts = [
         'deleted' => 'boolean',
-        'counter_price' => 'float',
-        'retail_price' => 'float',
-        'is_new' => 'boolean',
-        'is_hot' => 'boolean',
-        'gallery' => 'array',
-        'is_on_sale' => 'boolean'
+        'specifications' => 'array',
+        'price' => 'float',
     ];
 }

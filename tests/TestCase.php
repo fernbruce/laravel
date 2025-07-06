@@ -63,7 +63,6 @@ abstract class TestCase extends BaseTestCase
             unset($content1[$key]);
             unset($content2[$key]);
         }
-
         $this->assertEquals($content2, $content1);
     }
 }
