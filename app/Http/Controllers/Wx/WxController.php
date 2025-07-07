@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
+use App\Exceptions\BusinessException;
 use App\Http\Controllers\Controller;
+use App\VerifyRequestInput;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class WxController extends Controller
 {
+    use VerifyRequestInput;
     protected $only;
     protected $except;
     public function __construct()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
 use App\Constant;
+use App\Inputs\GoodsListInput;
 use App\Models\Comment;
 use App\Models\Goods\Goods;
 use App\Models\SearchHistory;
@@ -14,6 +15,7 @@ use App\Services\Goods\CatalogServices;
 use App\Services\Goods\GoodsServices;
 use App\Services\SearchHistoryServices;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class GoodsController extends WxController
 {
@@ -27,9 +29,9 @@ class GoodsController extends WxController
     }
 
 
-    public function category(Request $request)
+    public function category()
     {
-        $id = $request->input('id', 0);
+        $id = $this->verifyId('id');
         if (empty($id)) {
             return $this->fail(CodeResponse::PARAM_VALUE_ILLEGAL);
         }
@@ -58,36 +60,64 @@ class GoodsController extends WxController
     }
 
 
-    public function list(Request $request)
+    /**
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throw \App\Exception\BusinessException
+     */
+    public function list()
     {
-        $categoryId = $request->input('categoryId');
-        $brandId = $request->input('brandId');
-        $keyword = $request->input('keyword');
-        $isNew = $request->input('isNew');
-        $isHot = $request->input('isHot');
-        $page = $request->input('page', 1);
-        $limit = $request->input('limit', 10);
-        $sort = $request->input('sort', 'add_time');
-        $order = $request->input('order', 'desc');
+        // version 1
+        // $categoryId = $request->input('categoryId');
+        // $brandId = $request->input('brandId');
+        // $keyword = $request->input('keyword');
+        // $isNew = $request->input('isNew');
+        // $isHot = $request->input('isHot');
+        // $page = $request->input('page', 1);
+        // $limit = $request->input('limit', 10);
+        // $sort = $request->input('sort', 'add_time');
+        // $order = $request->input('order', 'desc');
 
+        // $input = $request->validate([
+        //     'categoryId' => 'integer|digits_between:1,20',
+        //     'brandId' => 'integer|digits_between:1,20',
+        //     'keyword' => 'string',
+        //     'isNew' => 'boolean',
+        //     'isHot' => 'boolean',
+        //     'page' => 'integer',
+        //     'limit' => 'integer',
+        //     'sort' => Rule::in(['add_time', 'retail_price', 'name']),
+        //     'order' => Rule::in(['desc', 'asc']),
+        // ]);
+        // $input = new GoodsListInput();
+        // $input->fill();
+        // version 2
+        // $categoryId = $this->verifyId('categoryId');
+        // $brandId = $this->verifyId('brandId');
+        // $keyword = $this->verifyString('keyword');
+        // $isNew = $this->verifyBoolean('isNew');
+        // $isHot = $this->verifyBoolean('isHot');
+        // $page = $this->verifyInteger('page', 1);
+        // $limit = $this->verifyInteger('limit', 10);
+        // $sort = $this->verifyEnum('sort', 'add_time', ['add_time', 'retail_price', 'name']);
+        // $order = $this->verifyEnum('order', 'desc', ['desc', 'asc']);
+
+
+        // version 3
+        $input = GoodsListInput::new();
         if ($this->isLogin() && !empty($keyword)) {
             SearchHistoryServices::getInstance()->save($this->userId(), $keyword, Constant::SEARCH_HISTORY_FROM_WX);
         }
+        // todo 优化参数的传递
         $columns = ['id', 'name', 'brief', 'pic_url', 'is_new', 'is_hot', 'counter_price', 'retail_price'];
+
         $goodsList = GoodsServices::getInstance()->listGoods(
-            $categoryId,
-            $brandId,
-            $isNew,
-            $isHot,
-            $keyword,
-            $columns,
-            $sort,
-            $order,
-            $page,
-            $limit
+            $input,
+            $columns
         );
 
-        $categoryList = GoodsServices::getInstance()->listL2Category($brandId, $isNew, $isHot, $keyword);
+        $categoryList = GoodsServices::getInstance()->listL2Category($input);
 
         $goodsList = $this->paginate($goodsList);
         $goodsList['filterCategoryList'] = $categoryList;
@@ -96,7 +126,7 @@ class GoodsController extends WxController
 
     public function detail(Request $request)
     {
-        $id = $request->input('id', 0);
+        $id = $request->verifyId('id');
         if (empty($id)) {
             return $this->fail(CodeResponse::PARAM_ILLEGAL);
         }

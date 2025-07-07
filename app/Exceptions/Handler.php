@@ -2,8 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\CodeResponse;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +48,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof ValidationException) {
+            return response()->json([
+                'code' => CodeResponse::PARAM_VALUE_ILLEGAL[0],
+                'errmsg' => CodeResponse::PARAM_VALUE_ILLEGAL[1],
+            ]);
+        }
         if ($exception instanceof BusinessException) {
             return response()->json([
                 'errno' => $exception->getCode(),
