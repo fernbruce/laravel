@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Exceptions\BusinessException;
-use App\Services\UserServices;
+use App\Services\User\UserServices;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Promotion;
 
 use Illuminate\Notifications\Notifiable;
 use App\Models\BaseModel;
@@ -9,14 +9,14 @@ use App\Models\BaseModel;
 /**
  *
  */
-class Comment extends BaseModel
+class Coupon extends BaseModel
 {
     use Notifiable;
 
 
 
 
-    protected $table = 'comment';
+    protected $table = 'coupon';
     /**
      * The attributes that are mass assignable.
      *
@@ -38,6 +38,7 @@ class Comment extends BaseModel
      */
     protected $casts = [
         'deleted' => 'boolean',
-        'pic_urls' => 'array',
+        'discount' => 'float',
+        'min' => 'float'
     ];
 }

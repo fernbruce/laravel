@@ -7,6 +7,7 @@ use App\Exceptions\BusinessException;
 use App\Http\Controllers\Controller;
 use App\VerifyRequestInput;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -87,27 +88,32 @@ class WxController extends Controller
     {
         return $this->success($this->paginate($page));
     }
-    protected function paginate($page)
+    protected function paginate($page, $list)
     {
         if ($page instanceof LengthAwarePaginator) {
+            $total = $page->total();
             return [
                 'total' => $page->total(),
-                'page' => $page->currentPage(),
+                'page' => $total === 0 ? 0 : $page->currentPage(),
                 'limit' => $page->perPage(),
-                'pages' => $page->lastPage(),
-                'list' => $page->items()
+                'pages' => $total === 0 ? 0 : $page->lastPage(),
+                'list' => $list ?? $page->items()
 
             ];
-        } elseif (is_array($page)) {
-            $total = count($page);
-            return [
-                'total' => $total,
-                'page' => 1,
-                'limit' => $total,
-                'pages' => 1,
-                'list' => $page
-            ];
         }
-        return $page;
+        if ($page instanceof Collection) {
+            $page = $page->toArray();
+        }
+        if (!is_array($page)) {
+            return $page;
+        }
+        $total = count($page);
+        return [
+            'total' => $total,
+            'page' => $total === 0 ? 0 : 1,
+            'limit' => $total,
+            'pages' => $total === 0 ? 0 : 1,
+            'list' => $page
+        ];
     }
 }

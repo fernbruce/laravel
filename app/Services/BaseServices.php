@@ -31,8 +31,8 @@ class BaseServices
 
     private function __clone() {}
 
-    public function throwBusinessException(array $codeResponse)
+    public function throwBusinessException(array $codeResponse, $info = "")
     {
-        throw new BusinessException($codeResponse);
+        throw new BusinessException($codeResponse, $info);
     }
 }

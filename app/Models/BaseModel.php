@@ -32,6 +32,9 @@ class BaseModel extends \Illuminate\Database\Eloquent\Model
     public  function toArray()
     {
         $items = parent::toArray();
+        $items = array_filter($items, function ($item) {
+            return !is_null($item);
+        });
         $keys = array_keys($items);
         $keys = array_map(function ($item) {
             return Str::camel($item);

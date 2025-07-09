@@ -18,7 +18,6 @@ abstract class TestCase extends BaseTestCase
             'password' => 'user123'
         ]);
         $this->token = $response->getOriginalContent()['data']['token'] ?? '';
-
         return ['Authorization' => 'Bearer ' . $this->token];
     }
 
@@ -35,7 +34,7 @@ abstract class TestCase extends BaseTestCase
     {
         $client = new Client();
         if ($method == 'get') {
-            // $response1 = $this->get($uri, $this->getAuthHeader());
+            $response1 = $this->get($uri, $this->getAuthHeader());
             $response1 = $this->get($uri);
             $response2 = $client->get('http://47.99.102.217:8080/' . $uri, ['headers' => ['X-Litemall-Token' => $this->token]]);
         } else {
