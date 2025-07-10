@@ -88,7 +88,7 @@ class WxController extends Controller
     {
         return $this->success($this->paginate($page));
     }
-    protected function paginate($page, $list)
+    protected function paginate($page, $list = null)
     {
         if ($page instanceof LengthAwarePaginator) {
             $total = $page->total();

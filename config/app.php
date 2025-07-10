@@ -67,7 +67,8 @@ return [
     |
     */
 
-    'timezone' => ini_get('date.timezone') ?: 'UTC',
+    // 'timezone' => ini_get('date.timezone') ?: 'UTC',
+    'timezone' => 'Asia/Shanghai',
 
     /*
     |--------------------------------------------------------------------------

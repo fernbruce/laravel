@@ -16,7 +16,7 @@ class Coupon extends BaseModel
 
 
 
-    protected $table = 'coupon';
+    // protected $table = 'coupon';
     /**
      * The attributes that are mass assignable.
      *
