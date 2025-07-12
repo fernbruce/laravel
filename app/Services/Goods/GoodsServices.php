@@ -17,6 +17,11 @@ class GoodsServices extends BaseServices
     {
         return Goods::query()->where('id', $id)->where('deleted', 0)->first();
     }
+
+    public function getGoodsListById($Ids)
+    {
+        return Goods::query()->whereIn('id', $Ids)->get();
+    }
     public function countGoodsOnSale()
     {
 

@@ -44,6 +44,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Collect whereUpdateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collect whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Collect whereValueId($value)
+ * @mixin \Eloquent
  */
 	class Collect extends \Eloquent {}
 }
@@ -75,6 +76,7 @@ namespace App\Models\Goods{
  * @method static \Illuminate\Database\Eloquent\Builder|Brand wherePicUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Brand whereSortOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Brand whereUpdateTime($value)
+ * @mixin \Eloquent
  */
 	class Brand extends \Eloquent {}
 }
@@ -112,6 +114,7 @@ namespace App\Models\Goods{
  * @method static \Illuminate\Database\Eloquent\Builder|Category wherePid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereSortOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereUpdateTime($value)
+ * @mixin \Eloquent
  */
 	class Category extends \Eloquent {}
 }
@@ -137,6 +140,7 @@ namespace App\Models\Goods{
  * @method static \Illuminate\Database\Eloquent\Builder|Footprint whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Footprint whereUpdateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Footprint whereUserId($value)
+ * @mixin \Eloquent
  */
 	class Footprint extends \Eloquent {}
 }
@@ -192,6 +196,7 @@ namespace App\Models\Goods{
  * @method static \Illuminate\Database\Eloquent\Builder|Goods whereSortOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Goods whereUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Goods whereUpdateTime($value)
+ * @mixin \Eloquent
  */
 	class Goods extends \Eloquent {}
 }
@@ -219,6 +224,7 @@ namespace App\Models\Goods{
  * @method static \Illuminate\Database\Eloquent\Builder|GoodsAttribute whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|GoodsAttribute whereUpdateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|GoodsAttribute whereValue($value)
+ * @mixin \Eloquent
  */
 	class GoodsAttribute extends \Eloquent {}
 }
@@ -250,6 +256,7 @@ namespace App\Models\Goods{
  * @method static \Illuminate\Database\Eloquent\Builder|GoodsProduct whereSpecifications($value)
  * @method static \Illuminate\Database\Eloquent\Builder|GoodsProduct whereUpdateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|GoodsProduct whereUrl($value)
+ * @mixin \Eloquent
  */
 	class GoodsProduct extends \Eloquent {}
 }
@@ -279,6 +286,7 @@ namespace App\Models\Goods{
  * @method static \Illuminate\Database\Eloquent\Builder|GoodsSpecification whereSpecification($value)
  * @method static \Illuminate\Database\Eloquent\Builder|GoodsSpecification whereUpdateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|GoodsSpecification whereValue($value)
+ * @mixin \Eloquent
  */
 	class GoodsSpecification extends \Eloquent {}
 }
@@ -304,6 +312,7 @@ namespace App\Models\Goods{
  * @method static \Illuminate\Database\Eloquent\Builder|Issue whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Issue whereQuestion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Issue whereUpdateTime($value)
+ * @mixin \Eloquent
  */
 	class Issue extends \Eloquent {}
 }
@@ -357,6 +366,7 @@ namespace App\Models\Promotion{
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereTotal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereUpdateTime($value)
+ * @mixin \Eloquent
  */
 	class Coupon extends \Eloquent {}
 }
@@ -373,8 +383,8 @@ namespace App\Models\Promotion{
  * @property string|null $start_time 有效期开始时间
  * @property string|null $end_time 有效期截至时间
  * @property int|null $order_id 订单ID
- * @property \Illuminate\Support\Carbon|null $add_time 创建时间
- * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property Carbon|null $add_time 创建时间
+ * @property Carbon|null $update_time 更新时间
  * @property bool|null $deleted 逻辑删除
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
@@ -392,8 +402,83 @@ namespace App\Models\Promotion{
  * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereUpdateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereUsedTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereUserId($value)
+ * @mixin \Eloquent
  */
 	class CouponUser extends \Eloquent {}
+}
+
+namespace App\Models\Promotion{
+/**
+ * App\Models\Promotion\Groupon
+ *
+ * @property int $id
+ * @property int $order_id 关联的订单ID
+ * @property int|null $groupon_id 如果是开团用户，则groupon_id是0；如果是参团用户，则groupon_id是团购活动ID
+ * @property int $rules_id 团购规则ID，关联litemall_groupon_rules表ID字段
+ * @property int $user_id 用户ID
+ * @property string|null $share_url 团购分享图片地址
+ * @property int $creator_user_id 开团用户ID
+ * @property string|null $creator_user_time 开团时间
+ * @property int|null $status 团购活动状态，开团未支付则0，开团中则1，开团失败则2
+ * @property \Illuminate\Support\Carbon $add_time 创建时间
+ * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property bool|null $deleted 逻辑删除
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereCreatorUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereCreatorUserTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereGrouponId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereRulesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereShareUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereUpdateTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereUserId($value)
+ * @mixin \Eloquent
+ */
+	class Groupon extends \Eloquent {}
+}
+
+namespace App\Models\Promotion{
+/**
+ * App\Models\Promotion\GrouponRules
+ *
+ * @property int $id
+ * @property int $goods_id 商品表的商品ID
+ * @property string $goods_name 商品名称
+ * @property string|null $pic_url 商品图片或者商品货品图片
+ * @property string $discount 优惠金额
+ * @property int $discount_member 达到优惠条件的人数
+ * @property string|null $expire_time 团购过期时间
+ * @property int|null $status 团购规则状态，正常上线则0，到期自动下线则1，管理手动下线则2
+ * @property \Illuminate\Support\Carbon $add_time 创建时间
+ * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property bool|null $deleted 逻辑删除
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules query()
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereDiscountMember($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereExpireTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereGoodsId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereGoodsName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules wherePicUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereUpdateTime($value)
+ * @mixin \Eloquent
+ */
+	class GrouponRules extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -419,6 +504,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereKeyword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereUpdateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SearchHistory whereUserId($value)
+ * @mixin \Eloquent
  */
 	class SearchHistory extends \Eloquent {}
 }
@@ -438,8 +524,8 @@ namespace App\Models\User{
  * @property string|null $postal_code 邮政编码
  * @property string $tel 手机号码
  * @property bool $is_default 是否默认地址
- * @property \Illuminate\Support\Carbon|null $add_time 创建时间
- * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property Carbon|null $add_time 创建时间
+ * @property Carbon|null $update_time 更新时间
  * @property bool|null $deleted 逻辑删除
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
@@ -460,6 +546,7 @@ namespace App\Models\User{
  * @method static \Illuminate\Database\Eloquent\Builder|Address whereTel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Address whereUpdateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Address whereUserId($value)
+ * @mixin \Eloquent
  */
 	class Address extends \Eloquent {}
 }

@@ -54,6 +54,7 @@ Route::post('coupon/receive', 'CouponController@receive'); //优惠券领取
 
 # 营销模块-团购
 Route::get('groupon/list', 'GrouponController@list'); //团购列表
+Route::get('groupon/test', 'GrouponController@test'); //团购列表
 
 Route::get('home/redirectShareUrl', 'HomeController@redirectShareUrl')->name('home.redirectShareUrl');
 

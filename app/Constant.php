@@ -51,4 +51,7 @@ class Constant
      */
     const COUPON_TIME_TYPE_DAYS = 0;
     const COUPON_TIME_TYPE_TIME = 1;
+
+
+
 }

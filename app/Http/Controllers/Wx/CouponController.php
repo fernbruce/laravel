@@ -35,7 +35,7 @@ class CouponController extends WxController
      */
     public function mylist()
     {
-        $status = $this->verifyInteger('status', 0);
+        $status = $this->verifyInteger('status');
         $page = PageInput::new();
         $list = CouponService::getInstance()->mylist($this->userId(), $status, $page);
         $couponUserList = collect($list->items());

@@ -47,19 +47,19 @@ class CouponUser extends BaseModel
     ];
 
 
-    // protected function getStartTimeAttribute($value)
-    // {
-    //     if (!$value) return null;
+    protected function getStartTimeAttribute($value)
+    {
+        if (!$value) return null;
 
-    //     // 将数据库时间转为 Carbon 实例，并添加8小时
-    //     return Carbon::parse($value)->addHours(8)->format('Y-m-d H:i:s');;
-    // }
+        // 将数据库时间转为 Carbon 实例，并添加8小时
+        return Carbon::parse($value)->addHours(8)->format('Y-m-d H:i:s');;
+    }
 
-    // protected function getEndTimeAttribute($value)
-    // {
-    //     if (!$value) return null;
+    protected function getEndTimeAttribute($value)
+    {
+        if (!$value) return null;
 
-    //     // 将数据库时间转为 Carbon 实例，并添加8小时
-    //     return Carbon::parse($value)->addHours(8)->format('Y-m-d H:i:s');;
-    // }
+        // 将数据库时间转为 Carbon 实例，并添加8小时
+        return Carbon::parse($value)->addHours(8)->format('Y-m-d H:i:s');;
+    }
 }
