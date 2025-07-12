@@ -198,7 +198,8 @@ class GrouponService extends BaseServices
      */
     public function createGrouponShareImage(GrouponRules $rules)
     {
-        $shareUrl = "http://laravel.test/" . $rules->goods_id;
+        $shareUrl = \route('home.redirectShareUrl', ['type' => 'groupon', 'id' => $rules->id]);
+        dd($shareUrl);
         $qrCode = QrCode::format('png')->size(290)->margin(1)->generate($shareUrl);
         $goodsImage = Image::make($rules->pic_url)->resize(660, 660);
         $image = Image::make(resource_path('image/back_groupon.png'))
