@@ -2,14 +2,9 @@
 
 namespace App\Http\Controllers\Wx;
 
-use App\CodeResponse;
-use App\Constant;
-use App\Http\Controllers\Wx\WxController;
-use App\Services\Promotion\CouponService;
 use App\Inputs\PageInput;
-use App\Models\Promotion\Coupon;
 use App\Models\Promotion\CouponUser;
-use Illuminate\Support\Carbon;
+use App\Services\Order\CartService;
 
 class CouponController extends WxController
 {
@@ -24,7 +19,7 @@ class CouponController extends WxController
 
         $page = PageInput::new();
         $columns = ['id', 'name', 'desc', 'tag', 'discount', 'min', 'days', 'start_time', 'end_time'];
-        $list = CouponService::getInstance()->list($page, $columns);
+        $list = CartService::getInstance()->list($page, $columns);
         return $this->successPaginate($list);
     }
 
@@ -37,10 +32,10 @@ class CouponController extends WxController
     {
         $status = $this->verifyInteger('status');
         $page = PageInput::new();
-        $list = CouponService::getInstance()->mylist($this->userId(), $status, $page);
+        $list = CartService::getInstance()->mylist($this->userId(), $status, $page);
         $couponUserList = collect($list->items());
         $couponIds =  $couponUserList->pluck('coupon_id')->toArray();
-        $coupons = CouponService::getInstance()->getCoupons($couponIds)->keyBy('id');
+        $coupons = CartService::getInstance()->getCoupons($couponIds)->keyBy('id');
         $mylist = $couponUserList->map(function (CouponUser $item) use ($coupons) {
             $coupon = $coupons->get($item->coupon_id);
             return [
@@ -68,7 +63,7 @@ class CouponController extends WxController
     public function receive()
     {
         $couponId = $this->verifyId('couponId', 0);
-        CouponService::getInstance()->receive($this->userId(), $couponId);
+        CartService::getInstance()->receive($this->userId(), $couponId);
         return $this->success();
     }
 }

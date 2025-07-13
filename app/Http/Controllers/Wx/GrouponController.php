@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers\Wx;
 
-use App\Http\Controllers\Wx\WxController;
-use App\Services\Promotion\CouponService;
 use App\Inputs\PageInput;
 use App\Models\Goods\Goods;
-use App\Models\Promotion\CouponUser;
 use App\Models\Promotion\GrouponRules;
 use App\Services\Goods\GoodsServices;
 use App\Services\Promotion\GrouponService;

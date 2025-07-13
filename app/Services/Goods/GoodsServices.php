@@ -94,6 +94,10 @@ class GoodsServices extends BaseServices
         return GoodsProduct::query()->where('goods_id', $goodsId)->where("deleted", 0)->get();
     }
 
+    public function getGoodsProductById(int $Id){
+        return GoodsProduct::query()->where('id', $Id)->where("deleted", 0)->first();
+
+    }
     public function getGoodsIssue(int $page = 1, int $limit = 4)
     {
         return Issue::query()->where("deleted", 0)->forPage($page, $limit)->get();

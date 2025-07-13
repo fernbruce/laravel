@@ -6,6 +6,7 @@ use App\CodeResponse;
 use App\Exceptions\BusinessException;
 use App\Http\Controllers\Controller;
 use App\VerifyRequestInput;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +57,19 @@ class WxController extends Controller
         return $this->codeReturn($codeResponse, null, $info);
     }
 
+    /**
+     * @return JsonResponse
+     */
+    protected function badArgument():JsonResponse{
+       return $this->fail(CodeResponse::PARAM_ILLEGAL);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    protected function badArgumentValue():JsonResponse{
+        return $this->fail(CodeResponse::PARAM_VALUE_ILLEGAL);
+    }
     protected function failOrSuccess($isSuccess, array $codeResponse, $data = null, $info = "")
     {
         if ($isSuccess) {

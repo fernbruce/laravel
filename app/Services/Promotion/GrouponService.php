@@ -4,8 +4,8 @@ namespace App\Services\Promotion;
 
 use App\CodeResponse;
 use App\Enums\GrouponEnums;
+use App\Exceptions\BusinessException;
 use App\Inputs\PageInput;
-use App\Models\Goods\Goods;
 use App\Models\Promotion\Groupon;
 use App\Models\Promotion\GrouponRules;
 use App\Services\BaseServices;
@@ -58,11 +58,11 @@ class GrouponService extends BaseServices
 
     /**
      * 校验用户是否可以开启或者参与某个团购活动
-     *
-     * @param [type] $userId
-     * @param [type] $ruleId
-     * @param [type] $linkId
+     * @param $userId
+     * @param $ruleId
+     * @param $linkId
      * @return void
+     * @throws BusinessException
      */
     public function checkGrouponValid($userId, $ruleId, $linkId = null)
     {
@@ -198,8 +198,7 @@ class GrouponService extends BaseServices
      */
     public function createGrouponShareImage(GrouponRules $rules)
     {
-        $shareUrl = \route('home.redirectShareUrl', ['type' => 'groupon', 'id' => $rules->id]);
-        dd($shareUrl);
+        $shareUrl = \route('home.redirectShareUrl', ['type' => 'groupon', 'id' => $rules->goods_id]);
         $qrCode = QrCode::format('png')->size(290)->margin(1)->generate($shareUrl);
         $goodsImage = Image::make($rules->pic_url)->resize(660, 660);
         $image = Image::make(resource_path('image/back_groupon.png'))

@@ -425,21 +425,21 @@ namespace App\Models\Promotion{
  * @property bool|null $deleted 逻辑删除
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon query()
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereCreatorUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereCreatorUserTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereGrouponId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereOrderId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereRulesId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereShareUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereUpdateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Groupon whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereCreatorUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereCreatorUserTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereGrouponId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereRulesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereShareUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereUpdateTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order\Groupon whereUserId($value)
  * @mixin \Eloquent
  */
 	class Groupon extends \Eloquent {}
