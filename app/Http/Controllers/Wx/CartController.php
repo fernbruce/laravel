@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
 use App\Exceptions\BusinessException;
-use App\Models\Order\Cart;
 use App\Services\Goods\GoodsServices;
 use App\Services\Order\CartService;
 use Illuminate\Http\JsonResponse;

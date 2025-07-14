@@ -2,8 +2,13 @@
 
 namespace App\Models\Goods;
 
-use Illuminate\Notifications\Notifiable;
 use App\Models\BaseModel;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 
 /**
@@ -27,42 +32,40 @@ use App\Models\BaseModel;
  * @property float|null $counter_price 专柜价格
  * @property float|null $retail_price 零售价格
  * @property string|null $detail 商品详细介绍，是富文本格式
- * @property \Illuminate\Support\Carbon|null $add_time 创建时间
- * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property Carbon|null $add_time 创建时间
+ * @property Carbon|null $update_time 更新时间
  * @property bool|null $deleted 逻辑删除
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder|Goods newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Goods newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Goods query()
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereBrandId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereBrief($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereCounterPrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereDetail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereGallery($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereGoodsSn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereIsHot($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereIsNew($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereIsOnSale($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereKeywords($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods wherePicUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereRetailPrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereShareUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereSortOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereUnit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereUpdateTime($value)
- * @mixin \Eloquent
+ * @method static Builder|Goods newModelQuery()
+ * @method static Builder|Goods newQuery()
+ * @method static Builder|Goods query()
+ * @method static Builder|Goods whereAddTime($value)
+ * @method static Builder|Goods whereBrandId($value)
+ * @method static Builder|Goods whereBrief($value)
+ * @method static Builder|Goods whereCategoryId($value)
+ * @method static Builder|Goods whereCounterPrice($value)
+ * @method static Builder|Goods whereDeleted($value)
+ * @method static Builder|Goods whereDetail($value)
+ * @method static Builder|Goods whereGallery($value)
+ * @method static Builder|Goods whereGoodsSn($value)
+ * @method static Builder|Goods whereId($value)
+ * @method static Builder|Goods whereIsHot($value)
+ * @method static Builder|Goods whereIsNew($value)
+ * @method static Builder|Goods whereIsOnSale($value)
+ * @method static Builder|Goods whereKeywords($value)
+ * @method static Builder|Goods whereName($value)
+ * @method static Builder|Goods wherePicUrl($value)
+ * @method static Builder|Goods whereRetailPrice($value)
+ * @method static Builder|Goods whereShareUrl($value)
+ * @method static Builder|Goods whereSortOrder($value)
+ * @method static Builder|Goods whereUnit($value)
+ * @method static Builder|Goods whereUpdateTime($value)
+ * @mixin Eloquent
  */
 class Goods extends BaseModel
 {
     use Notifiable;
-
-
 
 
     protected $table = 'goods';

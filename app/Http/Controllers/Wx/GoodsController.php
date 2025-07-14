@@ -6,16 +6,14 @@ use App\CodeResponse;
 use App\Constant;
 use App\Inputs\GoodsListInput;
 use App\Models\Comment;
-use App\Models\Goods\Goods;
-use App\Models\SearchHistory;
 use App\Services\CollectServices;
 use App\Services\CommentServices;
 use App\Services\Goods\BrandServices;
 use App\Services\Goods\CatalogServices;
 use App\Services\Goods\GoodsServices;
 use App\Services\SearchHistoryServices;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class GoodsController extends WxController
 {
@@ -62,8 +60,8 @@ class GoodsController extends WxController
 
     /**
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      * @throw \App\Exception\BusinessException
      */
     public function list()
@@ -126,7 +124,7 @@ class GoodsController extends WxController
 
     public function detail(Request $request)
     {
-        $id = $request->verifyId('id');
+        $id = $this->verifyId('id');
         if (empty($id)) {
             return $this->fail(CodeResponse::PARAM_ILLEGAL);
         }
@@ -139,7 +137,7 @@ class GoodsController extends WxController
         $spec = GoodsServices::getInstance()->getGoodsSpecification($id);
         $product = GoodsServices::getInstance()->getGoodsProduct($id);
         $issue = GoodsServices::getInstance()->getGoodsIssue();
-        $brand = $info->brand_id ? BrandServices::getInstance()->getBrand($info->brand_id) : (object)[];
+        $brand = $info->brand_id ? BrandServices::getInstance()->getBrand($info->brand_id) : (object) [];
         $comment = CommentServices::getInstance()->getCommentWithUserInfo($id);
         $userHasCollect = 0;
         if ($this->isLogin()) {

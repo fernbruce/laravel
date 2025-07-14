@@ -4,21 +4,21 @@ namespace App\Http\Middleware;
 
 use App\CodeResponse;
 use App\Exceptions\BusinessException;
-use Bus;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Http\Request;
 
 class Authenticate extends Middleware
 {
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return string
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+        if (!$request->expectsJson()) {
             return route('login');
         }
     }
@@ -26,7 +26,7 @@ class Authenticate extends Middleware
     /**
      *
      * @param [type] $request
-     * @param array $guards
+     * @param  array  $guards
      * @return BusinessException
      * @throws AuthenticationException
      */
@@ -40,11 +40,11 @@ class Authenticate extends Middleware
     /**
      * Determine if the user is logged in to any of the given guards.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  array  $guards
      * @return void
      *
-     * @throws \Illuminate\Auth\AuthenticationException
+     * @throws AuthenticationException
      */
     protected function authenticate($request, array $guards)
     {

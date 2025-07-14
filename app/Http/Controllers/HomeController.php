@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Facades\Product;
-// use App\Product;
-use Illuminate\Database\Query\Builder;
+use Exception;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+
+// use App\Product;
 
 class HomeController extends Controller
 {
@@ -17,10 +18,11 @@ class HomeController extends Controller
         // $this->middleware('benchmark:test1,test2');
         // $this->middleware('admin1:test1,test2');
     }
+
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function index()
     {
@@ -30,7 +32,7 @@ class HomeController extends Controller
     /**
      * Show the application welcome page.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function welcome()
     {
@@ -138,13 +140,14 @@ class HomeController extends Controller
             DB::table('users')->where('id', 8)->decrement('score');
             // throw new \Exception('Transaction failed'); // Uncomment to test transaction rollback
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
         }
         // dd($res);
     }
 
-    public function modelTest(){
+    public function modelTest()
+    {
         // $product = Product::query()->create([
         //     'title'=>'水杯',
         //     'category_id'=>1,
@@ -206,7 +209,8 @@ class HomeController extends Controller
 
     }
 
-    public function testCollection(){
+    public function testCollection()
+    {
         //  $collect = collect(['k1'=>1, 'k2'=>2, 3, 4, 5]);
         // $product = Product::all();
         // $res = $product->pluck('title')->implode(',');
@@ -218,38 +222,40 @@ class HomeController extends Controller
         // $products->average(),
         // $products->max(),
         // $products->min());
-        $collection = collect(['v1','v2','v3']);
-        $exists = collect(['v1','v2','v3'])->contains('v4');
-        $diff = collect(['v1','v2','v3'])->diff('v3','v4');
+        $collection = collect(['v1', 'v2', 'v3']);
+        $exists = collect(['v1', 'v2', 'v3'])->contains('v4');
+        $diff = collect(['v1', 'v2', 'v3'])->diff('v3', 'v4');
         $collection->isEmpty();
         $products = Product::all();
         // $pro = $products->where('id',3);
         // $products->each(function($item){
-            //   var_dump($item);
-            //   var_dump($item->id);
+        //   var_dump($item);
+        //   var_dump($item->id);
         // });
         // $keyBy = $products->keyBy('id')->toArray();
         // $keyBy = $products->groupBy('category_id');
         // $pro = $products->filter(function($item){
-            // return $item->id >3;
+        // return $item->id >3;
         // });
         // $collection = collect([12,4,5,2,77]);
         // $collection->sort()->dump();
         $products->sortBy('price')->dump();
         $products->sortByDesc('price')->dump();
         // collect(['k1','k2'])->combine(['v1','v2'])->dd();
-        collect(['k1','k2'])->crossJoin(['v1','v2'])->dd();
+        collect(['k1', 'k2'])->crossJoin(['v1', 'v2'])->dd();
 
     }
 
 
-    public function cacheTest(){
-         Cache::put('key1', 'value1', 100);
-         $res = Cache::get('key1');
-         var_dump($res);
+    public function cacheTest()
+    {
+        Cache::put('key1', 'value1', 100);
+        $res = Cache::get('key1');
+        var_dump($res);
     }
 
-    public function facadeTest(){
+    public function facadeTest()
+    {
         // $product = Product::query()->find(1);
         // $product = Product::find(1);
         // $product = Product::findOrFail(1);
@@ -257,7 +263,6 @@ class HomeController extends Controller
         // $product = Product::query()->where('id',1)->firstOrFail();
         // $product = Product::query()->where('id',1)->firstOr()
         Product::getProduct(123);
-
 
 
     }

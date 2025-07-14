@@ -2,8 +2,12 @@
 
 namespace App\Models\Promotion;
 
-use Illuminate\Notifications\Notifiable;
 use App\Models\BaseModel;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 
 /**
@@ -20,29 +24,27 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $add_time 创建时间
  * @property Carbon|null $update_time 更新时间
  * @property bool|null $deleted 逻辑删除
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser query()
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereCouponId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereEndTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereOrderId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereStartTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereUpdateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereUsedTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CouponUser whereUserId($value)
- * @mixin \Eloquent
+ * @method static Builder|CouponUser newModelQuery()
+ * @method static Builder|CouponUser newQuery()
+ * @method static Builder|CouponUser query()
+ * @method static Builder|CouponUser whereAddTime($value)
+ * @method static Builder|CouponUser whereCouponId($value)
+ * @method static Builder|CouponUser whereDeleted($value)
+ * @method static Builder|CouponUser whereEndTime($value)
+ * @method static Builder|CouponUser whereId($value)
+ * @method static Builder|CouponUser whereOrderId($value)
+ * @method static Builder|CouponUser whereStartTime($value)
+ * @method static Builder|CouponUser whereStatus($value)
+ * @method static Builder|CouponUser whereUpdateTime($value)
+ * @method static Builder|CouponUser whereUsedTime($value)
+ * @method static Builder|CouponUser whereUserId($value)
+ * @mixin Eloquent
  */
 class CouponUser extends BaseModel
 {
     use Notifiable;
-
-
 
 
     // protected $table = 'coupon_user';
@@ -78,17 +80,21 @@ class CouponUser extends BaseModel
 
     protected function getStartTimeAttribute($value)
     {
-        if (!$value) return null;
+        if (!$value) {
+            return null;
+        }
 
         // 将数据库时间转为 Carbon 实例，并添加8小时
-        return Carbon::parse($value)->addHours(8)->format('Y-m-d H:i:s');;
+        return Carbon::parse($value)->addHours(8)->format('Y-m-d H:i:s');
     }
 
     protected function getEndTimeAttribute($value)
     {
-        if (!$value) return null;
+        if (!$value) {
+            return null;
+        }
 
         // 将数据库时间转为 Carbon 实例，并添加8小时
-        return Carbon::parse($value)->addHours(8)->format('Y-m-d H:i:s');;
+        return Carbon::parse($value)->addHours(8)->format('Y-m-d H:i:s');
     }
 }

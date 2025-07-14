@@ -2,8 +2,10 @@
 
 namespace App;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
 
 /**
  * App\Product
@@ -11,15 +13,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read mixed $formatted_price
  * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
- * @method static \Illuminate\Database\Query\Builder|Product onlyTrashed()
+ * @method static Builder|Product onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Product query()
- * @method static \Illuminate\Database\Query\Builder|Product withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Product withoutTrashed()
- * @mixin \Eloquent
+ * @method static Builder|Product withTrashed()
+ * @method static Builder|Product withoutTrashed()
+ * @mixin Eloquent
  */
 class Product extends Model
 {
-    use SoftDeletes; // protected $table = 'products';
+    use SoftDeletes;
+
+    // protected $table = 'products';
 
     // protected $connection = 'mysql';
 
@@ -39,7 +43,7 @@ class Product extends Model
     ];
 
     // protected $guarded = [
-        // 'id', // 主键不需要在这里定义，Eloquent 默认会处理
+    // 'id', // 主键不需要在这里定义，Eloquent 默认会处理
     // ];
     protected $hidden = [
         // 'created_at', 'updated_at', 'deleted_at', // 如果不想在序列化时返回这些字段，可以取消注释

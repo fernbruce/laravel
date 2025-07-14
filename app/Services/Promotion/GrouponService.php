@@ -16,11 +16,10 @@ use Illuminate\Support\Str;
 use Intervention\Image\AbstractFont;
 use Intervention\Image\Facades\Image;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use function route;
 
 class GrouponService extends BaseServices
 {
-
-
 
 
     public function getGrouponRules(PageInput $page, $columns = ['*'])
@@ -37,7 +36,8 @@ class GrouponService extends BaseServices
 
     public function countGrouponJoin($openGrouponId)
     {
-        return Groupon::query()->whereGrouponId($openGrouponId)->where('status', '!=', GrouponEnums::STATUS_NONE)->count();
+        return Groupon::query()->whereGrouponId($openGrouponId)->where('status', '!=',
+            GrouponEnums::STATUS_NONE)->count();
     }
 
     /**
@@ -97,7 +97,6 @@ class GrouponService extends BaseServices
     public function getGroupon($id, $columns = ['*'])
     {
         return Groupon::query()->where('id', $id)
-            ->where('deleted', 0)
             ->first($columns);
     }
 
@@ -198,7 +197,7 @@ class GrouponService extends BaseServices
      */
     public function createGrouponShareImage(GrouponRules $rules)
     {
-        $shareUrl = \route('home.redirectShareUrl', ['type' => 'groupon', 'id' => $rules->goods_id]);
+        $shareUrl = route('home.redirectShareUrl', ['type' => 'groupon', 'id' => $rules->goods_id]);
         $qrCode = QrCode::format('png')->size(290)->margin(1)->generate($shareUrl);
         $goodsImage = Image::make($rules->pic_url)->resize(660, 660);
         $image = Image::make(resource_path('image/back_groupon.png'))
@@ -209,7 +208,7 @@ class GrouponService extends BaseServices
                 $font->size(28);
                 $font->file(resource_path('ttf/msyh.ttf'));
             });
-        $filePath = 'groupon/' . Carbon::now()->toDateString() . '/' . Str::random() . '.png';
+        $filePath = 'groupon/'.Carbon::now()->toDateString().'/'.Str::random().'.png';
         Storage::disk('public')->put($filePath, $image->encode());
         $url = Storage::url($filePath);
         return $url;

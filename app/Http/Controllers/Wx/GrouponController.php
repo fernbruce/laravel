@@ -11,6 +11,7 @@ use App\Services\Promotion\GrouponService;
 class GrouponController extends WxController
 {
     protected $except = ['test'];
+
     public function list()
     {
         $page = PageInput::new();

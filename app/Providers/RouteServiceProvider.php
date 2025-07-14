@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\VersionRouter;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -86,7 +86,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::prefix('wx')
             ->middleware('wx')
-            ->namespace($this->namespace . '\Wx')
+            ->namespace($this->namespace.'\Wx')
             ->group(base_path('routes/wx.php'));
     }
 

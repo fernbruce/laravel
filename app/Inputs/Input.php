@@ -3,14 +3,13 @@
 namespace App\Inputs;
 
 use App\CodeResponse;
-use App\VerifyRequestInput;
 use App\Exceptions\BusinessException;
+use App\VerifyRequestInput;
 use Illuminate\Support\Facades\Validator;
 
 class Input
 {
     use VerifyRequestInput;
-
 
 
     /**
@@ -38,12 +37,14 @@ class Input
 
     /**
      * @return GoodsListInput|static
-     * @throws BusinessException 
+     * @throws BusinessException
      */
     public static function new($data = null)
     {
         return (new static())->fill($data);
     }
 
-    public function rules() {}
+    public function rules()
+    {
+    }
 }

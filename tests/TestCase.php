@@ -35,7 +35,7 @@ abstract class TestCase extends BaseTestCase
         $client = new Client();
         if ($method == 'get') {
             $response1 = $this->get($uri, $this->getAuthHeader());
-            $response1 = $this->get($uri);
+//            dd($response1->getContent());
             $response2 = $client->get('http://47.99.102.217:8080/' . $uri, ['headers' => ['X-Litemall-Token' => $this->token]]);
         } else {
             $response1 = $this->post($uri, $data, $this->getAuthHeader());

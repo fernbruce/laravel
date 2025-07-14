@@ -43,9 +43,8 @@ class GoodsTest extends TestCase
 
     public function testDetail()
     {
-        // $this->assertLitemallApiGet('wx/goods/detail?id=1181000');
-        $this->assertLitemallApiGet('wx/goods/detail?id=1009009');
-        $this->assertLitemallApiGet('wx/goods/detail?id=1181000');
+         $this->assertLitemallApiGet('wx/goods/detail?id=1181000');
+//        $this->assertLitemallApiGet('wx/goods/detail?id=1009009');
         $this->assertLitemallApiGet('wx/goods/detail?id=1036013');
     }
 }

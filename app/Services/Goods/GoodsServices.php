@@ -3,6 +3,7 @@
 namespace App\Services\Goods;
 
 use App\Inputs\GoodsListInput;
+use App\Models\Goods\Footprint;
 use App\Models\Goods\Goods;
 use App\Models\Goods\GoodsAttribute;
 use App\Models\Goods\GoodsProduct;
@@ -15,17 +16,18 @@ class GoodsServices extends BaseServices
 {
     public function getGoods(int $id)
     {
-        return Goods::query()->where('id', $id)->where('deleted', 0)->first();
+        return Goods::query()->where('id', $id)->first();
     }
 
     public function getGoodsListById($Ids)
     {
         return Goods::query()->whereIn('id', $Ids)->get();
     }
+
     public function countGoodsOnSale()
     {
 
-        return Goods::query()->where('is_on_sale', 1)->where('deleted', 0)->count("id");
+        return Goods::query()->where('is_on_sale', 1)->count("id");
     }
 
     // public function listGoods($categoryId, $brandId, $isNew, $isHot, $keyword, $columns = ['*'], $sort = 'add_time', $order = 'desc', $page = 1, $limit = 10)
@@ -42,19 +44,10 @@ class GoodsServices extends BaseServices
     }
 
     // public function listL2Category($brandId, $isNew, $isHot, $keyword)
-    public function listL2Category($input)
-    {
-        $query = $this->getQueryByGoodsFilter($input);
-        // $query->toSql();
-        $categoryIds = $query->select(['category_id'])->pluck('category_id')->unique()->toArray();
 
-        return CatalogServices::getInstance()->getL2ListByIds($categoryIds);
-    }
-
-    // private function getQueryByGoodsFilter($brandId, $isNew, $isHot, $keyword)
     private function getQueryByGoodsFilter(GoodsListInput $input)
     {
-        $query = Goods::query()->where('is_on_sale', 1)->where('deleted', 0)->orderByDesc('add_time');
+        $query = Goods::query()->where('is_on_sale', 1)->orderByDesc('add_time');
         if (!empty($input->brandId)) {
             $query = $query->where('brand_id', $input->brandId);
         }
@@ -68,22 +61,33 @@ class GoodsServices extends BaseServices
         }
         if (!empty($input->keyword)) {
             $query = $query->where(function (Builder $query) use ($input) {
-                $query->where('keywords', 'like', '%' . $input->keyword . '%')
-                    ->orWhere('name', 'like', '%' . $input->keyword . '%');
+                $query->where('keywords', 'like', '%'.$input->keyword.'%')
+                    ->orWhere('name', 'like', '%'.$input->keyword.'%');
             });
         }
         return $query;
     }
 
+    // private function getQueryByGoodsFilter($brandId, $isNew, $isHot, $keyword)
+
+    public function listL2Category($input)
+    {
+        $query = $this->getQueryByGoodsFilter($input);
+        // $query->toSql();
+        $categoryIds = $query->select(['category_id'])->pluck('category_id')->unique()->toArray();
+
+        return CatalogServices::getInstance()->getL2ListByIds($categoryIds);
+    }
 
     public function getGoodsAttribute(int $goodsId)
     {
-        return GoodsAttribute::query()->where('goods_id', $goodsId)->where("deleted", 0)->get();
+        return GoodsAttribute::query()->where('goods_id', $goodsId)->get();
     }
 
     public function getGoodsSpecification(int $goodsId)
     {
-        $spec = GoodsSpecification::query()->where('goods_id', $goodsId)->where("deleted", 0)->get()->groupBy('specification');
+        $spec = GoodsSpecification::query()->where('goods_id', $goodsId)
+            ->get()->groupBy('specification');
         return $spec->map(function ($v, $k) {
             return ['name' => $k, 'valueList' => $v->toArray()];
         })->values();
@@ -91,16 +95,18 @@ class GoodsServices extends BaseServices
 
     public function getGoodsProduct(int $goodsId)
     {
-        return GoodsProduct::query()->where('goods_id', $goodsId)->where("deleted", 0)->get();
+        return GoodsProduct::query()->where('goods_id', $goodsId)->get();
     }
 
-    public function getGoodsProductById(int $Id){
-        return GoodsProduct::query()->where('id', $Id)->where("deleted", 0)->first();
+    public function getGoodsProductById(int $Id)
+    {
+        return GoodsProduct::query()->where('id', $Id)->first();
 
     }
+
     public function getGoodsIssue(int $page = 1, int $limit = 4)
     {
-        return Issue::query()->where("deleted", 0)->forPage($page, $limit)->get();
+        return Issue::query()->forPage($page, $limit)->get();
     }
 
     public function saveFootprint(int $userId, int $goodsId)

@@ -35,6 +35,7 @@ trait VerifyRequestInput
     {
         return $this->verifyData($key, $default, Rule::in($enum));
     }
+
     /**
      * 验证字段
      *

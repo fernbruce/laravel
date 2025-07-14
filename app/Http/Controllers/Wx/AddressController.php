@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
-use App\Http\Controllers\Wx\WxController;
 use App\Models\User\Address;
 use App\Services\User\AddressServices;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Str;
 
 
 class AddressController extends WxController
@@ -63,7 +62,7 @@ class AddressController extends WxController
         $tel = $request->input('tel');
 
 
-        if (empty($name) || empty($province) || empty($city) || empty($county) || empty($address_detail) || empty($area_code)  || empty($tel)) {
+        if (empty($name) || empty($province) || empty($city) || empty($county) || empty($address_detail) || empty($area_code) || empty($tel)) {
             return $this->fail(CodeResponse::PARAM_ILLEGAL);
         }
 
@@ -91,8 +90,8 @@ class AddressController extends WxController
 
     /**
      * 删除地址
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function delete(Request $request)
     {

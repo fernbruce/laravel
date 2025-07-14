@@ -2,10 +2,13 @@
 
 namespace App\Models\User;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 use App\Models\BaseModel;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\User\Address
@@ -24,31 +27,30 @@ use App\Models\BaseModel;
  * @property Carbon|null $add_time 创建时间
  * @property Carbon|null $update_time 更新时间
  * @property bool|null $deleted 逻辑删除
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder|Address newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Address newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Address query()
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereAddressDetail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereAreaCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereCity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereCounty($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereIsDefault($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address wherePostalCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereProvince($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereTel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereUpdateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereUserId($value)
- * @mixin \Eloquent
+ * @method static Builder|Address newModelQuery()
+ * @method static Builder|Address newQuery()
+ * @method static Builder|Address query()
+ * @method static Builder|Address whereAddTime($value)
+ * @method static Builder|Address whereAddressDetail($value)
+ * @method static Builder|Address whereAreaCode($value)
+ * @method static Builder|Address whereCity($value)
+ * @method static Builder|Address whereCounty($value)
+ * @method static Builder|Address whereDeleted($value)
+ * @method static Builder|Address whereId($value)
+ * @method static Builder|Address whereIsDefault($value)
+ * @method static Builder|Address whereName($value)
+ * @method static Builder|Address wherePostalCode($value)
+ * @method static Builder|Address whereProvince($value)
+ * @method static Builder|Address whereTel($value)
+ * @method static Builder|Address whereUpdateTime($value)
+ * @method static Builder|Address whereUserId($value)
+ * @mixin Eloquent
  */
 class Address extends BaseModel
 {
     use Notifiable;
-
 
 
     protected $table = 'address';

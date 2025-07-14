@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\ProductService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,8 +15,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        $this->app->singleton('product', function(){
-                 return new \App\ProductService;
+        $this->app->singleton('product', function () {
+            return new ProductService;
         });
     }
 

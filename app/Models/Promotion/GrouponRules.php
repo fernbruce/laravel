@@ -2,8 +2,13 @@
 
 namespace App\Models\Promotion;
 
-use Illuminate\Notifications\Notifiable;
 use App\Models\BaseModel;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 
 /**
@@ -17,32 +22,30 @@ use App\Models\BaseModel;
  * @property int $discount_member 达到优惠条件的人数
  * @property string|null $expire_time 团购过期时间
  * @property int|null $status 团购规则状态，正常上线则0，到期自动下线则1，管理手动下线则2
- * @property \Illuminate\Support\Carbon $add_time 创建时间
- * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property Carbon $add_time 创建时间
+ * @property Carbon|null $update_time 更新时间
  * @property bool|null $deleted 逻辑删除
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules query()
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereDiscount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereDiscountMember($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereExpireTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereGoodsId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereGoodsName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules wherePicUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|GrouponRules whereUpdateTime($value)
- * @mixin \Eloquent
+ * @method static Builder|GrouponRules newModelQuery()
+ * @method static Builder|GrouponRules newQuery()
+ * @method static Builder|GrouponRules query()
+ * @method static Builder|GrouponRules whereAddTime($value)
+ * @method static Builder|GrouponRules whereDeleted($value)
+ * @method static Builder|GrouponRules whereDiscount($value)
+ * @method static Builder|GrouponRules whereDiscountMember($value)
+ * @method static Builder|GrouponRules whereExpireTime($value)
+ * @method static Builder|GrouponRules whereGoodsId($value)
+ * @method static Builder|GrouponRules whereGoodsName($value)
+ * @method static Builder|GrouponRules whereId($value)
+ * @method static Builder|GrouponRules wherePicUrl($value)
+ * @method static Builder|GrouponRules whereStatus($value)
+ * @method static Builder|GrouponRules whereUpdateTime($value)
+ * @mixin Eloquent
  */
 class GrouponRules extends BaseModel
 {
     use Notifiable;
-
-
 
 
     // protected $table = 'coupon';

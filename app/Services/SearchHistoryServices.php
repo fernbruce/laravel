@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\SearchHistory;
-use App\Services\BaseServices;
 
 class SearchHistoryServices extends BaseServices
 {

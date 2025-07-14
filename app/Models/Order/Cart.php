@@ -3,8 +3,12 @@
 namespace App\Models\Order;
 
 use App\Models\BaseModel;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
-
+use Illuminate\Support\Carbon;
 
 
 /**
@@ -21,29 +25,29 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null $specifications 商品规格值列表，采用JSON数组格式
  * @property bool|null $checked 购物车中商品是否选择状态
  * @property string|null $pic_url 商品图片或者商品货品图片
- * @property \Illuminate\Support\Carbon|null $add_time 创建时间
- * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property Carbon|null $add_time 创建时间
+ * @property Carbon|null $update_time 更新时间
  * @property bool|null $deleted 逻辑删除
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder|Cart newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Cart newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Cart query()
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereChecked($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereGoodsId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereGoodsName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereGoodsSn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart wherePicUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereSpecifications($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereUpdateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Cart whereUserId($value)
- * @mixin \Eloquent
+ * @method static Builder|Cart newModelQuery()
+ * @method static Builder|Cart newQuery()
+ * @method static Builder|Cart query()
+ * @method static Builder|Cart whereAddTime($value)
+ * @method static Builder|Cart whereChecked($value)
+ * @method static Builder|Cart whereDeleted($value)
+ * @method static Builder|Cart whereGoodsId($value)
+ * @method static Builder|Cart whereGoodsName($value)
+ * @method static Builder|Cart whereGoodsSn($value)
+ * @method static Builder|Cart whereId($value)
+ * @method static Builder|Cart whereNumber($value)
+ * @method static Builder|Cart wherePicUrl($value)
+ * @method static Builder|Cart wherePrice($value)
+ * @method static Builder|Cart whereProductId($value)
+ * @method static Builder|Cart whereSpecifications($value)
+ * @method static Builder|Cart whereUpdateTime($value)
+ * @method static Builder|Cart whereUserId($value)
+ * @mixin Eloquent
  */
 class Cart extends BaseModel
 {

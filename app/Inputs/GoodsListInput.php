@@ -2,7 +2,6 @@
 
 namespace App\Inputs;
 
-use App\VerifyRequestInput;
 use App\Exceptions\BusinessException;
 use Illuminate\Validation\Rule;
 

@@ -3,20 +3,14 @@
 namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
-use App\Http\Controllers\Controller;
 use App\Models\User\User;
-use App\Notifications\VerificationCode;
 use App\Services\User\UserServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Notification as FacadesNotification;
 use Illuminate\Support\Facades\Validator;
-use Leonis\Notifications\EasySms\Channels\EasySmsChannel;
-use Notification;
-use Overtrue\EasySms\PhoneNumber;
 
 class AuthController extends WxController
 {
@@ -41,7 +35,7 @@ class AuthController extends WxController
     /**
      * 登录
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function login(Request $request)
@@ -72,20 +66,21 @@ class AuthController extends WxController
         //获取token
         $token = Auth::guard('wx')->login($user);
         //组装数据并返回
-        $data =  [
+        $data = [
             'token' => $token,
             'userInfo' => $username,
             'avatarUrl' => $user->avatar,
         ];
         return $this->success($data);
     }
+
     /**
      * 用户注册
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return jsonResponse
      */
-    public function register(Request  $request)
+    public function register(Request $request)
     {
         $username = $request->input('username');
         $password = $request->input('password');
@@ -124,7 +119,7 @@ class AuthController extends WxController
         $user->last_login_time = Carbon::now()->toDateTimeString();
         $user->last_login_ip = $request->getClientIp();
         $user->save();
-        $data =  [
+        $data = [
             'token' => '',
             'userInfo' => $username,
             'avatarUrl' => $user->avatar,
@@ -135,7 +130,7 @@ class AuthController extends WxController
     /**
      * 获取验证码
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function regCaptcha(Request $request)
@@ -152,8 +147,8 @@ class AuthController extends WxController
             return $this->fail(CodeResponse::AUTH_MOBILE_REGISTERED);
         }
         // todo 保存手机号与验证码的关系
-        $key = 'register_captcha_' . $mobile;
-        $lock = Cache::add('register_captcha_lock' . $mobile, 1, 60);
+        $key = 'register_captcha_'.$mobile;
+        $lock = Cache::add('register_captcha_lock'.$mobile, 1, 60);
         if (!$lock) {
             return $this->fail(CodeResponse::AUTH_CAPTCHA_FREQUENCY);
         }
@@ -189,7 +184,7 @@ class AuthController extends WxController
     /**
      * 密码重置
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function reset(Request $request)
@@ -219,7 +214,7 @@ class AuthController extends WxController
     /**
      * 账号信息修改
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function profile(Request $request)

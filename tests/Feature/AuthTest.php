@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\UserServices;
+use App\Services\User\UserServices;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -69,7 +69,7 @@ class AuthTest extends TestCase
 
     public function testRegisterMobileExists()
     {
-        $mobile = '13800000001';
+        $mobile = '13776774445';
         $code = UserServices::getInstance()->setCaptcha($mobile);
         $response = $this->json('POST', '/wx/auth/register', [
             'username' => 'test12',
@@ -164,10 +164,10 @@ class AuthTest extends TestCase
 
     public function testReset()
     {
-        $mobile = '13800000000';
+        $mobile = '13776774445';
         $code = UserServices::getInstance()->setCaptcha($mobile);
         $response = $this->post('/wx/auth/reset', [
-            'mobile' => '13800000000',
+            'mobile' => '13776774445',
             'password' => 'user1234',
             'code' => $code
         ]);

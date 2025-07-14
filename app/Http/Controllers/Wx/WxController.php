@@ -3,21 +3,20 @@
 namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
-use App\Exceptions\BusinessException;
 use App\Http\Controllers\Controller;
 use App\VerifyRequestInput;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class WxController extends Controller
 {
     use VerifyRequestInput;
+
     protected $only;
     protected $except;
+
     public function __construct()
     {
         $options = [];
@@ -29,6 +28,7 @@ class WxController extends Controller
         }
         $this->middleware('auth:wx', $options);
     }
+
     protected function codeReturn(array $codeResponse, $data = null, $info = "")
     {
         list($errno, $errmsg) = $codeResponse;
@@ -60,16 +60,19 @@ class WxController extends Controller
     /**
      * @return JsonResponse
      */
-    protected function badArgument():JsonResponse{
-       return $this->fail(CodeResponse::PARAM_ILLEGAL);
+    protected function badArgument(): JsonResponse
+    {
+        return $this->fail(CodeResponse::PARAM_ILLEGAL);
     }
 
     /**
      * @return JsonResponse
      */
-    protected function badArgumentValue():JsonResponse{
+    protected function badArgumentValue(): JsonResponse
+    {
         return $this->fail(CodeResponse::PARAM_VALUE_ILLEGAL);
     }
+
     protected function failOrSuccess($isSuccess, array $codeResponse, $data = null, $info = "")
     {
         if ($isSuccess) {
@@ -102,6 +105,7 @@ class WxController extends Controller
     {
         return $this->success($this->paginate($page));
     }
+
     protected function paginate($page, $list = null)
     {
         if ($page instanceof LengthAwarePaginator) {

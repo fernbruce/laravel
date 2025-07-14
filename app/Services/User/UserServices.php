@@ -19,10 +19,11 @@ class UserServices extends BaseServices
     public function getUsers(array $userIds)
     {
         if (empty($userIds)) {
-        return collect([]);
+            return collect([]);
         }
-        return User::query()->whereIn('id', $userIds)->where('deleted', 0)->get();
+        return User::query()->whereIn('id', $userIds)->get();
     }
+
     /**
      *
      * @param [string] $username
@@ -30,7 +31,7 @@ class UserServices extends BaseServices
      */
     public function getByUsername($username)
     {
-        return User::query()->where('username', $username)->where('deleted', 0)->first();
+        return User::query()->where('username', $username)->first();
     }
 
     /**
@@ -40,7 +41,7 @@ class UserServices extends BaseServices
      */
     public function getByMobile($mobile)
     {
-        return User::query()->where('mobile', $mobile)->where('deleted', 0)->first();
+        return User::query()->where('mobile', $mobile)->first();
     }
 
     /**
@@ -51,7 +52,7 @@ class UserServices extends BaseServices
      */
     public function checkMobileSendCaptchaCount($mobile)
     {
-        $countKey = 'register_captcha_count_' . $mobile;
+        $countKey = 'register_captcha_count_'.$mobile;
         if (Cache::has($countKey)) {
             $count = Cache::increment($countKey);
             if ($count > 10) {
@@ -67,8 +68,8 @@ class UserServices extends BaseServices
     /**
      * 发送验证码短信
      *
-     * @param string $mobile
-     * @param string $code
+     * @param  string  $mobile
+     * @param  string  $code
      * @return void
      */
     public function sendCaptchaMsg(string $mobile, string $code)
@@ -83,14 +84,14 @@ class UserServices extends BaseServices
     /**
      * 验证短信验证码
      *
-     * @param string $mobile
-     * @param string $code
+     * @param  string  $mobile
+     * @param  string  $code
      * @return bool
      */
     public function checkCaptcha(string $mobile, string $code)
     {
 
-        $key = 'register_captcha_' . $mobile;
+        $key = 'register_captcha_'.$mobile;
         $isPass = Cache::get($key) === $code;
         if ($isPass) {
             Cache::forget($key);
@@ -103,12 +104,12 @@ class UserServices extends BaseServices
     /**
      * 设置手机验证码
      *
-     * @param string $mobile
+     * @param  string  $mobile
      * @return string
      */
     public function setCaptcha(string $mobile): string
     {
-        $key = 'register_captcha_' . $mobile;
+        $key = 'register_captcha_'.$mobile;
         $code = strval(rand(100000, 999999));
         if (!app()->environment('production')) {
             $code = '111111';

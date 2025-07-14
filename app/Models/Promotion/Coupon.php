@@ -2,8 +2,13 @@
 
 namespace App\Models\Promotion;
 
-use Illuminate\Notifications\Notifiable;
 use App\Models\BaseModel;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 
 /**
@@ -26,41 +31,39 @@ use App\Models\BaseModel;
  * @property int|null $days 基于领取时间的有效天数days。
  * @property string|null $start_time 使用券开始时间
  * @property string|null $end_time 使用券截至时间
- * @property \Illuminate\Support\Carbon|null $add_time 创建时间
- * @property \Illuminate\Support\Carbon|null $update_time 更新时间
+ * @property Carbon|null $add_time 创建时间
+ * @property Carbon|null $update_time 更新时间
  * @property bool|null $deleted 逻辑删除
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon query()
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereDays($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereDesc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereDiscount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereEndTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereGoodsType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereGoodsValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereLimit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereMin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereStartTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereTag($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereTimeType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereTotal($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereUpdateTime($value)
- * @mixin \Eloquent
+ * @method static Builder|Coupon newModelQuery()
+ * @method static Builder|Coupon newQuery()
+ * @method static Builder|Coupon query()
+ * @method static Builder|Coupon whereAddTime($value)
+ * @method static Builder|Coupon whereCode($value)
+ * @method static Builder|Coupon whereDays($value)
+ * @method static Builder|Coupon whereDeleted($value)
+ * @method static Builder|Coupon whereDesc($value)
+ * @method static Builder|Coupon whereDiscount($value)
+ * @method static Builder|Coupon whereEndTime($value)
+ * @method static Builder|Coupon whereGoodsType($value)
+ * @method static Builder|Coupon whereGoodsValue($value)
+ * @method static Builder|Coupon whereId($value)
+ * @method static Builder|Coupon whereLimit($value)
+ * @method static Builder|Coupon whereMin($value)
+ * @method static Builder|Coupon whereName($value)
+ * @method static Builder|Coupon whereStartTime($value)
+ * @method static Builder|Coupon whereStatus($value)
+ * @method static Builder|Coupon whereTag($value)
+ * @method static Builder|Coupon whereTimeType($value)
+ * @method static Builder|Coupon whereTotal($value)
+ * @method static Builder|Coupon whereType($value)
+ * @method static Builder|Coupon whereUpdateTime($value)
+ * @mixin Eloquent
  */
 class Coupon extends BaseModel
 {
     use Notifiable;
-
-
 
 
     // protected $table = 'coupon';

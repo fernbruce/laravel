@@ -2,8 +2,7 @@
 
 namespace App\Listeners;
 
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use DateTime;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\Facades\Log;
 
@@ -37,10 +36,12 @@ class DBSqlListener
         $bindings = array_map(function ($binding) {
             if (is_string($binding)) {
                 return "'{$binding}'";
-            } else if ($binding instanceof \DateTime) {
-                return $binding->format("'Y-m-d H:i:s'");
             } else {
-                return $binding;
+                if ($binding instanceof DateTime) {
+                    return $binding->format("'Y-m-d H:i:s'");
+                } else {
+                    return $binding;
+                }
             }
         }, $bindings);
         $sql = str_replace('?', '%s', $sql);

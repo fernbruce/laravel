@@ -5,9 +5,9 @@ namespace App\Services\Order;
 
 use App\CodeResponse;
 use App\Exceptions\BusinessException;
-use App\Models\Order\Cart;
 use App\Models\Goods\Goods;
 use App\Models\Goods\GoodsProduct;
+use App\Models\Order\Cart;
 use App\Services\BaseServices;
 
 class CartService extends BaseServices
@@ -39,7 +39,7 @@ class CartService extends BaseServices
      * @return Cart
      * @throws BusinessException
      */
-    public function newCart($userId, Goods $goods, GoodsProduct $product, $number):Cart
+    public function newCart($userId, Goods $goods, GoodsProduct $product, $number): Cart
     {
         if ($number > $product->number) {
             $this->throwBusinessException(CodeResponse::GOODS_NO_STOCK);

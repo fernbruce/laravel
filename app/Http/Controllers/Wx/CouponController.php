@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Wx;
 
+use App\Exceptions\BusinessException;
 use App\Inputs\PageInput;
 use App\Models\Promotion\CouponUser;
-use App\Services\Order\CartService;
+use App\Services\Promotion\CouponService;
+use Illuminate\Http\JsonResponse;
 
 class CouponController extends WxController
 {
     protected $except = ['list'];
+
     /**
      * 优惠券列表
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws BusinessException
      */
     public function list()
@@ -19,24 +22,25 @@ class CouponController extends WxController
 
         $page = PageInput::new();
         $columns = ['id', 'name', 'desc', 'tag', 'discount', 'min', 'days', 'start_time', 'end_time'];
-        $list = CartService::getInstance()->list($page, $columns);
+        $list = CouponService::getInstance()->list($page, $columns);
         return $this->successPaginate($list);
     }
 
     /**
      * 我的优惠券列表
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws BusinessException
      */
-    public function mylist()
+    public function mylist(): JsonResponse
     {
         $status = $this->verifyInteger('status');
         $page = PageInput::new();
-        $list = CartService::getInstance()->mylist($this->userId(), $status, $page);
+        $list = CouponService::getInstance()->mylist($this->userId(), $status, $page);
         $couponUserList = collect($list->items());
-        $couponIds =  $couponUserList->pluck('coupon_id')->toArray();
-        $coupons = CartService::getInstance()->getCoupons($couponIds)->keyBy('id');
+        $couponIds = $couponUserList->pluck('coupon_id')->toArray();
+        $coupons = CouponService::getInstance()->getCoupons($couponIds)->keyBy('id');
         $mylist = $couponUserList->map(function (CouponUser $item) use ($coupons) {
+            /** @var @var Coupon   $coupon */
             $coupon = $coupons->get($item->coupon_id);
             return [
                 'id' => $item->id,
@@ -63,7 +67,7 @@ class CouponController extends WxController
     public function receive()
     {
         $couponId = $this->verifyId('couponId', 0);
-        CartService::getInstance()->receive($this->userId(), $couponId);
+        CouponService::getInstance()->receive($this->userId(), $couponId);
         return $this->success();
     }
 }

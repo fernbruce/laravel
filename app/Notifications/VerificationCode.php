@@ -3,15 +3,15 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 use Leonis\Notifications\EasySms\Channels\EasySmsChannel;
 use Leonis\Notifications\EasySms\Messages\EasySmsMessage;
 
 class VerificationCode extends Notification
 {
     use Queueable;
+
     private $code;
 
     /**
@@ -40,7 +40,7 @@ class VerificationCode extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toEasySms($notifiable)
     {
