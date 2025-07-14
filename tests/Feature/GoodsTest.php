@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Address;
+use App\Models\User\Address;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;

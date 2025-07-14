@@ -11,11 +11,11 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
     protected $token;
-    public function getAuthHeader()
+    public function getAuthHeader($username='user123',$password='user123')
     {
         $response = $this->post('/wx/auth/login', [
-            'username' => 'user123',
-            'password' => 'user123'
+            'username' => $username,
+            'password' => $password
         ]);
         $this->token = $response->getOriginalContent()['data']['token'] ?? '';
         return ['Authorization' => 'Bearer ' . $this->token];

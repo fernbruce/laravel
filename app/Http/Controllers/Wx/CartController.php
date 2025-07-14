@@ -22,9 +22,9 @@ class CartController extends WxController
     public function add(Request $request): JsonResponse
     {
 
-        $goodsId = $request->input('goodsId', 0);
-        $productId = $request->input('productId', 0);
-        $number = $request->input('number', 0);
+        $goodsId = $this->verifyId('goodsId',0);
+        $productId = $this->verifyId('productId',0);
+        $number = $this->verifyId('number',0);
         if ($number <= 0) {
             return $this->badArgument();
         }
