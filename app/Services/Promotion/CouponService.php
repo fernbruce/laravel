@@ -99,7 +99,8 @@ class CouponService extends BaseServices
             $this->throwBusinessException(CodeResponse::COUPON_RECEIVE_FAIL, '优惠券已经过期');
         }
 
-        $couponUser = new CouponUser();
+//        $couponUser = new CouponUser();
+        $couponUser = CouponUser::new();
         if ($coupon->time_type == Constant::COUPON_TIME_TYPE_TIME) {
             $startTime = $coupon->start_time;
             $endTime = $coupon->end_time;

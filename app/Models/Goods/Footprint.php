@@ -35,10 +35,7 @@ use Illuminate\Support\Carbon;
  */
 class Footprint extends BaseModel
 {
-    use Notifiable;
 
-
-    protected $table = 'footprint';
     /**
      * The attributes that are mass assignable.
      *
@@ -48,12 +45,7 @@ class Footprint extends BaseModel
         'user_id',
         'goods_id',
     ];
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [];
+
 
     /**
      * The attributes that should be cast to native types.

@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -18,18 +19,19 @@ use Illuminate\Support\Str;
  */
 class BaseModel extends Model
 {
+    use Notifiable;
     use BooleanSoftDeletes;
 
     // public $timestamps = false;
     public const CREATED_AT = 'add_time';
     public const UPDATED_AT = 'update_time';
 
-    public $defaultCasts = ['deleted' => 'boolean'];
+//    public $defaultCasts = ['deleted' => 'boolean'];
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        // parent::mergeCasts($this->defaultCasts);
+//         parent::mergeCasts($this->defaultCasts);
     }
 
     public static function new()
@@ -37,6 +39,9 @@ class BaseModel extends Model
         return new static();
     }
 
+    /**
+     * @return string
+     */
     public function getTable()
     {
         return $this->table ?? Str::snake(class_basename($this));

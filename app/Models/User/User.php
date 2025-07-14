@@ -64,10 +64,9 @@ class User extends BaseModel implements
     AuthenticatableContract,
     AuthorizableContract
 {
-    use Authenticatable, Authorizable, Notifiable;
+    use Authenticatable, Authorizable;
 
 
-    protected $table = 'user';
     /**
      * The attributes that are mass assignable.
      *
@@ -88,18 +87,8 @@ class User extends BaseModel implements
      */
     protected $hidden = [
         'password',
-        'session_id',
+        'deleted',
     ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        // 'email_verified_at' => 'datetime',
-    ];
-
 
     public function getJWTIdentifier()
     {

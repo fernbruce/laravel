@@ -44,29 +44,20 @@ use Illuminate\Support\Carbon;
  */
 class CouponUser extends BaseModel
 {
-    use Notifiable;
 
 
-    // protected $table = 'coupon_user';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    // protected $fillable = [];
-
     protected $fillable = [
         'coupon_id',
         'user_id',
         'start_time',
         'end_time'
     ];
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [];
+
 
     /**
      * The attributes that should be cast to native types.
