@@ -12,45 +12,37 @@ use Illuminate\Http\Request;
 
 class CartController extends WxController
 {
-
     /**
-     * 加入购物车
-     * @param  Request  $request
+     * 立即购买
      * @return JsonResponse
      * @throws BusinessException
      */
-    public function add(Request $request): JsonResponse
+    public function fastadd(): JsonResponse
     {
 
-        $goodsId = $this->verifyId('goodsId',0);
-        $productId = $this->verifyId('productId',0);
-        $number = $this->verifyId('number',0);
-        if ($number <= 0) {
-            return $this->badArgument();
-        }
+        $goodsId = $this->verifyId('goodsId', 0);
+        $productId = $this->verifyId('productId', 0);
+        $number = $this->verifyPositiveInteger('number', 0);
 
-        $goods = GoodsServices::getInstance()->getGoods($goodsId);
-        if (is_null($goods) || !$goods->is_on_sale) {
-            return $this->fail(CodeResponse::GOODS_UNSHELVE);
-        }
-        $product = GoodsServices::getInstance()->getGoodsProductById($productId);
-        if (is_null($product)) {
-            return $this->badArgument();
-        }
-        $cartProduct = CartService::getInstance()->getCartProduct($this->userId(), $goodsId, $productId);
-        if (is_null($cartProduct)) {
-            //add new cart product
-            $cart = CartService::getInstance()->newCart($this->userId(), $goods, $product, $number);
+        $cart = CartService::getInstance()->fastadd($this->userId(),$goodsId, $productId, $number);
 
-        } else {
-            //edit cart product number
-            $num = $cartProduct->number + $number;
-            if ($num > $product->number) {
-                return $this->fail(CodeResponse::GOODS_NO_STOCK);
-            }
-            $cartProduct->number = $num;
-            $cartProduct->save();
-        }
+        return $this->success($cart->id);
+    }
+
+    /**
+     * 加入购物车
+     * @return JsonResponse
+     * @throws BusinessException
+     */
+    public function add(): JsonResponse
+    {
+
+        $goodsId = $this->verifyId('goodsId', 0);
+        $productId = $this->verifyId('productId', 0);
+        $number = $this->verifyPositiveInteger('number', 0);
+
+        CartService::getInstance()->add($this->userId(),$goodsId, $productId, $number);
+
         $count = CartService::getInstance()->countCartProduct($this->userId());
         return $this->success($count);
     }
@@ -63,6 +55,59 @@ class CartController extends WxController
     {
         $count = CartService::getInstance()->countCartProduct($this->userId());
         return $this->success($count);
+    }
 
+    /**
+     * 更新购物车数量
+     * @return JsonResponse
+     */
+    public function update(): JsonResponse
+    {
+        $id = $this->verifyId('id', '0');
+        $goodsId = $this->verifyId('goodsId', 0);
+        $productId = $this->verifyId('productId', 0);
+        $number = $this->verifyPositiveInteger('number', 0);
+        $cart = CartService::getInstance()->getCartById($this->userId(), $id);
+        if (is_null($cart)) {
+            return $this->badArgumentValue();
+        }
+        if ($cart->goods_id !== $goodsId || $cart->product_id !== $productId) {
+            return $this->badArgumentValue();
+        }
+        $goods = GoodsServices::getInstance()->getGoods($goodsId);
+        if (is_null($goods) || !$goods->is_on_sale) {
+            return $this->fail(CodeResponse::GOODS_UNSHELVE);
+        }
+        $product = GoodsServices::getInstance()->getGoodsProductById($productId);
+        if (is_null($product) || $product->number < $number) {
+            return $this->fail(CodeResponse::GOODS_NO_STOCK);
+        }
+
+        $cart->number = $number;
+        $ret = $cart->save();
+        return $this->failOrSuccess($ret, CodeResponse::UPDATED_FAIL);
+
+
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    public function delete()
+    {
+        $productIds = $this->verifyArrayNotEmpty('productIds', []);
+        CartService::getInstance()->delete($this->userId(), $productIds);
+        $list = CartService::getInstance()->list($this->userId());
+        return $this->success($list);
+    }
+
+    public function checked()
+    {
+        $productIds = $this->verifyArrayNotEmpty('productIds', []);
+        $isChecked = $this->verifyBoolean('isChecked');
+        CartService::getInstance()->updateChecked($this->userId(), $productIds, $isChecked==1);
+        $list = CartService::getInstance()->list($this->userId());
+        return $this->success($list);
     }
 }

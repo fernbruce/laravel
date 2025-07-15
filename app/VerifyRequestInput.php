@@ -14,28 +14,6 @@ trait VerifyRequestInput
         return $this->verifyData($key, $default, 'integer|digits_between:1,20|min:1');
     }
 
-    public function verifyString($key, $default = null)
-    {
-        return $this->verifyData($key, $default, 'string');
-    }
-
-
-    public function verifyBoolean($key, $default = null)
-    {
-        return $this->verifyData($key, $default, 'boolean');
-    }
-
-
-    public function verifyInteger($key, $default = null)
-    {
-        return $this->verifyData($key, $default, 'integer');
-    }
-
-    public function verifyEnum($key, $default = null, $enum = [])
-    {
-        return $this->verifyData($key, $default, Rule::in($enum));
-    }
-
     /**
      * 验证字段
      *
@@ -56,5 +34,35 @@ trait VerifyRequestInput
             throw new BusinessException(CodeResponse::PARAM_VALUE_ILLEGAL);
         }
         return $value;
+    }
+
+    public function verifyString($key, $default = null)
+    {
+        return $this->verifyData($key, $default, 'string');
+    }
+
+    public function verifyBoolean($key, $default = null)
+    {
+        return $this->verifyData($key, $default, 'boolean');
+    }
+
+    public function verifyInteger($key, $default = null)
+    {
+        return $this->verifyData($key, $default, 'integer');
+    }
+
+    public function verifyPositiveInteger($key, $default = null)
+    {
+        return $this->verifyData($key, $default, 'integer|min:1');
+    }
+
+    public function verifyEnum($key, $default = null, $enum = [])
+    {
+        return $this->verifyData($key, $default, Rule::in($enum));
+    }
+
+    public function verifyArrayNotEmpty($key, $default = [])
+    {
+        return $this->verifyData($key, $default, 'array|min:1');
     }
 }

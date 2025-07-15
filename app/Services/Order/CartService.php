@@ -9,16 +9,24 @@ use App\Models\Goods\Goods;
 use App\Models\Goods\GoodsProduct;
 use App\Models\Order\Cart;
 use App\Services\BaseServices;
+use App\Services\Goods\GoodsServices;
 
 class CartService extends BaseServices
 {
+
+    public function getCartById($userId, $id)
+    {
+        return Cart::query()->where('user_id', $userId)->where('id', $id)->first();
+    }
+
     /**
+     * 通过用户Id,商品Id,货品Id查询购物车记录
      * @param $userId
      * @param $goodsId
      * @param $productId
      * @return Cart|null
      */
-    public function getCartProduct($userId, $goodsId, $productId)
+    public function getCartProduct($userId, $goodsId, $productId): ?Cart
     {
         return Cart::query()->where('user_id', $userId)
             ->where('goods_id', $goodsId)
@@ -31,6 +39,73 @@ class CartService extends BaseServices
         return Cart::query()->where('user_id', $userId)->sum('number');
     }
 
+    /**
+     * @param $goodsId
+     * @param $productId
+     * @return array
+     * @throws BusinessException
+     */
+    public function getGoodsInfo($goodsId, $productId): array
+    {
+        $goods = GoodsServices::getInstance()->getGoods($goodsId);
+        if (is_null($goods) || !$goods->is_on_sale) {
+            $this->throwBusinessException(CodeResponse::GOODS_UNSHELVE);
+        }
+        $product = GoodsServices::getInstance()->getGoodsProductById($productId);
+        if (is_null($product)) {
+            $this->throwBusinessException(CodeResponse::GOODS_NO_STOCK);
+        }
+
+        return [$goods, $product];
+    }
+
+    /**
+     * 添加购物车
+     * @param $userId
+     * @param $goodsId
+     * @param $productId
+     * @param $number
+     * @return Cart
+     * @throws BusinessException
+     */
+    public function add($userId,$goodsId,$productId,$number): Cart
+    {
+        [$goods, $product] = $this->getGoodsInfo($goodsId, $productId);
+        $cartProduct = $this->getCartProduct($userId, $goodsId, $productId);
+        if(is_null($cartProduct)){
+            return $this->newCart($userId, $goods, $product, $number);
+        }
+
+        $number = $cartProduct->number + $number;
+        return $this->editCart($cartProduct,$product,$number);
+    }
+
+    public function fastadd($userId,$goodsId,$productId,$number){
+        [$goods, $product] = $this->getGoodsInfo($goodsId, $productId);
+        $cartProduct = $this->getCartProduct($userId, $goodsId, $productId);
+        if(is_null($cartProduct)){
+            return $this->newCart($userId, $goodsId, $productId, $number);
+        }
+
+        return $this->editCart($cartProduct,$product,$number);
+    }
+
+    /**
+     * @param  Cart  $existCart
+     * @param  GoodsProduct  $product
+     * @param  int  $num
+     * @return Cart
+     * @throws BusinessException
+     */
+    public function editCart(Cart $existCart, GoodsProduct $product, int $num): Cart
+    {
+        if ($num > $product->number) {
+            $this->throwBusinessException(CodeResponse::GOODS_NO_STOCK);
+        }
+        $existCart->number = $num;
+        $existCart->save();
+        return $existCart;
+    }
     /**
      * @param $userId
      * @param  Goods  $goods
@@ -56,5 +131,30 @@ class CartService extends BaseServices
         $cart->product_id = $product->id;
         $cart->save();
         return $cart;
+    }
+
+    /**
+     * 删除购物车
+     * @param $userId
+     * @param $productIds
+     * @return bool|int|mixed|null
+     * @throws \Exception
+     */
+    public function delete($userId, $productIds)
+    {
+        return Cart::query()->where('user_id', $userId)->whereIn('product_id', $productIds)->delete();
+    }
+
+    public function updateChecked($userId, $productIds, $isChecked)
+    {
+        return Cart::query()->where('user_id', $userId)
+            ->whereIn('product_id', $productIds)
+            ->update(['checked' => $isChecked]);
+
+    }
+
+    public function list($userId)
+    {
+        return [];
     }
 }
