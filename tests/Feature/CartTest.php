@@ -3,6 +3,7 @@
 
 use App\Models\Goods\GoodsProduct;
 use App\Models\User\User;
+use App\Services\Goods\GoodsServices;
 use App\Services\Order\CartService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -27,7 +28,57 @@ class CartTest extends TestCase
 
     }
 
-    public function testFastadd(){
+
+    public function testIndex()
+    {
+        $response = $this->post('wx/cart/add', [
+            'goodsId' => $this->product->goods_id,
+            'productId' => $this->product->id,
+            'number' => 2,
+        ], $this->authHeader);
+        $response->assertJson([
+            "errno" => 0,
+            "errmsg" => '成功',
+            "data" => 2
+        ]);
+        $response = $this->get('/wx/cart/index', [], $this->authHeader);
+        $response->assertJson([
+            'errno' => 0, 'errmsg' => '成功', 'data' => [
+                "cartList" => [
+                    [
+                        'goodsId' => $this->product->goods_id,
+                        'productId' => $this->product->id,
+                    ]
+                ],
+                "cartTotal" => [
+                    "goodsCount" => 2,
+                    "goodsAmount" => 1998.00,
+                    "checkedGoodsCount" => 2,
+                    "checkedGoodsAmount" => 1998.00
+                ]
+            ]
+        ]);
+        $goods = GoodsServices::getInstance()->getGoods($this->product->goods_id);
+        $goods->is_on_sale = false;
+        $goods->save();
+        $response = $this->get('/wx/cart/index', [], $this->authHeader);
+        $response->assertJson([
+            'errno' => 0, 'errmsg' => '成功', 'data' => [
+                "cartList" => [],
+                "cartTotal" => [
+                    "goodsCount" => 0,
+                    "goodsAmount" => 0,
+                    "checkedGoodsCount" => 0,
+                    "checkedGoodsAmount" => 0
+                ]
+            ]
+        ]);
+        $cart = CartService::getInstance()->getCartProduct($this->user->id, $this->product->goods_id,$this->product->id);
+        $this->assertNull($cart);
+    }
+
+    public function testFastadd()
+    {
         $response = $this->post('wx/cart/add', [
             'goodsId' => $this->product->goods_id,
             'productId' => $this->product->id,
@@ -50,10 +101,11 @@ class CartTest extends TestCase
         $response->assertJson([
             "errno" => 0,
             "errmsg" => '成功',
-            "data"=>$cart->id
+            "data" => $cart->id
         ]);
 
     }
+
     public function testAdd()
     {
         $response = $this->post('wx/cart/add', [

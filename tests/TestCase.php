@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use App\Models\Goods\GoodsProduct;
+use App\Models\User\User;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
@@ -11,6 +13,22 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
     protected $token;
+
+//    /** @var User $user */
+//    protected $user;
+//    /** @var GoodsProduct $product */
+//    protected $product;
+//
+//    protected $authHeader;
+
+//    public function setUp(): void
+//    {
+//        parent::setUp();
+//        $this->user = factory(User::class)->create();
+//        $this->product = factory(GoodsProduct::class)->create(['number' => 10]);
+//        $this->authHeader = $this->getAuthHeader($this->user->username, '123456');
+//
+//    }
     public function getAuthHeader($username='user123',$password='user123')
     {
         $response = $this->post('/wx/auth/login', [

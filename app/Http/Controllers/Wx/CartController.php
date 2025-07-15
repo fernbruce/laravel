@@ -6,12 +6,44 @@ use App\CodeResponse;
 use App\Exceptions\BusinessException;
 use App\Services\Goods\GoodsServices;
 use App\Services\Order\CartService;
+use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 
 class CartController extends WxController
 {
+    /**
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function index(): JsonResponse
+    {
+        $list = CartService::getInstance()->getValidCartList($this->userId());
+        $goodsCount = 0;
+        $goodsAmount = 0;
+        $checkedGoodsCount = 0;
+        $checkedGoodsAmount = 0;
+        foreach ($list as $cart) {
+            $goodsCount += $cart->number;
+            $amount = bcmul($cart->price, $cart->number, 2);
+            $goodsAmount = bcadd($goodsAmount, $amount, 2);
+            if ($cart->checked) {
+                $checkedGoodsCount += $cart->number;
+                $checkedGoodsAmount = bcadd($checkedGoodsAmount, $amount, 2);
+            }
+        }
+        return $this->success([
+            'cartList' => $list->toArray(),
+            'cartTotal' => [
+                'goodsCount' => $goodsCount,
+                'goodsAmount' => (double)$goodsAmount,
+                'checkedGoodsCount' => $checkedGoodsCount,
+                'checkedGoodsAmount' => (double)$checkedGoodsAmount,
+            ]
+        ]);
+
+    }
+
     /**
      * 立即购买
      * @return JsonResponse
@@ -24,7 +56,7 @@ class CartController extends WxController
         $productId = $this->verifyId('productId', 0);
         $number = $this->verifyPositiveInteger('number', 0);
 
-        $cart = CartService::getInstance()->fastadd($this->userId(),$goodsId, $productId, $number);
+        $cart = CartService::getInstance()->fastadd($this->userId(), $goodsId, $productId, $number);
 
         return $this->success($cart->id);
     }
@@ -41,7 +73,7 @@ class CartController extends WxController
         $productId = $this->verifyId('productId', 0);
         $number = $this->verifyPositiveInteger('number', 0);
 
-        CartService::getInstance()->add($this->userId(),$goodsId, $productId, $number);
+        CartService::getInstance()->add($this->userId(), $goodsId, $productId, $number);
 
         $count = CartService::getInstance()->countCartProduct($this->userId());
         return $this->success($count);
@@ -91,23 +123,21 @@ class CartController extends WxController
     }
 
     /**
-     * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function delete()
     {
         $productIds = $this->verifyArrayNotEmpty('productIds', []);
         CartService::getInstance()->delete($this->userId(), $productIds);
         $list = CartService::getInstance()->list($this->userId());
-        return $this->success($list);
+        return $this->index();
     }
 
     public function checked()
     {
         $productIds = $this->verifyArrayNotEmpty('productIds', []);
         $isChecked = $this->verifyBoolean('isChecked');
-        CartService::getInstance()->updateChecked($this->userId(), $productIds, $isChecked==1);
-        $list = CartService::getInstance()->list($this->userId());
-        return $this->success($list);
+        CartService::getInstance()->updateChecked($this->userId(), $productIds, $isChecked == 1);
+        return $this->index();
     }
 }

@@ -10,33 +10,94 @@ use App\Models\Goods\GoodsProduct;
 use App\Models\Order\Cart;
 use App\Services\BaseServices;
 use App\Services\Goods\GoodsServices;
+use Exception;
 
 class CartService extends BaseServices
 {
+
+    /**
+     * @param $userId
+     * @return object
+     * @throws Exception
+     */
+    public function getValidCartList($userId)
+    {
+        $list = $this->getCartList($userId);
+        $goodsId = $list->pluck('goods_id')->toArray();
+        $goodsList = Goods::query()->whereIn('id', $goodsId)->get()->keyBy('id');
+        $invalidCartIds = [];
+        $list = $list->filter(function (Cart $cart) use ($goodsList, &$invalidCartIds) {
+            /** @var Goods $goods */
+            $goods = $goodsList->get($cart->goods_id);
+            $isValid = $goods !== null && $goods->is_on_sale;
+            if (!$isValid) {
+                $invalidCartIds[] = $cart->id;
+            }
+            return $isValid;
+        });
+        $this->deleteCartList($invalidCartIds);
+        return $list;
+    }
+
+    public function getCartList($userId)
+    {
+        return Cart::query()->where('user_id', $userId)->get();
+    }
+
+    /**
+     * @param $ids
+     * @return void
+     * @throws Exception
+     */
+    public function deleteCartList($ids)
+    {
+        if (empty($ids)) {
+            return;
+        }
+        Cart::query()->whereIn('id', $ids)->delete();
+    }
+
+    /**
+     * 删除购物车
+     * @param $userId
+     * @param $productIds
+     * @return bool|int|mixed|null
+     * @throws Exception
+     */
+    public function delete($userId, $productIds)
+    {
+        return Cart::query()->where('user_id', $userId)->whereIn('product_id', $productIds)->delete();
+    }
 
     public function getCartById($userId, $id)
     {
         return Cart::query()->where('user_id', $userId)->where('id', $id)->first();
     }
 
-    /**
-     * 通过用户Id,商品Id,货品Id查询购物车记录
-     * @param $userId
-     * @param $goodsId
-     * @param $productId
-     * @return Cart|null
-     */
-    public function getCartProduct($userId, $goodsId, $productId): ?Cart
-    {
-        return Cart::query()->where('user_id', $userId)
-            ->where('goods_id', $goodsId)
-            ->where('product_id', $productId)
-            ->first();
-    }
-
     public function countCartProduct($userId)
     {
         return Cart::query()->where('user_id', $userId)->sum('number');
+    }
+
+    /**
+     * 添加购物车
+     * @param $userId
+     * @param $goodsId
+     * @param $productId
+     * @param $number
+     * @return Cart
+     * @throws BusinessException
+     */
+    public function add($userId, $goodsId, $productId, $number): Cart
+    {
+        [$goods, $product] = $this->getGoodsInfo($goodsId, $productId);
+        $cartProduct = $this->getCartProduct($userId, $goodsId, $productId);
+        if (is_null($cartProduct)) {
+            return $this->newCart($userId, $goods, $product, $number);
+        }
+
+        $number = $cartProduct->number + $number;
+        return $this->editCart($cartProduct, $product, $number);
     }
 
     /**
@@ -60,52 +121,20 @@ class CartService extends BaseServices
     }
 
     /**
-     * 添加购物车
+     * 通过用户Id,商品Id,货品Id查询购物车记录
      * @param $userId
      * @param $goodsId
      * @param $productId
-     * @param $number
-     * @return Cart
-     * @throws BusinessException
+     * @return Cart|null
      */
-    public function add($userId,$goodsId,$productId,$number): Cart
+    public function getCartProduct($userId, $goodsId, $productId): ?Cart
     {
-        [$goods, $product] = $this->getGoodsInfo($goodsId, $productId);
-        $cartProduct = $this->getCartProduct($userId, $goodsId, $productId);
-        if(is_null($cartProduct)){
-            return $this->newCart($userId, $goods, $product, $number);
-        }
-
-        $number = $cartProduct->number + $number;
-        return $this->editCart($cartProduct,$product,$number);
+        return Cart::query()->where('user_id', $userId)
+            ->where('goods_id', $goodsId)
+            ->where('product_id', $productId)
+            ->first();
     }
 
-    public function fastadd($userId,$goodsId,$productId,$number){
-        [$goods, $product] = $this->getGoodsInfo($goodsId, $productId);
-        $cartProduct = $this->getCartProduct($userId, $goodsId, $productId);
-        if(is_null($cartProduct)){
-            return $this->newCart($userId, $goodsId, $productId, $number);
-        }
-
-        return $this->editCart($cartProduct,$product,$number);
-    }
-
-    /**
-     * @param  Cart  $existCart
-     * @param  GoodsProduct  $product
-     * @param  int  $num
-     * @return Cart
-     * @throws BusinessException
-     */
-    public function editCart(Cart $existCart, GoodsProduct $product, int $num): Cart
-    {
-        if ($num > $product->number) {
-            $this->throwBusinessException(CodeResponse::GOODS_NO_STOCK);
-        }
-        $existCart->number = $num;
-        $existCart->save();
-        return $existCart;
-    }
     /**
      * @param $userId
      * @param  Goods  $goods
@@ -134,15 +163,31 @@ class CartService extends BaseServices
     }
 
     /**
-     * 删除购物车
-     * @param $userId
-     * @param $productIds
-     * @return bool|int|mixed|null
-     * @throws \Exception
+     * @param  Cart  $existCart
+     * @param  GoodsProduct  $product
+     * @param  int  $num
+     * @return Cart
+     * @throws BusinessException
      */
-    public function delete($userId, $productIds)
+    public function editCart(Cart $existCart, GoodsProduct $product, int $num): Cart
     {
-        return Cart::query()->where('user_id', $userId)->whereIn('product_id', $productIds)->delete();
+        if ($num > $product->number) {
+            $this->throwBusinessException(CodeResponse::GOODS_NO_STOCK);
+        }
+        $existCart->number = $num;
+        $existCart->save();
+        return $existCart;
+    }
+
+    public function fastadd($userId, $goodsId, $productId, $number)
+    {
+        [$goods, $product] = $this->getGoodsInfo($goodsId, $productId);
+        $cartProduct = $this->getCartProduct($userId, $goodsId, $productId);
+        if (is_null($cartProduct)) {
+            return $this->newCart($userId, $goodsId, $productId, $number);
+        }
+
+        return $this->editCart($cartProduct, $product, $number);
     }
 
     public function updateChecked($userId, $productIds, $isChecked)
@@ -153,8 +198,5 @@ class CartService extends BaseServices
 
     }
 
-    public function list($userId)
-    {
-        return [];
-    }
+
 }
