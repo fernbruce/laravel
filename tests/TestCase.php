@@ -14,6 +14,13 @@ abstract class TestCase extends BaseTestCase
 
     protected $token;
 
+    /** @var User $user */
+    protected $user;
+    protected function setUp():void{
+        parent::setUp();
+        $this->user = factory(User::class)->create();
+    }
+
 //    /** @var User $user */
 //    protected $user;
 //    /** @var GoodsProduct $product */

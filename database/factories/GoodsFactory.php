@@ -5,6 +5,8 @@
 use App\Models\Goods\Goods;
 use App\Models\Goods\GoodsProduct;
 use App\Models\Goods\GoodsSpecification;
+use App\Models\Promotion\GrouponRules;
+use App\Services\Goods\GoodsServices;
 use Faker\Generator as Faker;
 
 /*
@@ -58,4 +60,30 @@ $factory->define(GoodsSpecification::class, function (Faker $faker) {
         "specification" => '规格',
         "value" => '标准'
     ];
+});
+
+$factory->define(GrouponRules::class, function (Faker $faker) {
+     return [
+         'goods_id' => 0,
+         'goods_name'=>'',
+         'pic_url'=>'',
+         'discount'=>0,
+         'discount_member'=>2,
+         'expire_time'=>now()->addDays(10)->toDateTimeString(),
+         'status'=>0
+     ];
+});
+
+$factory->state(GoodsProduct::class,'groupon',function(){
+   return [];
+})->afterCreatingState(GoodsProduct::class, 'groupon', function (GoodsProduct $goodsProduct, Faker $faker) {
+    /** @var Goods $goods */
+    $goods = GoodsServices::getInstance()->getGoods($goodsProduct->goods_id);
+   factory(GrouponRules::class)->create([
+       'goods_id'=>$goodsProduct->goods_id,
+       'goods_name'=>$goods->name,
+       'pic_url'=>$goods->pic_url,
+       'discount'=>1,
+   ]);
+
 });

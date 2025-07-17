@@ -10,10 +10,68 @@ use App\Models\Goods\GoodsProduct;
 use App\Models\Order\Cart;
 use App\Services\BaseServices;
 use App\Services\Goods\GoodsServices;
+use App\Services\Promotion\GrouponService;
 use Exception;
+use Illuminate\Support\Collection;
 
 class CartService extends BaseServices
 {
+    /**
+     * @param $userId
+     * @return Cart[]|Collection
+     */
+    public function getCheckedCarts($userId)
+    {
+        return Cart::query()->where('user_id', $userId)
+            ->where('checked', 1)->get();
+    }
+
+    /**
+     * @param $userId
+     * @param $cartId
+     * @return Cart[]|Collection
+     * @throws BusinessException
+     */
+    public function getCheckedCartList($userId, $cartId = null)
+    {
+        if (empty($cartId)) {
+            $checkedGoodsList = $this->getCheckedCarts($userId);
+        } else {
+            $cart = $this->getCartById($userId, $cartId);
+            if ($cart === null) {
+                $this->throwBadArgumentValue();
+            }
+            $checkedGoodsList = collect([$cart]);
+        }
+        return $checkedGoodsList;
+    }
+
+    public function getCartPriceCutGroupon($checkedGoodsList,$grouponRulesId, &$grouponPrice){
+        $grouponRules = GrouponService::getInstance()->getGrouponRulesById($grouponRulesId);
+        $checkedGoodsPrice = 0;
+        $grouponPrice = 0;
+        foreach ($checkedGoodsList as $cart) {
+            if ($grouponRules && $grouponRules->goods_id === $cart->goods_id) {
+                $grouponPrice = bcmul($grouponRules->discount, $cart->number, 2);
+                $price = bcsub($cart->price, $grouponRules->discount, 2);
+            } else {
+                $price = $cart->price;
+            }
+            $price = bcmul($price, $cart->number, 2);
+            $checkedGoodsPrice = bcadd($checkedGoodsPrice, $price, 2);
+        }
+        return $checkedGoodsPrice;
+    }
+
+    /**
+     * @param $userId
+     * @param $id
+     * @return Cart|null
+     */
+    public function getCartById($userId, $id): ?Cart
+    {
+        return Cart::query()->where('user_id', $userId)->where('id', $id)->first();
+    }
 
     /**
      * @param $userId
@@ -67,11 +125,6 @@ class CartService extends BaseServices
     public function delete($userId, $productIds)
     {
         return Cart::query()->where('user_id', $userId)->whereIn('product_id', $productIds)->delete();
-    }
-
-    public function getCartById($userId, $id)
-    {
-        return Cart::query()->where('user_id', $userId)->where('id', $id)->first();
     }
 
     public function countCartProduct($userId)

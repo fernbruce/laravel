@@ -12,9 +12,7 @@ class CartTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @var User $user */
-    private $user;
-    /** @var GoodsProduct $product */
+
     private $product;
 
     private $authHeader;
@@ -22,7 +20,6 @@ class CartTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create();
         $this->product = factory(GoodsProduct::class)->create(['number' => 10]);
         $this->authHeader = $this->getAuthHeader($this->user->username, '123456');
 
@@ -268,5 +265,10 @@ class CartTest extends TestCase
             $this->product->id);
         $this->assertTrue($cart->checked);
 
+    }
+
+    public function testCheckout(){
+//        $resp = $this->get('wx/cart/checkout');
+        $this->assertLitemallApiGet('wx/cart/checkout');
     }
 }

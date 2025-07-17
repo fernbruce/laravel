@@ -16,6 +16,8 @@ use Illuminate\Support\Str;
  * @method static Builder|BaseModel newQuery()
  * @method static Builder|BaseModel query()
  * @mixin Eloquent
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
  */
 class BaseModel extends Model
 {
