@@ -8,6 +8,7 @@ use App\Models\Promotion\Coupon;
 use App\Models\Promotion\CouponUser;
 use App\Services\Goods\GoodsServices;
 use App\Services\Order\CartService;
+use App\Services\Order\OrderService;
 use App\Services\Promotion\CouponService;
 use App\Services\Promotion\GrouponService;
 use App\Services\SystemServices;
@@ -164,7 +165,7 @@ class CartController extends WxController
         //获取购物车的商品列表
         $checkedGoodsList = CartService::getInstance()->getCheckedCartList($this->userId(),$cartId);
 
-        //计算订单总额
+        //计算商品总额
         $grouponPrice = 0;
         $checkedGoodsPrice = CartService::getInstance()->getCartPriceCutGroupon($checkedGoodsList, $grouponRulesId,$grouponPrice);
 
@@ -182,11 +183,7 @@ class CartController extends WxController
         }
 
         //运费
-        $freightPrice = 0;
-        $freightMin = SystemServices::getInstance()->getFreightMin();
-        if (bccomp($freightMin, $checkedGoodsPrice) == 1) {
-            $freightPrice = SystemServices::getInstance()->getFreightValue();
-        }
+        $freightPrice = OrderService::getInstance()->getFreight($checkedGoodsPrice);
 
         // 计算订单金额
         $orderPrice = bcadd($checkedGoodsPrice, $freightPrice, 2);

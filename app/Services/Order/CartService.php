@@ -211,6 +211,7 @@ class CartService extends BaseServices
         $cart->number = $number;
         $cart->goods_id = $goods->id;
         $cart->product_id = $product->id;
+        $cart->specifications = $product->specifications;
         $cart->save();
         return $cart;
     }
@@ -249,6 +250,13 @@ class CartService extends BaseServices
             ->whereIn('product_id', $productIds)
             ->update(['checked' => $isChecked]);
 
+    }
+
+    public function clearCartGoods($userId,$cartId = null){
+        if(empty($cartId)){
+            return Cart::query()->where('user_id', $userId)->where("checked", 1)->delete();
+        }
+        return Cart::query()->where('user_id', $userId)->where("id", $cartId)->delete();
     }
 
 

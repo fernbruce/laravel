@@ -60,6 +60,7 @@ class Cart extends BaseModel
      */
     protected $casts = [
         'deleted' => 'boolean',
-        'checked' => 'boolean'
+        'checked' => 'boolean',
+        'specifications' => 'array',
     ];
 }

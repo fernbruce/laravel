@@ -48,6 +48,7 @@ class CartTest extends TestCase
 
         $grouponPrice = 0;
         $grouponRulesId = GrouponRules::whereGoodsId($product2->goods_id)->first()->id??null;
+
         $checkedGoodsList = CartService::getInstance()->getCheckedCartList($this->user->id);
         $checkedGoodsPrice = CartService::getInstance()->getCartPriceCutGroupon($checkedGoodsList, $grouponRulesId, $grouponPrice);
         $this->assertEquals(129.6, $checkedGoodsPrice);

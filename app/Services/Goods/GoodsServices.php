@@ -104,6 +104,13 @@ class GoodsServices extends BaseServices
 
     }
 
+    public function getGoodsProductByIds(array $Ids){
+        if(empty($Ids)){
+            return collect([]);
+        }
+       return GoodsProduct::query()->whereIn('id', $Ids)->get();
+    }
+
     public function getGoodsIssue(int $page = 1, int $limit = 4)
     {
         return Issue::query()->forPage($page, $limit)->get();
@@ -114,5 +121,11 @@ class GoodsServices extends BaseServices
         $footprint = new Footprint();
         $footprint->fill(['user_id' => $userId, 'goods_id' => $goodsId]);
         return $footprint->save();
+    }
+
+    public function reduceStock($productId, $num){
+        return GoodsProduct::query()->where('id',$productId)
+            ->where('number', '>=', $num)
+            ->decrement('number',$num);
     }
 }
