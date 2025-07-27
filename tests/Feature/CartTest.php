@@ -1,5 +1,5 @@
 <?php
-
+namespace Tests\Feature;
 
 use App\Models\Goods\GoodsProduct;
 use App\Models\User\User;

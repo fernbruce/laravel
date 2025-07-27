@@ -102,4 +102,27 @@ class User extends BaseModel implements
             'userId' => $this->getKey()
         ];
     }
+
+    protected static function booted()
+    {
+        static::casing(function($user){
+            echo 'casing'.PHP_EOL;
+        });
+        static::casing(function($user){
+            echo 'casing'.PHP_EOL;
+        });
+        static::cased(function($user){
+            echo 'cased'.PHP_EOL;
+            return true;
+        });
+        static::cased(function($user){
+            echo 'cased'.PHP_EOL;
+            return true;
+        });
+    }
+
+    public function routeNotificationForEasySms($driver, $notification=null){
+        return $this->mobile;
+    }
+
 }

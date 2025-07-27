@@ -47,4 +47,14 @@ class BaseServices
     {
          $this-> throwBusinessException(CodeResponse::PARAM_VALUE_ILLEGAL);
     }
+
+
+    /**
+     * @return void
+     * @throws BusinessException
+     */
+    public function throwUpdateFail(): void
+    {
+        $this-> throwBusinessException(CodeResponse::UPDATED_FAIL);
+    }
 }

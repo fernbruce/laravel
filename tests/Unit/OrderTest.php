@@ -1,11 +1,14 @@
 <?php
+namespace Tests\Unit;
 
-
+use App\Enums\OrderEnums;
 use App\Inputs\OrderSubmitInput;
 use App\Jobs\OrderUnPaidTimeEndJob;
 use App\Models\Goods\GoodsProduct;
+use App\Models\Order\Order;
 use App\Models\Order\OrderGoods;
 use App\Models\Promotion\GrouponRules;
+use App\Models\User\User;
 use App\Services\Goods\GoodsServices;
 use App\Services\Order\CartService;
 use App\Services\Order\OrderService;
@@ -88,5 +91,106 @@ class OrderTest extends TestCase
 
     public function testJob(){
         dispatch(new OrderUnPaidTimeEndJob(1,2));
+    }
+
+    public function getOrder(){
+        $address = AddressServices::getInstance()->getDefaultAddress($this->user->id);
+
+        /** @var GoodsProduct $product1 */
+        $product1 = factory(GoodsProduct::class)->create(['price' => 11.3]);
+        /** @var GoodsProduct $product2 */
+        $product2 = factory(GoodsProduct::class)->state('groupon')->create(['price' => 20.56]);
+        $product3 = factory(GoodsProduct::class)->create(['price' => 10.6]);
+        $cart1 = CartService::getInstance()->add($this->user->id, $product1->goods_id, $product1->id, 2);
+        $cart2 = CartService::getInstance()->add($this->user->id, $product2->goods_id, $product2->id, 5);
+        $cart3 = CartService::getInstance()->add($this->user->id, $product3->goods_id, $product3->id, 3);
+        CartService::getInstance()->updateChecked($this->user->id, [$product1->id], false);
+
+        $grouponPrice = 0;
+        $grouponRulesId = GrouponRules::whereGoodsId($product2->goods_id)->first()->id ?? null;
+        $checkedGoodsList = CartService::getInstance()->getCheckedCartList($this->user->id);
+        $checkedGoodsPrice = CartService::getInstance()->getCartPriceCutGroupon($checkedGoodsList, $grouponRulesId,
+            $grouponPrice);
+        $this->assertEquals(129.6, $checkedGoodsPrice);
+        $input = OrderSubmitInput::new([
+            'addressId' => $address->id,
+            'cartId' => 0,
+            'grouponRulesId' => $grouponRulesId,
+            'couponId' =>0,
+            'message'=>'备注',
+        ]);
+        $order = OrderService::getInstance()->submit($this->user->id, $input);
+        return $order;
+    }
+    public function testCancel(){
+
+        $order = $this->getOrder();
+        OrderService::getInstance()->userCancel($this->user->id,$order->id);
+        $this->assertEquals(OrderEnums::STATUS_CANCEL, $order->refresh()->order_status);
+        $goodsList = OrderService::getInstance()->getOrderGoodsList($order->id);
+        $productIds = $goodsList->pluck('product_id')->toArray();
+        $products = GoodsServices::getInstance()->getGoodsProductByIds($productIds);
+        $this->assertEquals([100,100],$products->pluck('number')->toArray());
+    }
+
+    public function testCas(){
+//        $user = User::first(['id','nickname','mobile','update_time']);
+        $user = User::query()->where('id',$this->user->id)->first(['id','nickname','mobile','update_time']);
+        $user->nickname = 'test1';
+        $user->mobile = '15000000000';
+        $is = $user->cas();
+        $this->assertEquals(1,$is);
+        $this->assertEquals('test1',User::find($this->user->id)->nickname);
+        User::query()->where('id',$this->user->id)->update(['nickname'=>'test2']);
+        $is = $user->cas();
+        $this->assertEquals(0,$is);
+        $this->assertEquals('test2',User::find($this->user->id)->nickname);
+        $user->save();
+    }
+
+    public function testBaseProcess(){
+        $order = $this->getOrder()->refresh();
+        OrderService::getInstance()->payOrder($order,'payid_test');
+        $this->assertEquals(OrderEnums::STATUS_PAY, $order->refresh()->order_status);
+        $this->assertEquals('payid_test', $order->pay_id);
+
+        $shipSn = '1234567';
+        $shipChannel = 'shunfeng';
+        OrderService::getInstance()->ship($this->user->id, $order->id, $shipSn, $shipChannel);
+        $order->refresh();
+        $this->assertEquals(OrderEnums::STATUS_SHIP, $order->order_status);
+        $this->assertEquals($shipSn, $order->ship_sn);
+        $this->assertEquals($shipChannel, $order->ship_channel);
+
+        OrderService::getInstance()->confirm($this->user->id, $order->id);
+        $order->refresh();
+        $this->assertEquals(2, $order->comments);
+        $this->assertEquals(OrderEnums::STATUS_CONFIRM, $order->order_status);
+
+        OrderService::getInstance()->delete($this->user->id, $order->id);
+        $this->assertNull(Order::find($order->id));
+
+    }
+
+    public function testRefundProcess(){
+        $order = $this->getOrder();
+        OrderService::getInstance()->payOrder($order,'payid_test');
+        $this->assertEquals(OrderEnums::STATUS_PAY, $order->refresh()->order_status);
+        $this->assertEquals('payid_test', $order->pay_id);
+
+        OrderService::getInstance()->refund($this->user->id, $order->id);
+        $order->refresh();
+        $this->assertEquals(OrderEnums::STATUS_REFUND, $order->order_status);
+
+        $refundType = '微信退款接口';
+        $refundContent = '1234567';
+        OrderService::getInstance()->agreeRefund($order, $refundType, $refundContent);
+        $order->refresh();
+        $this->assertEquals(OrderEnums::STATUS_REFUND_CONFIRM, $order->order_status);
+        $this->assertEquals($refundType, $order->refund_type);
+        $this->assertEquals($refundContent, $order->refund_content);
+
+        OrderService::getInstance()->delete($this->user->id, $order->id);
+        $this->assertNull(Order::find($order->id));
     }
 }

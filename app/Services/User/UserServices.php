@@ -15,7 +15,9 @@ use Overtrue\EasySms\PhoneNumber;
 
 class UserServices extends BaseServices
 {
-
+    public function getUserById($id){
+        return User::find($id);
+    }
     public function getUsers(array $userIds)
     {
         if (empty($userIds)) {

@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 
 
 
+
 /**
  * App\Models\Order\Order
  *
@@ -85,7 +86,10 @@ use Illuminate\Support\Carbon;
  */
 class Order extends BaseModel
 {
-
+    /**
+     *
+     */
+    use OrderStatusTrait;
 
     /**
      * The attributes that should be cast to native types.
@@ -95,4 +99,6 @@ class Order extends BaseModel
     protected $casts = [
         'deleted' => 'boolean',
     ];
+
+
 }

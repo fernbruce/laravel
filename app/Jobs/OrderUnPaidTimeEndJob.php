@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\BusinessException;
 use App\Models\System;
 use App\Services\Order\OrderService;
 use App\Services\SystemServices;
@@ -10,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Throwable;
 
 class OrderUnPaidTimeEndJob implements ShouldQueue
 {
@@ -27,17 +29,23 @@ class OrderUnPaidTimeEndJob implements ShouldQueue
         $this->userId = $userId;
         $this->orderId = $orderId;
         $delayTime = SystemServices::getInstance()->getOrderUnpaidDelayMinutes();
-//        $this->delay(now()->addMinutes($delayTime));
-        $this->delay(now()->addSeconds(5));
+        $this->delay(now()->addMinutes($delayTime));
+//        $this->delay(now()->addSeconds(10));
     }
 
     /**
      * Execute the job.
      *
      * @return void
+     * @throws BusinessException
+     * @throws Throwable
      */
     public function handle()
     {
-        OrderService::getInstance()->cancel($this->userId,$this->orderId);
+        try{
+            OrderService::getInstance()->systemCancel($this->userId,$this->orderId);
+        }catch (BusinessException $e){
+
+        }
     }
 }

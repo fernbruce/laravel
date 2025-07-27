@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use App\Services\Order\OrderService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -26,6 +28,13 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->call(function () {
+                OrderService::getInstance()->autoConfirm();
+        })->dailyAt('3:00')->runInBackground()->name('auto_confirm')->onOneServer();
+
+        $schedule->call(function () {
+            Log::info('test schedule');
+        })->dailyAt('3:00')->runInBackground()->name('log')->onOneServer();
     }
 
     /**

@@ -48,5 +48,8 @@ class DBSqlListener
         $sql = sprintf($sql, ...$bindings);
         // $sql = vsprintf($sql, $bindings);
         Log::info('sql log', ['sql' => $sql, 'time' => $time]);
+//        if (app()->environment('testing')) {
+//            echo $sql.PHP_EOL;
+//        }
     }
 }
