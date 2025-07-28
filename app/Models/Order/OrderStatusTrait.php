@@ -92,4 +92,14 @@ trait OrderStatusTrait
     {
         return $this->order_status === OrderEnums::STATUS_PAY;
     }
+
+    public function isHadPaid(): bool
+    {
+        return !in_array($this->order_status, [
+            OrderEnums::STATUS_CREATE,
+            OrderEnums::STATUS_ADMIN_CANCEL,
+            OrderEnums::STATUS_CANCEL,
+            OrderEnums::STATUS_AUTO_CANCEL
+        ], true);
+    }
 }

@@ -4,29 +4,44 @@ namespace App\Services;
 
 use App\CodeResponse;
 use App\Exceptions\BusinessException;
+use Mockery;
 
 class BaseServices
 {
-    protected static $instance;
+    protected static $instance = [];
 
     /**
      * @return static
      */
     public static function getInstance()
     {
-        if (!static::$instance instanceof static) {
-            static::$instance = new static();
-        }
+//        echo static::class . '>>' . (static::$instance[static::class] ?? [] instanceof static ? 'true' : 'false') . PHP_EOL;
+         if (!(static::$instance[static::class]??[]) instanceof static) {
+             return static::$instance[static::class] = new static();
+         }
+         return static::$instance[static::class];
+
+//        if ((static::$instance[static::class] ?? []) instanceof static) {
+//            return static::$instance[static::class];
+//        }
+//        return static::$instance[static::class] = new static();
+    }
+
+    public static function getMockInstance(){
+        return static::$instance[static::class] = Mockery::mock(static::class)
+            ->makePartial();
+    }
+    public static function rollbackInstance(){
+        return static::$instance[static::class] = new static();
+    }
+
+    public static function getInstances()
+    {
         return static::$instance;
     }
+    private function __construct() {}
 
-    private function __construct()
-    {
-    }
-
-    private function __clone()
-    {
-    }
+    private function __clone() {}
 
     /**
      * @param  array  $codeResponse
@@ -45,7 +60,7 @@ class BaseServices
      */
     public function throwBadArgumentValue(): void
     {
-         $this-> throwBusinessException(CodeResponse::PARAM_VALUE_ILLEGAL);
+        $this->throwBusinessException(CodeResponse::PARAM_VALUE_ILLEGAL);
     }
 
 
@@ -55,6 +70,6 @@ class BaseServices
      */
     public function throwUpdateFail(): void
     {
-        $this-> throwBusinessException(CodeResponse::UPDATED_FAIL);
+        $this->throwBusinessException(CodeResponse::UPDATED_FAIL);
     }
 }

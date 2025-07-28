@@ -2,8 +2,14 @@
 
 namespace Tests;
 
+use App\Inputs\OrderSubmitInput;
 use App\Models\Goods\GoodsProduct;
+use App\Models\System;
 use App\Models\User\User;
+use App\Services\Order\CartService;
+use App\Services\Order\OrderService;
+use App\Services\SystemServices;
+use App\Services\User\AddressServices;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
@@ -16,7 +22,9 @@ abstract class TestCase extends BaseTestCase
 
     /** @var User $user */
     protected $user;
-    protected function setUp():void{
+
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->user = factory(User::class)->state('address_default')->create();
     }
@@ -36,14 +44,14 @@ abstract class TestCase extends BaseTestCase
 //        $this->authHeader = $this->getAuthHeader($this->user->username, '123456');
 //
 //    }
-    public function getAuthHeader($username='user123',$password='user123')
+    public function getAuthHeader($username = 'user123', $password = 'user123')
     {
         $response = $this->post('/wx/auth/login', [
             'username' => $username,
             'password' => $password
         ]);
         $this->token = $response->getOriginalContent()['data']['token'] ?? '';
-        return ['Authorization' => 'Bearer ' . $this->token];
+        return ['Authorization' => 'Bearer '.$this->token];
     }
 
 
@@ -51,21 +59,24 @@ abstract class TestCase extends BaseTestCase
     {
         $this->assertLitemallApi($uri, 'get', [], $ignore);
     }
-    public function assertLitemallApiPost($uri,  $data = [], $ignore = [])
+
+    public function assertLitemallApiPost($uri, $data = [], $ignore = [])
     {
         $this->assertLitemallApi($uri, 'post', $data, $ignore);
     }
+
     public function assertLitemallApi($uri, $method = 'get', $data = [], $ignore = [])
     {
         $client = new Client();
         if ($method == 'get') {
             $response1 = $this->get($uri, $this->getAuthHeader());
 //            dd($response1->getContent());
-            $response2 = $client->get('http://47.99.102.217:8080/' . $uri, ['headers' => ['X-Litemall-Token' => $this->token]]);
+            $response2 = $client->get('http://47.99.102.217:8080/'.$uri,
+                ['headers' => ['X-Litemall-Token' => $this->token]]);
         } else {
             $response1 = $this->post($uri, $data, $this->getAuthHeader());
             $response2 = $client->post(
-                'http://47.99.102.217:8080/' . $uri,
+                'http://47.99.102.217:8080/'.$uri,
                 [
                     'headers' => ['X-Litemall-Token' => $this->token],
                     'json' => $data
@@ -88,5 +99,29 @@ abstract class TestCase extends BaseTestCase
             unset($content2[$key]);
         }
         $this->assertEquals($content2, $content1);
+    }
+
+    public function getSimpleOrder($options = [[11.3, 2], [2.3, 1], [81.4, 4]])
+    {
+      $this->user = factory(User::class)->state('address_default')->create();
+      $this->getAuthHeader($this->user->username, '123456');
+      $address = AddressServices::getInstance()->getDefaultAddress($this->user->id);
+
+      foreach ($options as list($price,$num)) {
+          $product = factory(GoodsProduct::class)->create(['price'=>$price]);
+          CartService::getInstance()->add($this->user->id, $product->goods_id, $product->id, $num);
+      }
+      $input = OrderSubmitInput::new([
+          'addressId' => $address->id,
+          'cartId'=>0,
+          'couponId'=>0,
+          'grouponRulesId'=>0,
+          'message'=>'备注'
+      ]);
+
+      $order = OrderService::getInstance()->submit($this->user->id, $input);
+//      $order->actual_price -= $order->freight_price;
+      $order->save();
+      return $order;
     }
 }

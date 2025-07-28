@@ -79,7 +79,7 @@ class OrderService extends BaseServices
         $order->order_status = OrderEnums::STATUS_CREATE;
         $order->consignee = $address->name;
         $order->mobile = $address->tel;
-        $order->address = $address->province . $address->city . $address->county . " " . $address->address_detail;
+        $order->address = $address->province.$address->city.$address->county." ".$address->address_detail;
         $order->message = $input->message ?? '';
         $order->goods_price = $checkedGoodsPrice;
         $order->freight_price = $freightPrice;
@@ -166,11 +166,11 @@ class OrderService extends BaseServices
     public function generateOrderSn()
     {
         return retry(5, function () {
-            $orderSn = date('YmdHis') . Str::random(6);
+            $orderSn = date('YmdHis').Str::random(6);
             if (!$this->isOrderSnUsed($orderSn)) {
                 return $orderSn;
             }
-            Log::warning('订单号获取失败, orderSn:' . $orderSn);
+            Log::warning('订单号获取失败, orderSn:'.$orderSn);
             $this->throwBusinessException(CodeResponse::FAIL, '订单号获取失败');
         });
     }
@@ -308,7 +308,7 @@ class OrderService extends BaseServices
 
         $user = UserServices::getInstance()->getUserById($order->user_id);
         //        $user->notify(new NewPaidOrderSMSNotify());
-        return true;
+        return $order;
     }
 
     /**
@@ -450,7 +450,7 @@ class OrderService extends BaseServices
                 $this->confirm($order->user_id, $order->id, true);
             } catch (BusinessException $e) {
             } catch (Throwable $e) {
-                Log::error('Auto confirm error. Error:' . $e->getMessage());
+                Log::error('Auto confirm error. Error:'.$e->getMessage());
             }
         }
     }
@@ -493,5 +493,80 @@ class OrderService extends BaseServices
             'orderGoods' => $goodsList,
             'expressInfo' => $express
         ];
+    }
+
+    private function getPayOrderInfo($userId, $orderId)
+    {
+        $order = $this->getOrderByUserIdAndId($userId, $orderId);
+        if (empty($order)) {
+            $this->throwBadArgumentValue();
+        }
+        return $order;
+    }
+
+    public function getWxPayOrder($userId, $orderId)
+    {
+        /** @var Order $order */
+        $order = $this->getPayOrderInfo($userId, $orderId);
+        return [
+            'out_trade_no' => $order->order_sn,
+            'body' => '订单：'.$order->order_sn,
+            'total_fee' => bcul($order->actual_price, 100),
+        ];
+
+    }
+
+    public function getAlipayPayOrder($userId, $orderId)
+    {
+        /** @var Order $order */
+        $order = $this->getPayOrderInfo($userId, $orderId);
+        return [
+            'out_trade_no' => $order->order_sn,
+            'total_amount' => $order->actual_price,
+            'subject' => '订单：'.$order->order_sn,
+        ];
+    }
+
+    public function getOrderBySn($orderSn)
+    {
+        return Order::query()->where('order_sn', $orderSn)->first();
+    }
+
+    private function notify($orderSn, $payId, $price){
+        $order = $this->getOrderBySn($orderSn);
+        if (is_null($order)) {
+            $this->throwBusinessException(CodeResponse::ORDER_UNKNOWN);
+        }
+
+        if ($order->isHadPaid()) {
+            return $order;
+        }
+
+        if (bccomp($order->actual_price, $price, 2) != 0) {
+            $this->throwBusinessException(CodeResponse::FAIL,
+                "支付回调，订单【{$order->id}】金额不一致，【total_amount={$price}】,订单金额【actual_price={$order->actual_price}】"
+            );
+        }
+        return $this->payOrder($order, $payId);
+
+    }
+    public function wxNotify(array $data)
+    {
+        $orderSn = $data['out_trade_no'];
+        $payId = $data['transaction_id'];
+        $price = bcdiv($data['total_fee'], 100, 2);
+
+        return $this->notify($orderSn, $payId, $price);
+    }
+
+    public function alipayNotify(array $data){
+        if(!in_array($data['trade_status']??'',['TRADE_SUCCESS','TRADE_FINISHED'])){
+            $this->throwBadArgumentValue();
+        }
+        $orderSn = $data['out_trade_no']??'';
+        $payId = $data['trade_no']??'';
+        $price = (float) ($data['total_amount'] ?? 0.00);
+
+        return $this->notify($orderSn, $payId, $price);
     }
 }

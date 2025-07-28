@@ -77,7 +77,7 @@ Route::post('order/confirm', 'OrderController@confirm'); //确认收货
 //Route::any('order/prepay', ''); // 订单的预支付会话 - jsapi
 Route::post('order/h5pay', 'OrderController@h5pay'); // 微信支付 - h5
 Route::post('order/wxNotify', 'OrderController@wxNotify'); // 微信支付回调
-Route::post('order/h5alipay', 'OrderController@h5alipay'); // 支付宝支付 - h5
+Route::any('order/h5alipay', 'OrderController@h5alipay'); // 支付宝支付 - h5
 Route::post('order/alipayNotify', 'OrderController@alipayNotify'); // 支付宝支付回调
 Route::get('order/alipayReturn', 'OrderController@alipayReturn'); // 支付宝支付回调
 Route::any('order/list', 'OrderController@list'); //订单列表

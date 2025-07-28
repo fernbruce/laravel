@@ -17,10 +17,10 @@ class OrderTest extends TestCase
 
     public function testExpress()
     {
-        $ret = ExpressServices::getInstance()->getOrderTraces('JTSD', 'JT5376253296132');
+//        $ret = ExpressServices::getInstance()->getOrderTraces('JTSD', 'JT5376253296132');
 //        $ret = ExpressServices::getInstance()->getOrderTraces('STO', '777308993434829');
 //        $ret = ExpressServices::getInstance()->getOrderTraces('YTO', 'YT8777253089737');
-        // $ret =  ExpressServices::getInstance()->getOrderTraces('YTO', 'YT7560733451381');
+        $ret =  ExpressServices::getInstance()->getOrderTraces('YTO', 'YT7560733451381');
 //        $ret =  ExpressServices::getInstance()->getOrderTraces('ZTO', '78926807604226');
         print_r(json_decode($ret, true));
         dd($ret);
