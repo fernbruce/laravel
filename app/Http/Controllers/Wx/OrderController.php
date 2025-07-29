@@ -109,7 +109,7 @@ class OrderController extends WxController
     {
         $orderId = $this->verifyId('orderId');
         $order = OrderService::getInstance()->getAlipayPayOrder($this->userId(), $orderId);
-        return $this->success(Pay::alipay()->wap($order)->getContent());
+        return Pay::alipay()->wap($order)->getContent();
     }
 
     public function alipayNotify()
