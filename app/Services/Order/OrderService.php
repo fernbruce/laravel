@@ -532,7 +532,8 @@ class OrderService extends BaseServices
         return Order::query()->where('order_sn', $orderSn)->first();
     }
 
-    private function notify($orderSn, $payId, $price){
+    private function notify($orderSn, $payId, $price)
+    {
         $order = $this->getOrderBySn($orderSn);
         if (is_null($order)) {
             $this->throwBusinessException(CodeResponse::ORDER_UNKNOWN);
@@ -550,6 +551,7 @@ class OrderService extends BaseServices
         return $this->payOrder($order, $payId);
 
     }
+
     public function wxNotify(array $data)
     {
         $orderSn = $data['out_trade_no'];
@@ -559,12 +561,13 @@ class OrderService extends BaseServices
         return $this->notify($orderSn, $payId, $price);
     }
 
-    public function alipayNotify(array $data){
-        if(!in_array($data['trade_status']??'',['TRADE_SUCCESS','TRADE_FINISHED'])){
+    public function alipayNotify(array $data)
+    {
+        if (!in_array($data['trade_status'] ?? '', ['TRADE_SUCCESS', 'TRADE_FINISHED'])) {
             $this->throwBadArgumentValue();
         }
-        $orderSn = $data['out_trade_no']??'';
-        $payId = $data['trade_no']??'';
+        $orderSn = $data['out_trade_no'] ?? '';
+        $payId = $data['trade_no'] ?? '';
         $price = (float) ($data['total_amount'] ?? 0.00);
 
         return $this->notify($orderSn, $payId, $price);

@@ -6,10 +6,10 @@ return [
         'app_id' => env('ALI_APP_ID', ''),
 
         // 支付宝异步通知地址
-        'notify_url' => '',
+        'notify_url' => env('APP_URL').'/wx/order/alipayNotify',
 
         // 支付成功后同步通知地址
-        'return_url' => '',
+        'return_url' => env('APP_URL').'/wx/order/alipayReturn',
 
         // 阿里公共密钥，验证签名时使用
         'ali_public_key' => env('ALI_PUBLIC_KEY', ''),

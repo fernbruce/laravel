@@ -16,7 +16,7 @@ use Yansongda\LaravelPay\Facades\Pay;
 
 class OrderController extends WxController
 {
-    protected $except = ['wxNotify', 'alipayNotify'];
+    protected $except = ['wxNotify', 'alipayNotify','alipayReturn'];
 
     /**
      * 提交订单
@@ -109,7 +109,7 @@ class OrderController extends WxController
     {
         $orderId = $this->verifyId('orderId');
         $order = OrderService::getInstance()->getAlipayPayOrder($this->userId(), $orderId);
-        return Pay::alipay()->wap($order);
+        return $this->success(Pay::alipay()->wap($order)->getContent());
     }
 
     public function alipayNotify()
@@ -120,6 +120,15 @@ class OrderController extends WxController
             OrderService::getInstance()->alipayNotify($data);
         });
         return Pay::alipay()->success();
+    }
+
+    public function alipayReturn(){
+        $data = Pay::alipay()->find(request()->input())->toArray();
+        Log::info('alipayReturn',$data);
+        DB::transaction(function () use ($data) {
+           OrderService::getInstance()->alipayNotify($data);
+        });
+        return redirect(env('H5_URL').'/#/user/order/list/0');
 
     }
 }
