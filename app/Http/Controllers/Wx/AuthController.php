@@ -88,11 +88,13 @@ class AuthController extends WxController
         $code = $request->input('code');
         if (empty($username) || empty($password) || empty($mobile) || empty($code)) {
             return $this->fail(CodeResponse::PARAM_ILLEGAL);
+//            return ['errno' => 401, 'errmsg' => '参数不对'];
         }
 
         $user = UserServices::getInstance()->getByUsername($username);
         if (!is_null($user)) {
             return $this->fail(CodeResponse::AUTH_NAME_REGISTERED);
+//            return ['errno' => 704, 'errmsg' => '用户名已注册'];
         }
 
         $validator = Validator::make([
@@ -102,11 +104,13 @@ class AuthController extends WxController
         ]);
         if ($validator->fails()) {
             return $this->fail(CodeResponse::AUTH_INVALID_MOBILE);
+//            return ['errno' => 707, '手机格式不正确'];
         }
 
         $userInfo = UserServices::getInstance()->getByMobile($mobile);
         if (!is_null($userInfo)) {
             return $this->fail(CodeResponse::AUTH_MOBILE_REGISTERED);
+//            return ['errno' => 705, 'errmsg' => '手机号已注册'];
         }
         // todo 验证验证码是否正确
         UserServices::getInstance()->checkCaptcha($mobile, $code);
@@ -116,7 +120,9 @@ class AuthController extends WxController
         $user->password = Hash::make($password);
         $user->mobile = $mobile;
         $user->avatar = 'https://objectstorageapi.eu-central-1.run.claw.cloud/gg2hxe1z-test/cat.png';
-        $user->last_login_time = Carbon::now()->toDateTimeString();
+        $user->nickname = $username;
+//        $user->last_login_time = Carbon::now()->toDateTimeString();
+        $user->last_login_time = now()->toDateTimeString();
         $user->last_login_ip = $request->getClientIp();
         $user->save();
         $data = [
@@ -125,6 +131,24 @@ class AuthController extends WxController
             'avatarUrl' => $user->avatar,
         ];
         return $this->success($data);
+        return [
+            'token'=>'',
+            'userInfo'=>[
+                'nickName'=>$username,
+                'avatarUrl'=>$user->avater
+            ]
+        ];
+        return [
+            'errno'=>0,
+            'errmsg'=>'成功',
+            'data'=> [
+                'token'=>'',
+                'userInfo'=>[
+                    'nickName'=>$username,
+                    'avatarUrl'=>$user->avater
+                ]
+            ]
+        ];
     }
 
     /**

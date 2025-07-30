@@ -27,7 +27,7 @@ class UserServices extends BaseServices
     }
 
     /**
-     *
+     * 根据用户名获取用户
      * @param [string] $username
      * @return User|null|Model
      */

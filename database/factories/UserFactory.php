@@ -18,12 +18,15 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(User::class, function (Faker $faker) {
+    $name = $faker->name;
     return [
-        'username' => $faker->name,
+        'username' => $name,
         'password' => \Illuminate\Support\Facades\Hash::make('123456'), // password
         'gender' => $faker->randomKey([0, 1, 2]),
         'mobile' => $faker->phoneNumber,
-        'avatar' => $faker->imageUrl(),
+//        'avatar' => $faker->imageUrl(),
+        'avatar' => 'https://objectstorageapi.eu-central-1.run.claw.cloud/gg2hxe1z-test/cat.png',
+        'nickname'=>'nicknameOf'.$name
     ];
 });
 

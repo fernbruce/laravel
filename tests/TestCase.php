@@ -103,7 +103,6 @@ abstract class TestCase extends BaseTestCase
 
     public function getSimpleOrder($options = [[11.3, 2], [2.3, 1], [81.4, 4]])
     {
-      $this->user = factory(User::class)->state('address_default')->create();
       $this->getAuthHeader($this->user->username, '123456');
       $address = AddressServices::getInstance()->getDefaultAddress($this->user->id);
 

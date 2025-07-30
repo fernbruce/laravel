@@ -104,12 +104,12 @@ class AuthTest extends TestCase
     public function testLogin()
     {
         $response = $this->json('POST', '/wx/auth/login', [
-            'username' => 'user123',
-            'password' => 'user123'
+            'username' => 'tanfan',
+            'password' => '123456'
         ]);
-        dump($response->getContent());
+        dump($response->getOriginalContent());
         $response->assertJson(['errno' => 0, 'errmsg' => '成功']);
-        echo $response->getOriginalContent()['data']['token'] ?? '';
+        dump($response->getOriginalContent()['data']['token'] ?? '');
         $this->assertNotEmpty($response->getOriginalContent()['data']['token'] ?? '');
     }
 
