@@ -26,7 +26,8 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->state('address_default')->create();
+//        $this->user = factory(User::class)->state('address_default')->create();
+        $this->user = User::find(465);
     }
 
 //    /** @var User $user */

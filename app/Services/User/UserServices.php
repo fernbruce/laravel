@@ -92,7 +92,6 @@ class UserServices extends BaseServices
      */
     public function checkCaptcha(string $mobile, string $code)
     {
-
         $key = 'register_captcha_'.$mobile;
         $isPass = Cache::get($key) === $code;
         if ($isPass) {
@@ -100,6 +99,7 @@ class UserServices extends BaseServices
             return true;
         } else {
             throw new BusinessException(CodeResponse::AUTH_CAPTCHA_UNMATCH);
+            return CodeResponse::AUTH_CAPTCHA_UNMATCH;
         }
     }
 

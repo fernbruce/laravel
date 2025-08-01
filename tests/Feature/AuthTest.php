@@ -43,6 +43,7 @@ class AuthTest extends TestCase
 
         $mobile = '13800000002';
         $code = UserServices::getInstance()->setCaptcha($mobile);
+        dump($code);
         $response = $this->post('/wx/auth/register', [
             'username' => 'test12',
             'password' => 'password',

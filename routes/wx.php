@@ -84,7 +84,8 @@ Route::any('order/list', 'OrderController@list'); //订单列表
 Route::get('order/detail', 'OrderController@detail'); //订单详情
 Route::get('order/detail', [OrderController::class, 'detail']); //订单详情
 
-
+Route::get('fangfang/getData', 'FangfangController@getData');
+Route::get('fangfang/getGeoData', 'FangfangController@getGeoData');
 //Route::any('home/index', ''); //首页数据接口
 
 //Route::any('collect/list', ''); //收藏列表

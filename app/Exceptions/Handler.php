@@ -18,6 +18,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
+        //不会上报，如果上报会记录错误日志，因为是业务异常所以不需要记录错误日志
         BusinessException::class
     ];
 
@@ -43,11 +44,13 @@ class Handler extends ExceptionHandler
     }
 
     /**
+     * 进行异常的格式化
      * Render an exception into an HTTP response.
      *
      * @param  Request  $request
      * @param  Exception  $exception
      * @return Response
+     * @throws Throwable
      */
     public function render($request, Throwable $exception)
     {

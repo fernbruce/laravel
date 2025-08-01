@@ -8,7 +8,7 @@ class BusinessException extends Exception
 {
     public function __construct($codeResponse, $info = "")
     {
-        list($code, $message) = $codeResponse;
+        [$code, $message] = $codeResponse;
         parent::__construct($info ?: $message, $code);
     }
 }

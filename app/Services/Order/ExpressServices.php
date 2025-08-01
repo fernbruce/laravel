@@ -49,7 +49,7 @@ class ExpressServices extends BaseServices
         // 组装系统级参数
         $datas = array(
             'EBusinessID' => $appId,
-            'RequestType' => '8001', //免费即时查询接口指令1002/在途监控即时查询接口指令8001/地图版即时查询接口指令8003
+            'RequestType' => '8003', //免费即时查询接口指令1002/在途监控即时查询接口指令8001/地图版即时查询接口指令8003
             'RequestData' => urlencode($requestData),
             'DataType' => '2',
         );
@@ -62,7 +62,19 @@ class ExpressServices extends BaseServices
         return $result;
     }
 
-
+    public function getGeoData($com, $code){
+       $data = json_decode($this->getOrderTraces($com, $code), true);
+       $coordinates = $data['Coordinates']??[];
+//       dd($coordinates);
+       $geoData = [];
+       if(!empty($coordinates)){
+            foreach($coordinates as $k=>$v){
+                $LatAndLng = explode(',',$v['LatAndLng']);
+                $geoData[] = ['name' => $v['Location'], 'value' => [$LatAndLng[1], $LatAndLng[0]]];
+            }
+       }
+       return $geoData;
+    }
 
     /**
      *  post提交数据

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\CodeResponse;
 use App\Exceptions\BusinessException;
 use App\Services\User\UserServices;
 use Tests\TestCase;
@@ -44,6 +45,7 @@ class AuthTest extends TestCase
         $this->assertTrue($isPass);
         $this->expectException(BusinessException::class);
         $this->expectExceptionCode(703);
+//        $this->exceptExceptionObject(new BusinessException(CodeResponse::AUTH_CAPTCHA_UNMATCH));
         $isPass = UserServices::getInstance()->checkCaptcha($mobile, $code);
     }
 }

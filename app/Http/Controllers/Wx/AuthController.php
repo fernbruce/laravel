@@ -40,6 +40,7 @@ class AuthController extends WxController
      */
     public function login(Request $request)
     {
+//        $request->bearerToken();
         //获取账号密码
         $username = $request->input('username');
         $password = $request->input('password');
@@ -80,8 +81,10 @@ class AuthController extends WxController
      * @param  Request  $request
      * @return jsonResponse
      */
-    public function register(Request $request)
+    public function register(Request $request): array
     {
+//        return response()->json(CodeResponse::AUTH_MOBILE_REGISTERED,200,[],JSON_UNESCAPED_UNICODE);
+        return CodeResponse::AUTH_MOBILE_REGISTERED;
         $username = $request->input('username');
         $password = $request->input('password');
         $mobile = $request->input('mobile');
