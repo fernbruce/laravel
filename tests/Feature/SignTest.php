@@ -57,5 +57,19 @@ class SignTest extends TestCase
 
     }
 
+    public function testNodeDemo(){
+        $client = new Client();
+        $response = $client->post(
+            "https://api.inews.qq.com/newsqa/v1/query/inner/publish/modules/list?modules=statisGradeCityDetail",
+            [
+                'headers' => [],
+                'json' => [],
+                'verify' => false // 禁用 SSL 验证
+            ]
+        );
+        $content = json_decode($response->getBody()->getContents(), true);
+        dd($content);
+    }
+
 
 }
