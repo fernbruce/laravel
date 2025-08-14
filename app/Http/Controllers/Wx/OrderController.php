@@ -16,7 +16,7 @@ use Yansongda\LaravelPay\Facades\Pay;
 
 class OrderController extends WxController
 {
-    protected $except = ['wxNotify', 'alipayNotify','alipayReturn'];
+    protected $except = ['wxNotify', 'alipayNotify', 'alipayReturn'];
 
     /**
      * 提交订单
@@ -29,13 +29,13 @@ class OrderController extends WxController
         $input = OrderSubmitInput::new();
 
         $lockKey = sprintf('order_submit_%s_%s', $this->userId(), md5(serialize($input)));
-        $lock = Cache::lock($lockKey);
-        if (!$lock) {
+        $lock = Cache::lock($lockKey,5);
+        if (!$lock->get()) {
             return $this->fail(CodeResponse::FAIL, '请勿重复请求');
         }
-//         $order = DB::transaction(function () use($input){
-        return OrderService::getInstance()->submit($this->userId(), $input);
-//         });
+        $order = DB::transaction(function () use ($input) {
+            return OrderService::getInstance()->submit($this->userId(), $input);
+        });
         return $this->success([
             'orderId' => $order->id,
             'grouponLinkId' => $order->grouponLinkId ?? 0,
@@ -115,18 +115,19 @@ class OrderController extends WxController
     public function alipayNotify()
     {
         $data = Pay::alipay()->verify()->toArray();
-        Log::info('alipayNotify',$data);
+        Log::info('alipayNotify', $data);
         DB::transaction(function () use ($data) {
             OrderService::getInstance()->alipayNotify($data);
         });
         return Pay::alipay()->success();
     }
 
-    public function alipayReturn(){
+    public function alipayReturn()
+    {
         $data = Pay::alipay()->find(request()->input())->toArray();
-        Log::info('alipayReturn',$data);
+        Log::info('alipayReturn', $data);
         DB::transaction(function () use ($data) {
-           OrderService::getInstance()->alipayNotify($data);
+            OrderService::getInstance()->alipayNotify($data);
         });
         return redirect(env('H5_URL').'/#/user/order/list/0');
 

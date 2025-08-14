@@ -81,10 +81,10 @@ class AuthController extends WxController
      * @param  Request  $request
      * @return jsonResponse
      */
-    public function register(Request $request): array
+    public function register(Request $request)
     {
 //        return response()->json(CodeResponse::AUTH_MOBILE_REGISTERED,200,[],JSON_UNESCAPED_UNICODE);
-        return CodeResponse::AUTH_MOBILE_REGISTERED;
+//        return CodeResponse::AUTH_MOBILE_REGISTERED;
         $username = $request->input('username');
         $password = $request->input('password');
         $mobile = $request->input('mobile');

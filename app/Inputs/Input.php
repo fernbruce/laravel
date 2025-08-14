@@ -22,6 +22,7 @@ class Input
         }
         $validator = Validator::make($data, $this->rules());
         if ($validator->fails()) {
+//            throw new BusinessException(CodeResponse::PARAM_VALUE_ILLEGAL,json_encode($validator->errors()->all(), JSON_UNESCAPED_UNICODE));
             throw new BusinessException(CodeResponse::PARAM_VALUE_ILLEGAL);
         }
         $map = get_object_vars($this);

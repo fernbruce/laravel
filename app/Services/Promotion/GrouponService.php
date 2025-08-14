@@ -21,10 +21,9 @@ use function route;
 class GrouponService extends BaseServices
 {
 
-
     public function getGrouponRules(PageInput $page, $columns = ['*'])
     {
-        return GrouponRules::whereStatus(GrouponEnums::RULE_STATUS_ON)->orderBy($page->sort, $page->order)
+        return GrouponRules::query()->whereStatus(GrouponEnums::RULE_STATUS_ON)->orderBy($page->sort, $page->order)
             ->paginate($page->limit, $columns, 'page', $page->page);
     }
 
@@ -50,7 +49,7 @@ class GrouponService extends BaseServices
     public function isOpenOrJoin($userId, $grouponId)
     {
         return Groupon::query()->where('user_id', $userId)
-            ->where(function (Builder $builder) {
+            ->where(function (Builder $builder) use($grouponId) {
                 return $builder->where('groupon_id', $grouponId)
                     ->orWhere('id', $grouponId);
             })->where('status', '!=', GrouponEnums::STATUS_NONE)->exists();
@@ -73,14 +72,14 @@ class GrouponService extends BaseServices
         if (is_null($rule)) {
             $this->throwBusinessException(CodeResponse::PARAM_ILLEGAL);
         }
-        if ($rule->status == GrouponEnums::RULE_STATUS_DOWN_EXPIRE) {
+        if ($rule->status === GrouponEnums::RULE_STATUS_DOWN_EXPIRE) {
             $this->throwBusinessException(CodeResponse::GROUPON_EXPIRED);
         }
-        if ($rule->status == GrouponEnums::RULE_STATUS_DOWN_ADMIN) {
+        if ($rule->status === GrouponEnums::RULE_STATUS_DOWN_ADMIN) {
             $this->throwBusinessException(CodeResponse::GROUPON_OFFLINE);
         }
 
-        if ($linkId == null || $linkId <= 0) {
+        if ($linkId === null || $linkId <= 0) {
             return;
         }
 
@@ -88,7 +87,7 @@ class GrouponService extends BaseServices
             $this->throwBusinessException(CodeResponse::GROUPON_FULL);
         }
 
-        if ($this->isOpenOrJoin($userId, $grouponId)) {
+        if ($this->isOpenOrJoin($userId, $linkId)) {
             $this->throwBusinessException(CodeResponse::GROUPON_JOIN);
         }
         return;
@@ -102,10 +101,11 @@ class GrouponService extends BaseServices
 
     /**
      * 生成开团或参团记录
-     * @param [type] $userId
-     * @param [type] $grouponId
-     * @return bool
-     * @throws BusinessException
+     * @param $userId
+     * @param $orderId
+     * @param $ruleId
+     * @param $linkId
+     * @return int|mixed|null
      */
     public function openOrJoinGroupon($userId, $orderId, $ruleId, $linkId = null)
     {
@@ -128,12 +128,11 @@ class GrouponService extends BaseServices
             return $groupon->id;
         }
 
-        $openGroupon = $this->getGroupon($linkId);
-        $groupon->creator_user_id = $openGroupon->creator_user_id;
+        $originOpenGroupon = $this->getGroupon($linkId);
+        $groupon->creator_user_id = $originOpenGroupon->creator_user_id;
         $groupon->groupon_id = $linkId;
-        $groupon->share_url = $openGroupon->share_url;
-        $groupon->save();
-        return $groupon->id;
+        $groupon->share_url = $originOpenGroupon->share_url; $groupon->save();
+        return $linkId;
     }
 
     public function getGrouponByOrderId($orderId)
@@ -154,13 +153,12 @@ class GrouponService extends BaseServices
         if (is_null($groupon)) {
             return;
         }
-
-        $rule = $this->getGrouponRulesById($groupon->rule_id);
+        $rule = $this->getGrouponRulesById($groupon->rules_id);
         if ($groupon->groupon_id == 0) {
             $groupon->share_url = $this->createGrouponShareImage($rule);
         }
 
-        $groupon->status = GrouponEnum::STATUS_ON;
+        $groupon->status = GrouponEnums::STATUS_ON;
         $isSuccess = $groupon->save();
         if (!$isSuccess) {
             $this->throwBusinessException(CodeResponse::UPDATED_FAIL);
@@ -181,8 +179,6 @@ class GrouponService extends BaseServices
         if ($row == 0) {
             $this->throwBusinessException(CodeResponse::UPDATED_FAIL);
         }
-
-        return;
     }
 
 

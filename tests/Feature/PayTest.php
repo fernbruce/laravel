@@ -64,7 +64,7 @@ class PayTest extends TestCase
          $order = $this->getSimpleOrder();
          $token = Auth::login($this->user);
          echo url('wx/order/h5alipay?').Arr::query(['orderId'=>$order->id,'token'=>$token]);
-         dd($this->user->username);
+         dump($this->user->username);
      }
 
 

@@ -19,9 +19,12 @@ class GoodsServices extends BaseServices
         return Goods::query()->where('id', $id)->first();
     }
 
-    public function getGoodsListById($Ids)
+    public function getGoodsListById($ids)
     {
-        return Goods::query()->whereIn('id', $Ids)->get();
+        if(empty($ids)){
+            return collect();
+        }
+        return Goods::query()->whereIn('id', $ids)->get();
     }
 
     public function countGoodsOnSale()
@@ -39,7 +42,7 @@ class GoodsServices extends BaseServices
             $query = $query->where('category_id', $input->categoryId);
         }
 
-
+//        return $query->orderByDesc('add_time');
         return $query->orderBy($input->sort, $input->order)->paginate($input->limit, $columns, 'page', $input->page);
     }
 
@@ -47,7 +50,7 @@ class GoodsServices extends BaseServices
 
     private function getQueryByGoodsFilter(GoodsListInput $input)
     {
-        $query = Goods::query()->where('is_on_sale', 1)->orderByDesc('add_time');
+        $query = Goods::query()->where('is_on_sale', 1);
         if (!empty($input->brandId)) {
             $query = $query->where('brand_id', $input->brandId);
         }
@@ -66,6 +69,7 @@ class GoodsServices extends BaseServices
             });
         }
         return $query;
+        return $query->orderByDesc('add_time');
     }
 
     // private function getQueryByGoodsFilter($brandId, $isNew, $isHot, $keyword)
@@ -124,12 +128,10 @@ class GoodsServices extends BaseServices
     }
 
     public function reduceStock($productId, $num){
-//        dd($productId,$num);
         /** @var GoodsProduct $product */
         $product = GoodsProduct::query()->where('id',$productId)
             ->where('number', '>=', $num)->first();
         $product->number -= $num;
-//        dd($product->cas());
         return $product->cas();
     }
 

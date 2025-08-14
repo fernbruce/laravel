@@ -107,6 +107,7 @@ class User extends BaseModel implements
     {
         static::casing(function($user){
             echo 'casing'.PHP_EOL;
+//            return false;
         });
         static::casing(function($user){
             echo 'casing'.PHP_EOL;

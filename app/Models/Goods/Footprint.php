@@ -47,12 +47,5 @@ class Footprint extends BaseModel
     ];
 
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'deleted' => 'boolean',
-    ];
+
 }

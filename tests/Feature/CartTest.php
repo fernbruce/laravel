@@ -2,9 +2,11 @@
 namespace Tests\Feature;
 
 use App\Models\Goods\GoodsProduct;
+use App\Models\Promotion\Coupon;
 use App\Models\User\User;
 use App\Services\Goods\GoodsServices;
 use App\Services\Order\CartService;
+use App\Services\Promotion\CouponService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -12,20 +14,22 @@ class CartTest extends TestCase
 {
     use DatabaseTransactions;
 
-
+    /** @var GoodsProduct  $product*/
     private $product;
 
-    private $authHeader;
+
 
     public function setUp(): void
     {
         parent::setUp();
         $this->product = factory(GoodsProduct::class)->create(['number' => 10]);
-        $this->authHeader = $this->getAuthHeader($this->user->username, '123456');
 
     }
 
-
+//   public function testAdd1(){
+//       $product = factory(GoodsProduct::class)->create();
+//       dd($product);
+//   }
     public function testIndex()
     {
         $response = $this->post('wx/cart/add', [
@@ -86,14 +90,22 @@ class CartTest extends TestCase
             "errmsg" => '成功',
             "data" => 2
         ]);
-
+//        $response = $this->post('wx/cart/add', [
+//            'goodsId' => $this->product->goods_id,
+//            'productId' => $this->product->id,
+//            'number' => 3,
+//        ], $this->authHeader);
+//        $response->assertJson([
+//            "errno" => 0,
+//            "errmsg" => '成功',
+//            "data" => 5
+//        ]);
         $response = $this->post('wx/cart/fastadd', [
             'goodsId' => $this->product->goods_id,
             'productId' => $this->product->id,
             'number' => 5,
         ], $this->authHeader);
-        $cart = CartService::getInstance()->getCartProduct($this->user->id, $this->product->goods_id,
-            $this->product->id);
+        $cart = CartService::getInstance()->getCartProduct($this->user->id, $this->product->goods_id, $this->product->id);
         $this->assertEquals(5, $cart->number);
         $response->assertJson([
             "errno" => 0,
@@ -268,7 +280,20 @@ class CartTest extends TestCase
     }
 
     public function testCheckout(){
-//        $resp = $this->get('wx/cart/checkout');
-        $this->assertLitemallApiGet('wx/cart/checkout');
+//        $resp = $this->get('wx/cart/checkout',$this->getAuthHeader());
+
+//        $id = Coupon::query()->insertGetId([
+//            'name' => '活动优惠券',
+//            'desc' => '活动优惠券',
+//            'tag' => '满50减20',
+//            'total' => 0,
+//            'discount' => 20,
+//            'min' => 50,
+//            'limit' => 1,
+//            'time_type' => 0,
+//            'days' => 1
+//        ]);
+//        $ret = CouponService::getInstance()->receive($this->user->id, $id);
+        $this->assertLitemallApiGet('wx/cart/checkout?couponId=0');
     }
 }

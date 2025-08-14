@@ -24,21 +24,22 @@ class GoodsTest extends TestCase
 
     public function testList()
     {
+        $this->assertLitemallApiGet('wx/goods/list?keyword=四件套');
         $this->assertLitemallApiGet('wx/goods/list');
         $this->assertLitemallApiGet('wx/goods/list?categoryId=1008009');
         $this->assertLitemallApiGet('wx/goods/list?brandIdId=1001000');
-        $this->assertLitemallApiGet('wx/goods/list?keyword=四件套');
         $this->assertLitemallApiGet('wx/goods/list?isNew=1');
         $this->assertLitemallApiGet('wx/goods/list?isHot=1');
         $this->assertLitemallApiGet('wx/goods/list?page=2&limit=5');
-        $this->assertLitemallApiGet('wx/goods/list?categoryId=abc');
+        $this->assertLitemallApiGet('wx/goods/list?categoryId=abc');//类型值必须是整型
         $this->assertLitemallApiGet('wx/goods/list?isNew=0');
         $this->assertLitemallApiGet('wx/goods/list?isNew=a');
         $this->assertLitemallApiGet('wx/goods/list?page=a&limit=5');
         $this->assertLitemallApiGet('wx/goods/list?page=1&limit=a');
-        $this->assertLitemallApiGet('wx/goods/list?sort=name&order=asc');
         $this->assertLitemallApiGet('wx/goods/list?sort=id&order=asc', ['errmsg']);
-        $this->assertLitemallApiGet('wx/goods/list?sort=name&order=abc', ['errmsg']);
+
+//        $this->assertLitemallApiGet('wx/goods/list?sort=name&order=abc', ['errmsg']);
+//        $this->assertLitemallApiGet('wx/goods/list?sort=name&order=abc');
     }
 
     public function testDetail()

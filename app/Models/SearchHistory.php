@@ -47,12 +47,5 @@ class SearchHistory extends BaseModel
         'keyword',
         'from'
     ];
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'deleted' => 'boolean',
-    ];
+
 }

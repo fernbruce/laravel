@@ -46,12 +46,5 @@ use Illuminate\Support\Carbon;
  */
 class Category extends BaseModel
 {
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'deleted' => 'boolean'
-    ];
+
 }

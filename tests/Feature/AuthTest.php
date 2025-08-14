@@ -26,7 +26,7 @@ class AuthTest extends TestCase
 
     public function testRegisterErrCode()
     {
-        $mobile = '13800000002';
+        $mobile = '13811111111';
         $code = '123';
         $response = $this->post('/wx/auth/register', [
             'username' => 'test12',
@@ -43,7 +43,6 @@ class AuthTest extends TestCase
 
         $mobile = '13800000002';
         $code = UserServices::getInstance()->setCaptcha($mobile);
-        dump($code);
         $response = $this->post('/wx/auth/register', [
             'username' => 'test12',
             'password' => 'password',

@@ -59,7 +59,7 @@ class ExpressServices extends BaseServices
 
         //根据公司业务处理返回的信息......
 
-        return $result;
+        return json_decode($result,true);
     }
 
     public function getGeoData($com, $code){

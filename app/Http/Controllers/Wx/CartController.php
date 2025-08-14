@@ -104,7 +104,6 @@ class CartController extends WxController
     {
         $productIds = $this->verifyArrayNotEmpty('productIds', []);
         CartService::getInstance()->delete($this->userId(), $productIds);
-        $list = CartService::getInstance()->list($this->userId());
         return $this->index();
     }
 
@@ -151,6 +150,7 @@ class CartController extends WxController
     /**
      * 下单前信息确认
      * @return JsonResponse
+     * @throws BusinessException
      */
     public function checkout()
     {
@@ -158,7 +158,6 @@ class CartController extends WxController
         $addressId = $this->verifyInteger('addressId');
         $couponId = $this->verifyInteger('couponId');
         $grouponRulesId = $this->verifyInteger('grouponRulesId');
-
         //获取地址
         $address = AddressServices::getInstance()->getAddressOrDefault($this->userId(),$addressId);
         $addressId = $address->id??0;
@@ -174,11 +173,13 @@ class CartController extends WxController
         $availableCouponLength=0;
         $couponUser = CouponService::getInstance()->getMostMeetPriceCoupon($this->userId(), $couponId,  $checkedGoodsPrice,$availableCouponLength);
         if(is_null($couponUser)){
-            $couponId = -1;
-            $userCouponId = -1;
+
+                $couponId = -1;
+                $userCouponId = -1;
+
         }else{
             $couponId = $couponUser->coupon_id ?? 0;
-            $userCouponId = $couponUser->coupon_id ?? 0;
+            $userCouponId = $couponUser->id ?? 0;
             $couponPrice = CouponService::getInstance()->getCoupon($couponId)->discount??0;
         }
 
@@ -188,23 +189,29 @@ class CartController extends WxController
         // 计算订单金额
         $orderPrice = bcadd($checkedGoodsPrice, $freightPrice, 2);
         $orderPrice = bcsub($orderPrice, $couponPrice, 2);
-
-        return $this->success([
-            "addressId" => $addressId,
+        $data = [
+            "addressId" => $addressId,//
             "couponId" => $couponId,
-            "userCouponId" => $userCouponId,
             "cartId" => $cartId,
             "grouponRulesId" => $grouponRulesId,
             "grouponPrice" => $grouponPrice,
-            "checkedAddress" => $address,
+            "checkedAddress" => $address,//地址
             "availableCouponLength" => $availableCouponLength,
-            "goodsTotalPrice" => (double)$checkedGoodsPrice,
-            "freightPrice" => (double)$freightPrice,
-            "couponPrice" => (double)$couponPrice,
-            "orderTotalPrice" => (double)$orderPrice,
-            "actualPrice" => (double)$orderPrice,
-            "checkedGoodsList" => $checkedGoodsList->toArray(),
-        ]);
+            "goodsTotalPrice" => $checkedGoodsPrice,//去除掉了团购的金额
+            "freightPrice" => $freightPrice,//运费
+            "couponPrice" => $couponPrice,//优惠券金额
+            "orderTotalPrice" => $orderPrice,//订单的金额
+            "actualPrice" => $orderPrice,//实际的金额->订单的总金额(积分的使用）
+            "checkedGoodsList" => $checkedGoodsList->toArray(),//商品列表
+        ];
+
+        if($userCouponId === -1 ){
+            $data['userCouponId'] = -1;
+        }
+        if($this->verifyInteger('couponId') == '0'){
+            $data['userCouponId'] = $userCouponId;
+        }
+        return $this->success($data);
     }
 
 }

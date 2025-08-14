@@ -50,6 +50,8 @@ class Kernel extends ConsoleKernel
             ->appendOutputTo(storage_path('logs/sign.log')) // 记录日志
             ->name('sign_auto')
             ->onOneServer(); // 如果是多服务器部署
+
+//        $schedule->exec();
     }
 
     /**

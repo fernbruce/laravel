@@ -43,17 +43,9 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Groupon whereStatus($value)
  * @method static Builder|Groupon whereUpdateTime($value)
  * @method static Builder|Groupon whereUserId($value)
- * @mixin Eloquent
+ * @mixin eloquent
  */
 class Groupon extends BaseModel
 {
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'deleted' => 'boolean',
 
-    ];
 }

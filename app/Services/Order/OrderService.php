@@ -31,6 +31,7 @@ class OrderService extends BaseServices
     /**
      * @param $userId
      * @param  OrderSubmitInput  $input
+     * @return Order|null
      * @throws BusinessException
      */
     public function submit($userId, OrderSubmitInput $input)
@@ -225,7 +226,9 @@ class OrderService extends BaseServices
      */
     public function userCancel($userId, $orderId)
     {
-        return $this->cancel($userId, $orderId);
+//        return DB::transaction(function () use($userId, $orderId) {
+            return $this->cancel($userId, $orderId);
+//        });
     }
 
     /**
@@ -303,11 +306,12 @@ class OrderService extends BaseServices
         if ($order->cas() === 0) {
             $this->throwBusinessException(CodeResponse::UPDATED_FAIL);
         }
-        //        GrouponService::getInstance()->payGrouponOrder($order->id);
-        Notification::route('mail', env('MAIL_USERNAME'))->notify(new NewPaidOrderEmailNotify($order->id));
+
+//                GrouponService::getInstance()->payGrouponOrder($order->id);//更新团购信息
+        Notification::route('mail', env('MAIL_USERNAME'))->notify(new NewPaidOrderEmailNotify($order->id));// 邮件通知
 
         $user = UserServices::getInstance()->getUserById($order->user_id);
-        //        $user->notify(new NewPaidOrderSMSNotify());
+        //        $user->notify(new NewPaidOrderSMSNotify());//短信通知
         return $order;
     }
 
@@ -358,7 +362,14 @@ class OrderService extends BaseServices
         return $order;
     }
 
-
+    /**
+     * @param  Order  $order
+     * @param $refundType
+     * @param $refundContent
+     * @return Order
+     * @throws BusinessException
+     * @throws Throwable
+     */
     public function agreeRefund(Order $order, $refundType, $refundContent)
     {
         if (!$order->canAgreeRefundHandle()) {
@@ -375,6 +386,8 @@ class OrderService extends BaseServices
             $this->throwUpdateFail();
         }
         $this->returnStock($order->id);
+        // todo 退款接口
+        // todo 短信通知
         return $order;
     }
 
@@ -450,6 +463,7 @@ class OrderService extends BaseServices
                 $this->confirm($order->user_id, $order->id, true);
             } catch (BusinessException $e) {
             } catch (Throwable $e) {
+                //包括异常在内的异常和错误
                 Log::error('Auto confirm error. Error:'.$e->getMessage());
             }
         }
@@ -482,11 +496,12 @@ class OrderService extends BaseServices
         $goodsList = $this->getOrderGoodsList($orderId);
 
         $express = [];
+        //已发货
         if ($order->isShipStatus()) {
             $detail['expCode'] = $order->ship_channel;
             $detail['expNo'] = $order->ship_sn;
             $detail['expName'] = ExpressServices::getInstance()->getExpressName($order->ship_channel);
-            $express = []; //todo
+            $express = ExpressServices::getInstance()->getOrderTraces($order->ship_channel,$order->ship_sn);
         }
         return [
             'orderInfo' => $detail,

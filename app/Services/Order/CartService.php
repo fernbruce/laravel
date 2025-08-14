@@ -70,6 +70,7 @@ class CartService extends BaseServices
      */
     public function getCartById($userId, $id): ?Cart
     {
+//        $this->throwBusinessException(CodeResponse::FAIL,$userId.'-'.$cartId);
         return Cart::query()->where('user_id', $userId)->where('id', $id)->first();
     }
 
@@ -132,26 +133,7 @@ class CartService extends BaseServices
         return Cart::query()->where('user_id', $userId)->sum('number');
     }
 
-    /**
-     * 添加购物车
-     * @param $userId
-     * @param $goodsId
-     * @param $productId
-     * @param $number
-     * @return Cart
-     * @throws BusinessException
-     */
-    public function add($userId, $goodsId, $productId, $number): Cart
-    {
-        [$goods, $product] = $this->getGoodsInfo($goodsId, $productId);
-        $cartProduct = $this->getCartProduct($userId, $goodsId, $productId);
-        if (is_null($cartProduct)) {
-            return $this->newCart($userId, $goods, $product, $number);
-        }
 
-        $number = $cartProduct->number + $number;
-        return $this->editCart($cartProduct, $product, $number);
-    }
 
     /**
      * @param $goodsId
@@ -233,12 +215,34 @@ class CartService extends BaseServices
         return $existCart;
     }
 
+    /**
+     * 添加购物车
+     * @param $userId
+     * @param $goodsId
+     * @param $productId
+     * @param $number
+     * @return Cart
+     * @throws BusinessException
+     */
+    public function add($userId, $goodsId, $productId, $number): Cart
+    {
+        [$goods, $product] = $this->getGoodsInfo($goodsId, $productId);
+        $cartProduct = $this->getCartProduct($userId, $goodsId, $productId);
+        if (is_null($cartProduct)) {
+            return $this->newCart($userId, $goods, $product, $number);
+        }
+
+        $number = $cartProduct->number + $number;
+        return $this->editCart($cartProduct, $product, $number);
+    }
+
     public function fastadd($userId, $goodsId, $productId, $number)
     {
         [$goods, $product] = $this->getGoodsInfo($goodsId, $productId);
         $cartProduct = $this->getCartProduct($userId, $goodsId, $productId);
         if (is_null($cartProduct)) {
-            return $this->newCart($userId, $goodsId, $productId, $number);
+            $goodsProduct  = GoodsServices::getInstance()->getGoodsProductById($productId);
+            return $this->newCart($userId, $goods, $goodsProduct, $number);
         }
 
         return $this->editCart($cartProduct, $product, $number);

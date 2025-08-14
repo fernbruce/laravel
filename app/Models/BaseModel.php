@@ -30,12 +30,14 @@ class BaseModel extends Model
     public const CREATED_AT = 'add_time';
     public const UPDATED_AT = 'update_time';
 
+    public $defaultCasts = ['deleted' => 'boolean'];
+
 //    public $defaultCasts = ['deleted' => 'boolean'];
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-//         parent::mergeCasts($this->defaultCasts);
+        $this->mergeCasts($this->defaultCasts);
     }
 
     public static function new()
@@ -87,56 +89,64 @@ class BaseModel extends Model
         return array_combine($keys, $values);
     }
 
-         public function serializeDate(\DateTimeInterface $date)
-         {
+    /**
+     * 模型里面时间toArray
+     * @param  \DateTimeInterface  $date
+     * @return string
+     */
+    public function serializeDate(\DateTimeInterface $date)
+    {
 //             return Carbon::instance($date)->toDateString();
-             return Carbon::instance($date)->format('Y-m-d H:i:s');
+//             return Carbon::instance($date)->toDateTimeString();
+        return Carbon::instance($date)->format('Y-m-d H:i:s');
 //             return Carbon::parse($date)->format('Y-m-d H:i:s');
-         }
+    }
 //
+
     /**
      * 乐观锁更新 compare and save
      * @return int
      * @throws Exception
      * @throws Throwable
      */
-    public function cas(){
+    public function cas()
+    {
 //        if(!$this->exists){
 //           throw new Exception('model not exists when cas!') ;
 //        }
         throw_if(!$this->exists, Exception::class, 'model not exists when cas!');
         $dirty = $this->getDirty();
 
-        if(empty($dirty)){
+        if (empty($dirty)) {
             return 0;
         }
-        if($this->usesTimestamps()){
+        if ($this->usesTimestamps()) {
             $this->updateTimestamps();
             $dirty = $this->getDirty();
         }
-        $diff = array_diff(array_keys($dirty),array_keys($this->original));
-        throw_if(!empty($diff), Exception::class, 'key ['.implode(',',$diff).'] not exists when cas!');
+        //如果更新的没有查询的字段
+        $diff = array_diff(array_keys($dirty), array_keys($this->original));
+        throw_if(!empty($diff), Exception::class, 'key ['.implode(',', $diff).'] not exists when cas!');
 
-        if($this->fireModelEvent('casing') === false){
-            return 0;
+        if ($this->fireModelEvent('casing') === false) {
+            return 0;//拦截
         }
         $updateAt = $this->getUpdatedAtColumn();
-//        $query = self::query()->where($this->getKeyName(), $this->getKey());
+//        $query = self::query()->where($this->getKeyName(), $this->getKey());//会自动带上deleted=1
         $query = $this->newModelQuery()->where($this->getKeyName(), $this->getKey());
 
-        if($this->usesTimestamps()){
+        if ($this->usesTimestamps()) {
             unset($dirty[$updateAt]);
         }
-        foreach($dirty as $key => $value){
+        foreach ($dirty as $key => $value) {
             $query = $query->where($key, $this->getOriginal($key));
         }
 //        $query->where($updateAt,Carbon::parse($this->{$updateAt})->subHours(8)->format('Y-m-d H:i:s'));
-        $query->where($updateAt,Carbon::parse($this->getOriginal($updateAt))->subHours(8)->format('Y-m-d H:i:s'));
-//        dd($dirty);
+        $query->where($updateAt, Carbon::parse($this->getOriginal($updateAt))->subHours(8)->format('Y-m-d H:i:s'));
 //        dd($query->toSql(),$query->getBindings());
-//        dd($query->update($dirty));
         $row = $query->update($dirty);
-        if($row>0){
+
+        if ($row > 0) {
             $this->syncChanges();
             $this->fireModelEvent('cased', false);
             $this->syncOriginal();
@@ -144,11 +154,13 @@ class BaseModel extends Model
         return $row;
     }
 
-    public static function casing($callback){
-          static::registerModelEvent('casing', $callback);
+    public static function casing($callback)
+    {
+        static::registerModelEvent('casing', $callback);
     }
 
-    public static function cased($callback){
-         static::registerModelEvent('cased', $callback);
+    public static function cased($callback)
+    {
+        static::registerModelEvent('cased', $callback);
     }
 }

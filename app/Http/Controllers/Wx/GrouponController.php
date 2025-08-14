@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers\Wx;
 
+use App\Exceptions\BusinessException;
 use App\Inputs\PageInput;
 use App\Models\Goods\Goods;
 use App\Models\Promotion\GrouponRules;
 use App\Services\Goods\GoodsServices;
 use App\Services\Promotion\GrouponService;
+use Illuminate\Http\JsonResponse;
 
 class GrouponController extends WxController
 {
     protected $except = ['test'];
 
+    /**
+     * 团购列表
+     * @return JsonResponse
+     * @throws BusinessException
+     */
     public function list()
     {
         $page = PageInput::new();
@@ -28,9 +35,9 @@ class GrouponController extends WxController
                 'name' => $goods->name,
                 'brief' => $goods->brief,
                 'picUrls' => $goods->pic_url,
-                'counterPrice' => $goods->counter_price,
-                'retailPrice' => $goods->retail_price,
-                'grouponPrice' => bcsub($goods->retail_price, $rule->discount, 2),
+                'counterPrice' => $goods->counter_price,//商品专柜价
+                'retailPrice' => $goods->retail_price,//商品零售价
+                'grouponPrice' => bcsub($goods->retail_price, $rule->discount, 2),//团购价（商品的价格-优惠券折扣）
                 'grouponDiscount' => $rule->discount,
                 'grouponMember' => $rule->discount_member,
                 'expireTime' => $rule->expire_time,

@@ -71,7 +71,6 @@ class Goods extends BaseModel
      * @var array
      */
     protected $casts = [
-        'deleted' => 'boolean',
         'counter_price' => 'float',
         'retail_price' => 'float',
         'is_new' => 'boolean',

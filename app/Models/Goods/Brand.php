@@ -49,7 +49,6 @@ class Brand extends BaseModel
      * @var array
      */
     protected $casts = [
-        'deleted' => 'boolean',
         'floor_price' => 'float'
     ];
 }

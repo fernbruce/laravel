@@ -26,6 +26,7 @@ class AddressServices extends BaseServices
      * @param $userId
      * @param $addressId
      * @return BaseModel|Address|Builder|Model|_IH_Address_QB|object|null
+     * @throws BusinessException
      */
     public function getAddressOrDefault($userId, $addressId=null)
     {

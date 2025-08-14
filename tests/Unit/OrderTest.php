@@ -2,6 +2,7 @@
 namespace Tests\Unit;
 
 use App\Enums\OrderEnums;
+use App\Exceptions\BusinessException;
 use App\Inputs\OrderSubmitInput;
 use App\Jobs\OrderUnPaidTimeEndJob;
 use App\Models\Goods\GoodsProduct;
@@ -15,6 +16,7 @@ use App\Services\Order\OrderService;
 use App\Services\User\AddressServices;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use Throwable;
 
 class OrderTest extends TestCase
 {
@@ -73,7 +75,6 @@ class OrderTest extends TestCase
             'message'=>'备注',
         ]);
         $order = OrderService::getInstance()->submit($this->user->id, $input);
-
         $this->assertNotEmpty($order->id);
         $this->assertEquals($checkedGoodsPrice, $order->goods_price);
         $this->assertEquals($checkedGoodsPrice, $order->actual_price);
@@ -122,6 +123,11 @@ class OrderTest extends TestCase
         $order = OrderService::getInstance()->submit($this->user->id, $input);
         return $order;
     }
+
+    /**
+     * @throws Throwable
+     * @throws BusinessException
+     */
     public function testCancel(){
 
         $order = $this->getOrder();
@@ -148,6 +154,19 @@ class OrderTest extends TestCase
         $user->save();
     }
 
+//    public function testpayOrder(){
+//        $order = $this->getOrder()->refresh();
+//        OrderService::getInstance()->payOrder($order,'payid_test');
+//        dd($order->refresh()->toArray());
+//
+//    }
+
+    /**
+     * 主流程
+     * @return void
+     * @throws BusinessException
+     * @throws Throwable
+     */
     public function testBaseProcess(){
         $order = $this->getOrder()->refresh();
         OrderService::getInstance()->payOrder($order,'payid_test');
@@ -172,6 +191,12 @@ class OrderTest extends TestCase
 
     }
 
+    /**
+     * 退款流程 - 简易售后流程
+     * @return void
+     * @throws BusinessException
+     * @throws Throwable
+     */
     public function testRefundProcess(){
         $order = $this->getOrder();
         OrderService::getInstance()->payOrder($order,'payid_test');
@@ -192,5 +217,17 @@ class OrderTest extends TestCase
 
         OrderService::getInstance()->delete($this->user->id, $order->id);
         $this->assertNull(Order::find($order->id));
+    }
+
+    public function testOrderStatusTrait(){
+        $order = $this->getOrder();
+        $this->assertEquals(true,$order->isCreateStatus());
+        $this->assertEquals(false,$order->isCancelStatus());
+        $this->assertEquals(false,$order->isPayStatus());
+
+        $this->assertEquals(true,$order->canCancelHandle());
+        $this->assertEquals(true,$order->canPayHandle());
+        $this->assertEquals(false,$order->canDeleteHandle());
+        $this->assertEquals(false,$order->canConfirmHandle());
     }
 }

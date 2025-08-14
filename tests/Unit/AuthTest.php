@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\CodeResponse;
 use App\Exceptions\BusinessException;
 use App\Services\User\UserServices;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Cache;
 
 class AuthTest extends TestCase
 {
+    use DatabaseTransactions;
     /**
      * A basic unit test example.
      *

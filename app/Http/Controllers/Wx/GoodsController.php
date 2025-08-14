@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
 use App\Constant;
+use App\Exceptions\BusinessException;
 use App\Inputs\GoodsListInput;
 use App\Models\Comment;
 use App\Services\CollectServices;
@@ -38,7 +39,6 @@ class GoodsController extends WxController
         if (empty($cur)) {
             return $this->fail(CodeResponse::PARAM_VALUE_ILLEGAL);
         }
-
         $parent = null;
         $children = null;
         if ($cur->pid == 0) {
@@ -60,9 +60,8 @@ class GoodsController extends WxController
 
     /**
      *
-     * @param  Request  $request
      * @return JsonResponse
-     * @throw \App\Exception\BusinessException
+     * @throws BusinessException
      */
     public function list()
     {
@@ -91,21 +90,21 @@ class GoodsController extends WxController
         // $input = new GoodsListInput();
         // $input->fill();
         // version 2
-        // $categoryId = $this->verifyId('categoryId');
-        // $brandId = $this->verifyId('brandId');
-        // $keyword = $this->verifyString('keyword');
-        // $isNew = $this->verifyBoolean('isNew');
-        // $isHot = $this->verifyBoolean('isHot');
-        // $page = $this->verifyInteger('page', 1);
-        // $limit = $this->verifyInteger('limit', 10);
-        // $sort = $this->verifyEnum('sort', 'add_time', ['add_time', 'retail_price', 'name']);
-        // $order = $this->verifyEnum('order', 'desc', ['desc', 'asc']);
+//         $categoryId = $this->verifyId('categoryId');
+//         $brandId = $this->verifyId('brandId');
+//         $keyword = $this->verifyString('keyword');
+//         $isNew = $this->verifyBoolean('isNew');
+//         $isHot = $this->verifyBoolean('isHot');
+//         $page = $this->verifyInteger('page', 1);
+//         $limit = $this->verifyInteger('limit', 10);
+//         $sort = $this->verifyEnum('sort', 'add_time', ['add_time', 'retail_price', 'name']);
+//         $order = $this->verifyEnum('order', 'desc', ['desc', 'asc']);
 
 
         // version 3
         $input = GoodsListInput::new();
-        if ($this->isLogin() && !empty($keyword)) {
-            SearchHistoryServices::getInstance()->save($this->userId(), $keyword, Constant::SEARCH_HISTORY_FROM_WX);
+        if ($this->isLogin() && !empty($input->keyword)) {
+            SearchHistoryServices::getInstance()->save($this->userId(), $input->keyword, Constant::SEARCH_HISTORY_FROM_WX);
         }
         // todo 优化参数的传递
         $columns = ['id', 'name', 'brief', 'pic_url', 'is_new', 'is_hot', 'counter_price', 'retail_price'];

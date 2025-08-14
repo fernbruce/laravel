@@ -22,23 +22,24 @@ use Faker\Generator as Faker;
 
 $factory->define(Goods::class, function (Faker $faker) {
     return [
-        "goods_sn" => $this->faker->word,
-        "name" => "测试商品".$this->faker->word,
+        "goods_sn" => $faker->word,
+        "name" => "测试商品".$faker->word,
         "category_id" => 1008009,
         "brand_id" => 0,
         "gallery" => [],
         "keywords" => "",
         "brief" => "测试",
         "is_on_sale" => 1,
-        "sort_order" => $this->faker->numberBetween(1, 999),
-        "pic_url" => $this->faker->imageUrl(),
-        "share_url" => $this->faker->url,
-        "is_new" => $this->faker->boolean,
-        "is_hot" => $this->faker->boolean,
+        "sort_order" => $faker->numberBetween(1, 999),
+//        "pic_url" => $faker->imageUrl(),
+        "pic_url" => 'http://laravel.test/storage/groupon/2025-08-10/h8KhU4zNpRxC1e0E.png',
+        "share_url" => $faker->url,
+        "is_new" => $faker->boolean,
+        "is_hot" => $faker->boolean,
         "unit" => "件",
         "counter_price" => 919,
         "retail_price" => 899,
-        "detail" => $this->faker->text
+        "detail" => $faker->text
     ];
 });
 

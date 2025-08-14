@@ -56,7 +56,6 @@ class Address extends BaseModel
      * @var array
      */
     protected $casts = [
-        'deleted' => 'boolean',
         'is_default' => 'boolean',
         'add_time' => 'datetime',
         'update_time' => 'datetime',

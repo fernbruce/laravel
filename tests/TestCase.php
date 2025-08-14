@@ -23,11 +23,19 @@ abstract class TestCase extends BaseTestCase
     /** @var User $user */
     protected $user;
 
+    protected $authHeader;
+
     protected function setUp(): void
     {
         parent::setUp();
-//        $this->user = factory(User::class)->state('address_default')->create();
-        $this->user = User::find(465);
+        $this->user = factory(User::class)->state('address_default')->create();
+//        $this->user = User::find(465);
+//        $this->user = User::find(1);
+        if($this->user->id == 1){
+            $this->authHeader = $this->getAuthHeader();
+        }else{
+            $this->authHeader = $this->getAuthHeader($this->user->username,'123456');
+        }
     }
 
 //    /** @var User $user */
@@ -72,7 +80,7 @@ abstract class TestCase extends BaseTestCase
         if ($method == 'get') {
             $response1 = $this->get($uri, $this->getAuthHeader());
 //            dd($response1->getContent());
-            $response2 = $client->get('http://47.99.102.217:8080/'.$uri,
+        $response2 = $client->get('http://47.99.102.217:8080/'.$uri,
                 ['headers' => ['X-Litemall-Token' => $this->token]]);
         } else {
             $response1 = $this->post($uri, $data, $this->getAuthHeader());
@@ -88,13 +96,17 @@ abstract class TestCase extends BaseTestCase
         // $content = $response2->getBody()->getContents();
         // $content = json_decode($content, true);
         // $response1->assertJson($content);
-        $content1 = json_decode($response1->getContent(), true);
-        echo "laravel=>";
-        print_r($content1);
-        $content2 = json_decode($response2->getBody()->getContents(), true);
-        echo "litemall=>";
-        print_r($content2);
 
+//        echo "laravel=>";
+//        print_r($content1);
+        $content1 = $response1->getContent();
+        echo "laravel=>$content1".PHP_EOL;
+        $content1 = json_decode($content1, true);
+//        echo "litemall=>";
+//        print_r($content2);
+        $content2 = $response2->getBody()->getContents();
+        echo "litemall=>$content2".PHP_EOL;
+        $content2 = json_decode($content2, true);
         foreach ($ignore as $key) {
             unset($content1[$key]);
             unset($content2[$key]);

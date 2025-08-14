@@ -30,14 +30,14 @@ class AddressController extends WxController
         //     }
         //     return $item;
         // });
-        // return $this->successPaginate($list);
-        return $this->success([
-            'total' => $list->count(),
-            'page' => 1,
-            'list' => $list,
-            'pages' => 1,
-            'limit' => $list->count()
-        ]);
+         return $this->successPaginate($list);
+//        return $this->success([
+//            'total' => $list->count(),
+//            'page' => 1,
+//            'list' => $list,
+//            'pages' => 1,
+//            'limit' => $list->count()
+//        ]);
     }
 
     public function detail(Request $request)

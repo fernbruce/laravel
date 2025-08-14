@@ -69,7 +69,6 @@ class Coupon extends BaseModel
      * @var array
      */
     protected $casts = [
-        'deleted' => 'boolean',
         'discount' => 'float',
         'min' => 'float'
     ];

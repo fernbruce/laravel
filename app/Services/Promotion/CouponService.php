@@ -19,10 +19,11 @@ class CouponService extends BaseServices
 
     public function list(PageInput $page, $columns = ['*'])
     {
-        return Coupon::query()->where('type', Constant::COUPON_TYPE_COMMON)
-            ->where('status', Constant::COUPON_STATUS_NORMAL)
+        return Coupon::query()->where('type', CouponEnums::TYPE_COMMON)
+            ->where('status', CouponEnums::STATUS_NORMAL)
             ->orderBy($page->sort, $page->order)
             ->paginate($page->limit, $columns, 'page', $page->page);
+//            ->forPage($page->page, $page->limit)->get($columns);
     }
 
     public function mylist($userId, $status, PageInput $page, $columns = ['*'])
@@ -62,20 +63,20 @@ class CouponService extends BaseServices
             }
         }
 
-        if ($coupon->type != Constant::COUPON_TYPE_COMMON) {
+        if ($coupon->type != CouponEnums::TYPE_COMMON) {
             $this->throwBusinessException(CodeResponse::COUPON_RECEIVE_FAIL, '优惠券类型不支持');
         }
 
-        if ($coupon->status == Constant::COUPON_STATUS_OUT) {
+        if ($coupon->status == CouponEnums::STATUS_OUT) {
             $this->throwBusinessException(CodeResponse::COUPON_EXCEED_LIMIT);
         }
-        if ($coupon->status == Constant::COUPON_STATUS_EXPIRED) {
+        if ($coupon->status == CouponEnums::STATUS_EXPIRED) {
             $this->throwBusinessException(CodeResponse::COUPON_RECEIVE_FAIL, '优惠券已经过期');
         }
 
 //        $couponUser = new CouponUser();
         $couponUser = CouponUser::new();
-        if ($coupon->time_type == Constant::COUPON_TIME_TYPE_TIME) {
+        if ($coupon->time_type == CouponEnums::TIME_TYPE_TIME) {
             $startTime = $coupon->start_time;
             $endTime = $coupon->end_time;
         } else {
@@ -124,6 +125,8 @@ class CouponService extends BaseServices
             return null;
         }
 
+
+
         if (!empty($couponId)) {
             $coupon = $this->getCoupon($couponId);
             $couponUser = $this->getCouponUserByCouponId($userId, $couponId);
@@ -132,6 +135,7 @@ class CouponService extends BaseServices
                 return $couponUser;
             }
         }
+        //couponId = 0;选择最适合的
         return $couponUsers->first();
     }
 
@@ -167,6 +171,7 @@ class CouponService extends BaseServices
     }
 
     /**
+     * 严谨的检查优惠券是否可用
      * @param  Coupon  $coupon
      * @param  CouponUser  $couponUser
      * @param  double  $price

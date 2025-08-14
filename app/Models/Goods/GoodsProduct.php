@@ -47,7 +47,6 @@ class GoodsProduct extends BaseModel
      * @var array
      */
     protected $casts = [
-        'deleted' => 'boolean',
         'specifications' => 'array',
         'price' => 'float',
     ];

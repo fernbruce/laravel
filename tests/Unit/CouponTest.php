@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\CodeResponse;
 use App\Exceptions\BusinessException;
 use App\Models\Promotion\Coupon;
+use App\Models\Promotion\CouponUser;
 use App\Services\Order\CartService;
 use App\Services\Promotion\CouponService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -37,6 +38,16 @@ class CouponTest extends TestCase
         ]);
         $ret = CouponService::getInstance()->receive(1, $id);
         $this->assertTrue($ret);
+        $ret = CouponUser::query()->where('user_id',1)->where('coupon_id',$id)->first();
+        $this->assertNotEmpty($ret);
         // CouponUser::query()->where('id', $id)->delete();
+    }
+
+    public function testAlreadyReceived()
+    {
+        //七种场景全部覆盖
+        $id = 1;
+        $this->expectExceptionObject(new BusinessException(CodeResponse::COUPON_EXCEED_LIMIT, '优惠券已经领取过'));
+        $ret = CouponService::getInstance()->receive(1, $id);
     }
 }

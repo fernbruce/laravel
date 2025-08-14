@@ -91,14 +91,7 @@ class Order extends BaseModel
      */
     use OrderStatusTrait;
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'deleted' => 'boolean',
-    ];
+
 
 
 }

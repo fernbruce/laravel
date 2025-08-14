@@ -22,7 +22,7 @@ class OrderSubmitInput extends Input
             'addressId'=>'required|integer',
             'couponId'=>'required|integer',
             'userCouponId'=>'integer',
-            'message'=>'string',
+            'message'=>'string',//备注
             'grouponRulesId'=>'integer',
             'grouponLinkId'=>'integer'
         ];
