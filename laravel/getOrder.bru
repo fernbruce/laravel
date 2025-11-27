@@ -1,0 +1,17 @@
+meta {
+  name: getOrder
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://laravel.test/getOrder
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username":"Ben"
+  }
+}

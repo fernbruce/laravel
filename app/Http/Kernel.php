@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-        // Benchmark::class,
+//         Benchmark::class,
     ];
 
     /**
@@ -61,8 +61,8 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
         ],
         'admin' => [
-            'admin1',
-            'benchmark',
+//            'benchmark',
+//            'admin1',
         ],
         'api' => [
             'throttle:60,1',

@@ -90,6 +90,7 @@ class GoodsServices extends BaseServices
 
     public function getGoodsSpecification(int $goodsId)
     {
+        // 注意values的用法
         $spec = GoodsSpecification::query()->where('goods_id', $goodsId)
             ->get()->groupBy('specification');
         return $spec->map(function ($v, $k) {

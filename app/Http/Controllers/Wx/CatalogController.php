@@ -50,4 +50,10 @@ class CatalogController extends WxController
             'currentSubCategory' => $l2List
         ]);
     }
+
+    public function tree(Request $request)
+    {
+        $tree = CatalogServices::getInstance()->getTree();
+        return $tree;
+    }
 }

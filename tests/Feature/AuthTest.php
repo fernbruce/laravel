@@ -19,7 +19,7 @@ class AuthTest extends TestCase
     public function testBasicTest()
     {
         $response = $this->get('/');
-        print_r($response->getContent());
+//        print_r($response->getContent());
 
         $response->assertStatus(200);
     }
@@ -107,9 +107,9 @@ class AuthTest extends TestCase
             'username' => 'tanfan',
             'password' => '123456'
         ]);
-        dump($response->getOriginalContent());
+//        dump($response->getOriginalContent());
         $response->assertJson(['errno' => 0, 'errmsg' => '成功']);
-        dump($response->getOriginalContent()['data']['token'] ?? '');
+//        dump($response->getOriginalContent()['data']['token'] ?? '');
         $this->assertNotEmpty($response->getOriginalContent()['data']['token'] ?? '');
     }
 

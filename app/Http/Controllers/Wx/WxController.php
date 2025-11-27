@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Wx;
 
 use App\CodeResponse;
+use App\Exceptions\BusinessException;
 use App\Http\Controllers\Controller;
 use App\VerifyRequestInput;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use mysql_xdevapi\Exception;
 
 class WxController extends Controller
 {
@@ -134,4 +137,23 @@ class WxController extends Controller
             'list' => $page
         ];
     }
+
+    /**
+     * @param $key
+     * @param $default
+     * @return mixed
+     * @throws BusinessException
+     */
+//    public function verifyId($key, $default = null){
+//        $value = request()->input($key, $default);
+//         $validator = Validator::make([
+//             'key' => $value,
+//         ],[
+//             $key=>'integer|digits_between:1,20',
+//         ]);
+//         if($validator->fails()){
+//            throw new BusinessException(CodeResponse::PARAM_VALUE_ILLEGAL); ;
+//         }
+//         return $value;
+//    }
 }

@@ -12,15 +12,24 @@ class Benchmark
      *
      * @param  Request  $request
      * @param  Closure  $next
+     * @param $a
+     * @param $b
      * @return mixed
      */
-    public function handle($request, Closure $next, $a, $b)
+//    public function handle($request, Closure $next, $a, $b)
+//    {
+//        echo "\nBenchmarking started at: ".now()."\n";
+//        echo $a."\n";
+//        echo $b."\n";
+//        $response = $next($request);
+//        echo "\nBenchmarking ended at: ".now()."\n";
+//        return $response;
+//    }
+    public function handle($request, Closure $next,$a,$b)
     {
-        echo "\nBenchmarking started at: ".now()."\n";
-        echo $a."\n";
-        echo $b."\n";
+        echo "benchmark-前置{$a}-{$b}<br>";
         $response = $next($request);
-        echo "\nBenchmarking ended at: ".now()."\n";
+        echo "<br>benchmark-后置<br>";
         return $response;
     }
 }

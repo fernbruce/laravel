@@ -34,6 +34,7 @@ Route::post('address/delete', 'AddressController@delete'); //删除收货地址
 # 商品模块-类目
 Route::get('catalog/index', 'CatalogController@index'); //分类目录全部分类数据接口
 Route::get('catalog/current', 'CatalogController@current'); //分类目录当前分类数据接口
+Route::get('catalog/tree', 'CatalogController@tree'); //分类目录当前分类数据接口
 
 # 商品模块-品牌
 Route::get('brand/list', 'BrandController@list'); //品牌列表
@@ -86,6 +87,9 @@ Route::get('order/detail', [OrderController::class, 'detail']); //订单详情
 
 Route::get('fangfang/getData', 'FangfangController@getData');
 Route::get('fangfang/getGeoData', 'FangfangController@getGeoData');
+Route::get('fangfang/get1', 'FangfangController@get1');
+Route::get('fangfang/get2', 'FangfangController@get2');
+Route::get('fangfang/get3', 'FangfangController@get3');
 //Route::any('home/index', ''); //首页数据接口
 
 //Route::any('collect/list', ''); //收藏列表

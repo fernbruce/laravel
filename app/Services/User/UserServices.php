@@ -21,7 +21,7 @@ class UserServices extends BaseServices
     public function getUsers(array $userIds)
     {
         if (empty($userIds)) {
-            return collect([]);
+            return collect();
         }
         return User::query()->whereIn('id', $userIds)->get();
     }

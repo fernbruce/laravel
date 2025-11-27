@@ -26,6 +26,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         //
         Route::pattern('name', '.*');
+        Route::pattern('id', '[0-9]+');
         parent::boot();
     }
 
@@ -78,7 +79,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::prefix('admin')
             ->middleware('admin')
-            ->namespace($this->namespace)
+            ->namespace($this->namespace.'\Admin')
             ->group(base_path('routes/admin.php'));
     }
 

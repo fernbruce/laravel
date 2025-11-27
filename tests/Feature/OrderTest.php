@@ -11,7 +11,13 @@ use Tests\TestCase;
 class OrderTest extends TestCase
 {
     use DatabaseTransactions;
+    public function testBasicTest()
+    {
+        $response = $this->get('/');
+//        print_r($response->getContent());
 
+        $response->assertStatus(200);
+    }
 //    public function testDetail()
 //    {
 //        // todo 删除非一级目录的字段
@@ -19,8 +25,8 @@ class OrderTest extends TestCase
 //    }
 
 
-    public function testExpress()
-    {
+//    public function testExpress()
+//    {
 //        $ret = ExpressServices::getInstance()->getOrderTraces('JTSD', 'JT5376253296132');
 //        $ret = ExpressServices::getInstance()->getOrderTraces('STO', '777308993434829');
 //        $ret = ExpressServices::getInstance()->getOrderTraces('YTO', 'YT8777253089737');
@@ -67,5 +73,5 @@ class OrderTest extends TestCase
         //         [Success] => 1
 
         // )
-    }
+//    }
 }

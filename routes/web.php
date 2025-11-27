@@ -29,16 +29,18 @@ Route::get('there', function () {
 // Route::post('getOrder', 'HomeController@getOrder')->name('getOrder');
 // Route::get('getOrder/{id?}/{name?}', 'HomeController@getOrder')->name('getOrder');
 
-
-Route::get('getOrder/{id?}/{name?}', function ($id, $name) {
-    return 'Order ID: ' . $id . ' and name: ' . $name;
-})->name('getOrderWithClosure')->where('id', '[0-9]+');
+//Route::any('getOrder', 'HomeController@getOrder');
+Route::any('getOrder/{id?}', 'HomeController@getOrder');
+//Route::get('getOrder/{id?}/{name?}', function ($id, $name) {
+//    return 'Order ID: ' . $id . ' and name: ' . $name;
+//})->name('getOrderWithClosure')->where('id', '[0-9]+');
 
 Route::get('getUser', 'HomeController@getUser')->name('getUser');
 Route::get('getUrl', function () {
-    // return redirect()->route('getUser', ['id' => 30]);
-    return \route('getUser', ['id' => 30], false);
-    // return redirect()->to(\route('getUser', ['id' => 3]));
+     return redirect()->route('getUser', ['id' => 30]);
+//    return \route('getUser', ['id' => 30]);
+//    return \route('getUser', ['id' => 30], false);
+//     return redirect()->to(\route('getUser', ['id' => 3]));
 });
 
 Route::get('getProduct', 'HomeController@modelTest')->name('getProduct');

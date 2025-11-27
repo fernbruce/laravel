@@ -28,9 +28,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->call(function () {
-            OrderService::getInstance()->autoConfirm();
-        })->dailyAt('3:00')->runInBackground()->name('auto_confirm')->onOneServer();
+        // $schedule->call(function () {
+        //     OrderService::getInstance()->autoConfirm();
+        // })->dailyAt('3:00')->runInBackground()->name('auto_confirm')->onOneServer();
 
         $schedule->call(function () {
             Log::info('test schedule');

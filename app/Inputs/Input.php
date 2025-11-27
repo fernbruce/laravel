@@ -13,7 +13,8 @@ class Input
 
 
     /**
-     * @return BusinessException
+     * @param  null  $data
+     * @throws BusinessException
      */
     public function fill($data = null)
     {
@@ -26,6 +27,7 @@ class Input
             throw new BusinessException(CodeResponse::PARAM_VALUE_ILLEGAL);
         }
         $map = get_object_vars($this);
+
         $keys = array_keys($map);
         collect($data)->map(function ($v, $k) use ($keys) {
             if (in_array($k, $keys)) {
@@ -45,7 +47,11 @@ class Input
         return (new static())->fill($data);
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
+        return [];
     }
 }

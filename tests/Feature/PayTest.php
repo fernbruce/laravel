@@ -13,6 +13,13 @@ use Tests\TestCase;
 
 class PayTest extends TestCase
 {
+    public function testBasicTest()
+    {
+        $response = $this->get('/');
+//        print_r($response->getContent());
+
+        $response->assertStatus(200);
+    }
 //    use DatabaseTransactions;
 //      public function testWxPay(){
 //          $order1 = $this->getSimpleOrder([1.01,1]);
@@ -60,12 +67,12 @@ class PayTest extends TestCase
 
 
 
-     public function testAlipay(){
-         $order = $this->getSimpleOrder();
-         $token = Auth::login($this->user);
-         echo url('wx/order/h5alipay?').Arr::query(['orderId'=>$order->id,'token'=>$token]);
-         dump($this->user->username);
-     }
+//     public function testAlipay(){
+//         $order = $this->getSimpleOrder();
+//         $token = Auth::login($this->user);
+//         echo url('wx/order/h5alipay?').Arr::query(['orderId'=>$order->id,'token'=>$token]);
+//         dump($this->user->username);
+//     }
 
 
 

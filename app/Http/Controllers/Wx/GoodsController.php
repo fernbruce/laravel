@@ -13,8 +13,11 @@ use App\Services\Goods\BrandServices;
 use App\Services\Goods\CatalogServices;
 use App\Services\Goods\GoodsServices;
 use App\Services\SearchHistoryServices;
+use App\Services\SystemServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class GoodsController extends WxController
 {
@@ -76,18 +79,23 @@ class GoodsController extends WxController
         // $sort = $request->input('sort', 'add_time');
         // $order = $request->input('order', 'desc');
 
-        // $input = $request->validate([
-        //     'categoryId' => 'integer|digits_between:1,20',
-        //     'brandId' => 'integer|digits_between:1,20',
-        //     'keyword' => 'string',
-        //     'isNew' => 'boolean',
-        //     'isHot' => 'boolean',
-        //     'page' => 'integer',
-        //     'limit' => 'integer',
-        //     'sort' => Rule::in(['add_time', 'retail_price', 'name']),
-        //     'order' => Rule::in(['desc', 'asc']),
-        // ]);
-        // $input = new GoodsListInput();
+        //参数验证器
+//        Validator::make();
+        //验证不通过会抛一个异常  ValidationException      在Handler.php 接一下
+        //一方面接错误，一方面接正确的值
+//        $input = $request->validate([
+//            'categoryId' => 'integer|digits_between:1,20',
+//            'brandId' => 'integer|digits_between:1,20',
+//            'keyword' => 'string',
+//            'isNew' => 'boolean',
+//            'isHot' => 'boolean',
+//            'page' => 'integer',
+//            'limit' => 'integer',
+//            'sort' => ['required',Rule::in(['add_time', 'retail_price', 'name'])],
+//            'order' => Rule::in(['desc', 'asc']),
+//        ]);
+//        dd($input);
+//         $input = new GoodsListInput();
         // $input->fill();
         // version 2
 //         $categoryId = $this->verifyId('categoryId');
@@ -97,14 +105,14 @@ class GoodsController extends WxController
 //         $isHot = $this->verifyBoolean('isHot');
 //         $page = $this->verifyInteger('page', 1);
 //         $limit = $this->verifyInteger('limit', 10);
-//         $sort = $this->verifyEnum('sort', 'add_time', ['add_time', 'retail_price', 'name']);
+//         $sort = $this->verifyEnum('sort','add_time', ['add_time', 'retail_price', 'name']);
 //         $order = $this->verifyEnum('order', 'desc', ['desc', 'asc']);
-
 
         // version 3
         $input = GoodsListInput::new();
         if ($this->isLogin() && !empty($input->keyword)) {
-            SearchHistoryServices::getInstance()->save($this->userId(), $input->keyword, Constant::SEARCH_HISTORY_FROM_WX);
+            SearchHistoryServices::getInstance()->save($this->userId(), $input->keyword,
+                Constant::SEARCH_HISTORY_FROM_WX);
         }
         // todo 优化参数的传递
         $columns = ['id', 'name', 'brief', 'pic_url', 'is_new', 'is_hot', 'counter_price', 'retail_price'];
@@ -121,6 +129,11 @@ class GoodsController extends WxController
         return $this->success($goodsList);
     }
 
+    /**
+     * 商品详情 为了后期的可维护性，做好封装做好组织,提高接口的质量
+     * @param  Request  $request
+     * @return JsonResponse
+     */
     public function detail(Request $request)
     {
         $id = $this->verifyId('id');
@@ -136,15 +149,15 @@ class GoodsController extends WxController
         $spec = GoodsServices::getInstance()->getGoodsSpecification($id);
         $product = GoodsServices::getInstance()->getGoodsProduct($id);
         $issue = GoodsServices::getInstance()->getGoodsIssue();
-        $brand = $info->brand_id ? BrandServices::getInstance()->getBrand($info->brand_id) : (object) [];
+//        $brand = $info->brand_id ? BrandServices::getInstance()->getBrand($info->brand_id) : (object) [];//new \stdClass()
+        $brand = $info->brand_id ? BrandServices::getInstance()->getBrand($info->brand_id) : collect();
         $comment = CommentServices::getInstance()->getCommentWithUserInfo($id);
         $userHasCollect = 0;
         if ($this->isLogin()) {
             $userHasCollect = CollectServices::getInstance()->countByGoodsId($this->userId(), $id);
             GoodsServices::getInstance()->saveFootprint($this->userId(), $id);
         }
-        //todo 团购信息
-        //todo 系统配置
+        // todo 团购信息
         return $this->success([
             'info' => $info,
             'userHasCollect' => $userHasCollect,
@@ -155,7 +168,7 @@ class GoodsController extends WxController
             'attribute' => $attr,
             'brand' => $brand,
             'groupon' => [],
-            'share' => false,
+            'share' => SystemServices::getInstance()->getWxShare(),
             'shareImage' => $info->share_url
         ]);
     }

@@ -32,6 +32,9 @@ class SystemServices extends BaseServices
     const LITEMALL_MALL_Latitude = "litemall_mall_latitude";
 
 
+    public function getWxShare(){
+        return $this->get(self::LITEMALL_WX_SHARE);
+    }
     public function getOrderUnConfirmDays()
     {
         return (int) $this->get(self::LITEMALL_ORDER_UNCONFIRM);

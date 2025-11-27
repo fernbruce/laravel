@@ -15,14 +15,22 @@ class Admin
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $a, $b)
-    {
-        echo "Admin Middleware: Checking access...\n";
-        echo $a."\n";
-        echo $b."\n";
-        $return = $next($request);
-        echo "\nAdmin Middleware: Access granted!\n";
+//    public function handle($request, Closure $next, $a, $b)
+//    {
+//        echo "Admin Middleware: Checking access...\n";
+//        echo $a."\n";
+//        echo $b."\n";
+//        $return = $next($request);
+//        echo "\nAdmin Middleware: Access granted!\n";
+//
+//        return $return;
+//    }
 
-        return $return;
+    public function handle($request, Closure $next)
+    {
+        echo 'admin 前置<br>';
+        $response = $next($request);
+        echo '<br>admin 后置<br>';
+        return $response;
     }
 }

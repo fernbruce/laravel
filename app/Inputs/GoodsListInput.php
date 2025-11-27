@@ -36,6 +36,9 @@ class GoodsListInput extends Input
     //     return $this;
     // }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [

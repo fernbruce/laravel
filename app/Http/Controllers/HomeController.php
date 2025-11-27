@@ -40,7 +40,12 @@ class HomeController extends Controller
     }
 
     public function getOrder(Request $request, $id = 10, $default = 'default')
+//    public function getOrder(Request $request)
     {
+//        $query = $request->query();
+//        $post = $request->post();
+//        return ['query'=>$query, 'post'=>$post];
+//
         // $id = $request->route('id');
         // return $id;
         // return 'Order ID: '.$id;
@@ -50,6 +55,7 @@ class HomeController extends Controller
 
     public function getUser(Request $request)
     {
+        return $request->input();
         // $res  = DB::select('select * from users');
         // $res = DB::insert('insert into users (name, email, password) values (?, ?, ?)', ['tanfan', 'aaa@email.com','123']);
         // $res = DB::update('update users set name = ? where id = ?', ['tanfan11', 1]);

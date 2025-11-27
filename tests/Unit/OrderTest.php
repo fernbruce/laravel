@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Unit;
 
 use App\Enums\OrderEnums;
@@ -15,6 +16,7 @@ use App\Services\Order\CartService;
 use App\Services\Order\OrderService;
 use App\Services\User\AddressServices;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Arr;
 use Tests\TestCase;
 use Throwable;
 
@@ -22,7 +24,8 @@ class OrderTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function testReduceStock(){
+    public function testReduceStock()
+    {
         /** @var GoodsProduct $product1 */
         $product1 = factory(GoodsProduct::class)->create(['price' => 11.3]);
         /** @var GoodsProduct $product2 */
@@ -36,16 +39,15 @@ class OrderTest extends TestCase
         $checkedGoodsList = CartService::getInstance()->getCheckedCartList($this->user->id);
 
         OrderService::getInstance()->reduceProductsStock($checkedGoodsList);
-//        $goodsProduct1 = GoodsProduct::query()->where('id',$product1->id)->first();
-//        $goodsProduct2 = GoodsProduct::query()->where('id',$product2->id)->first();
-//        $goodsProduct3 = GoodsProduct::query()->where('id',$product3->id)->first();
-//        $this->assertEquals(100,$goodsProduct1->number);
-//        $this->assertEquals(95,$goodsProduct2->number);
-//        $this->assertEquals(97,$goodsProduct3->number);
-        $this->assertEquals($product1->number,$product1->refresh()->number);
-        $this->assertEquals($product2->number-5,$product2->refresh()->number);
-        $this->assertEquals($product3->number-3,$product3->refresh()->number);
-
+        //        $goodsProduct1 = GoodsProduct::query()->where('id',$product1->id)->first();
+        //        $goodsProduct2 = GoodsProduct::query()->where('id',$product2->id)->first();
+        //        $goodsProduct3 = GoodsProduct::query()->where('id',$product3->id)->first();
+        //        $this->assertEquals(100,$goodsProduct1->number);
+        //        $this->assertEquals(95,$goodsProduct2->number);
+        //        $this->assertEquals(97,$goodsProduct3->number);
+        $this->assertEquals($product1->number, $product1->refresh()->number);
+        $this->assertEquals($product2->number - 5, $product2->refresh()->number);
+        $this->assertEquals($product3->number - 3, $product3->refresh()->number);
     }
     public function testSubmit()
     {
@@ -64,15 +66,18 @@ class OrderTest extends TestCase
         $grouponPrice = 0;
         $grouponRulesId = GrouponRules::whereGoodsId($product2->goods_id)->first()->id ?? null;
         $checkedGoodsList = CartService::getInstance()->getCheckedCartList($this->user->id);
-        $checkedGoodsPrice = CartService::getInstance()->getCartPriceCutGroupon($checkedGoodsList, $grouponRulesId,
-            $grouponPrice);
+        $checkedGoodsPrice = CartService::getInstance()->getCartPriceCutGroupon(
+            $checkedGoodsList,
+            $grouponRulesId,
+            $grouponPrice
+        );
         $this->assertEquals(129.6, $checkedGoodsPrice);
         $input = OrderSubmitInput::new([
             'addressId' => $address->id,
             'cartId' => 0,
             'grouponRulesId' => $grouponRulesId,
-            'couponId' =>0,
-            'message'=>'备注',
+            'couponId' => 0,
+            'message' => '备注',
         ]);
         $order = OrderService::getInstance()->submit($this->user->id, $input);
         $this->assertNotEmpty($order->id);
@@ -90,11 +95,13 @@ class OrderTest extends TestCase
         $this->assertEquals([$product1->id], $productId);
     }
 
-    public function testJob(){
-        dispatch(new OrderUnPaidTimeEndJob(1,2));
+    public function testJob()
+    {
+        dispatch(new OrderUnPaidTimeEndJob(1, 2));
     }
 
-    public function getOrder(){
+    public function getOrder()
+    {
         $address = AddressServices::getInstance()->getDefaultAddress($this->user->id);
 
         /** @var GoodsProduct $product1 */
@@ -110,15 +117,18 @@ class OrderTest extends TestCase
         $grouponPrice = 0;
         $grouponRulesId = GrouponRules::whereGoodsId($product2->goods_id)->first()->id ?? null;
         $checkedGoodsList = CartService::getInstance()->getCheckedCartList($this->user->id);
-        $checkedGoodsPrice = CartService::getInstance()->getCartPriceCutGroupon($checkedGoodsList, $grouponRulesId,
-            $grouponPrice);
+        $checkedGoodsPrice = CartService::getInstance()->getCartPriceCutGroupon(
+            $checkedGoodsList,
+            $grouponRulesId,
+            $grouponPrice
+        );
         $this->assertEquals(129.6, $checkedGoodsPrice);
         $input = OrderSubmitInput::new([
             'addressId' => $address->id,
             'cartId' => 0,
             'grouponRulesId' => $grouponRulesId,
-            'couponId' =>0,
-            'message'=>'备注',
+            'couponId' => 0,
+            'message' => '备注',
         ]);
         $order = OrderService::getInstance()->submit($this->user->id, $input);
         return $order;
@@ -128,38 +138,40 @@ class OrderTest extends TestCase
      * @throws Throwable
      * @throws BusinessException
      */
-    public function testCancel(){
+    public function testCancel()
+    {
 
         $order = $this->getOrder();
-        OrderService::getInstance()->userCancel($this->user->id,$order->id);
+        OrderService::getInstance()->userCancel($this->user->id, $order->id);
         $this->assertEquals(OrderEnums::STATUS_CANCEL, $order->refresh()->order_status);
         $goodsList = OrderService::getInstance()->getOrderGoodsList($order->id);
         $productIds = $goodsList->pluck('product_id')->toArray();
         $products = GoodsServices::getInstance()->getGoodsProductByIds($productIds);
-        $this->assertEquals([100,100],$products->pluck('number')->toArray());
+        $this->assertEquals([100, 100], $products->pluck('number')->toArray());
     }
 
-    public function testCas(){
-//        $user = User::first(['id','nickname','mobile','update_time']);
-        $user = User::query()->where('id',$this->user->id)->first(['id','nickname','mobile','update_time']);
+    public function testCas()
+    {
+        //        $user = User::first(['id','nickname','mobile','update_time']);
+        $user = User::query()->where('id', $this->user->id)->first(['id', 'nickname', 'mobile', 'update_time']);
         $user->nickname = 'test1';
         $user->mobile = '15000000000';
         $is = $user->cas();
-        $this->assertEquals(1,$is);
-        $this->assertEquals('test1',User::find($this->user->id)->nickname);
-        User::query()->where('id',$this->user->id)->update(['nickname'=>'test2']);
+        $this->assertEquals(1, $is);
+        $this->assertEquals('test1', User::find($this->user->id)->nickname);
+        User::query()->where('id', $this->user->id)->update(['nickname' => 'test2']);
         $is = $user->cas();
-        $this->assertEquals(0,$is);
-        $this->assertEquals('test2',User::find($this->user->id)->nickname);
+        $this->assertEquals(0, $is);
+        $this->assertEquals('test2', User::find($this->user->id)->nickname);
         $user->save();
     }
 
-//    public function testpayOrder(){
-//        $order = $this->getOrder()->refresh();
-//        OrderService::getInstance()->payOrder($order,'payid_test');
-//        dd($order->refresh()->toArray());
-//
-//    }
+    //    public function testpayOrder(){
+    //        $order = $this->getOrder()->refresh();
+    //        OrderService::getInstance()->payOrder($order,'payid_test');
+    //        dd($order->refresh()->toArray());
+    //
+    //    }
 
     /**
      * 主流程
@@ -167,9 +179,10 @@ class OrderTest extends TestCase
      * @throws BusinessException
      * @throws Throwable
      */
-    public function testBaseProcess(){
+    public function testBaseProcess()
+    {
         $order = $this->getOrder()->refresh();
-        OrderService::getInstance()->payOrder($order,'payid_test');
+        OrderService::getInstance()->payOrder($order, 'payid_test');
         $this->assertEquals(OrderEnums::STATUS_PAY, $order->refresh()->order_status);
         $this->assertEquals('payid_test', $order->pay_id);
 
@@ -188,7 +201,6 @@ class OrderTest extends TestCase
 
         OrderService::getInstance()->delete($this->user->id, $order->id);
         $this->assertNull(Order::find($order->id));
-
     }
 
     /**
@@ -197,9 +209,10 @@ class OrderTest extends TestCase
      * @throws BusinessException
      * @throws Throwable
      */
-    public function testRefundProcess(){
+    public function testRefundProcess()
+    {
         $order = $this->getOrder();
-        OrderService::getInstance()->payOrder($order,'payid_test');
+        OrderService::getInstance()->payOrder($order, 'payid_test');
         $this->assertEquals(OrderEnums::STATUS_PAY, $order->refresh()->order_status);
         $this->assertEquals('payid_test', $order->pay_id);
 
@@ -219,15 +232,26 @@ class OrderTest extends TestCase
         $this->assertNull(Order::find($order->id));
     }
 
-    public function testOrderStatusTrait(){
+    public function testOrderStatusTrait()
+    {
         $order = $this->getOrder();
-        $this->assertEquals(true,$order->isCreateStatus());
-        $this->assertEquals(false,$order->isCancelStatus());
-        $this->assertEquals(false,$order->isPayStatus());
+        $this->assertEquals(true, $order->isCreateStatus());
+        $this->assertEquals(false, $order->isCancelStatus());
+        $this->assertEquals(false, $order->isPayStatus());
 
-        $this->assertEquals(true,$order->canCancelHandle());
-        $this->assertEquals(true,$order->canPayHandle());
-        $this->assertEquals(false,$order->canDeleteHandle());
-        $this->assertEquals(false,$order->canConfirmHandle());
+        $this->assertEquals(true, $order->canCancelHandle());
+        $this->assertEquals(true, $order->canPayHandle());
+        $this->assertEquals(false, $order->canDeleteHandle());
+        $this->assertEquals(false, $order->canConfirmHandle());
+    }
+
+    public function testArr()
+    {
+        $array = [
+          'product-one'=>['name'=>'Desk 1', 'price'=>100],
+          'product-two'=>['name'=>'Desk 2', 'price'=>200]
+        ];
+        $array = data_get($array,'*.name');
+        dd($array);
     }
 }

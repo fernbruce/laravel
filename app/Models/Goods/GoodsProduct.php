@@ -41,6 +41,11 @@ use Illuminate\Support\Carbon;
  */
 class GoodsProduct extends BaseModel
 {
+    //约定大于配置 =>函数约定
+    protected $connection = 'mysql';
+    protected $primaryKey = 'id';
+
+    public $timestamps = true;
     /**
      * The attributes that should be cast to native types.
      *
