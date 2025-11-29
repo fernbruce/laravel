@@ -54,6 +54,6 @@ class CatalogController extends WxController
     public function tree(Request $request)
     {
         $tree = CatalogServices::getInstance()->getTree();
-        return $tree;
+        return $this->success($tree);
     }
 }

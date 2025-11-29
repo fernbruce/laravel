@@ -60,8 +60,8 @@ class CatalogServices extends BaseServices
         foreach ($L1List as $L1) {
             $L1->children = $this->getChildren($L1->id);
         }
-        // return $L1List;
-        return response()->json($L1List);
+        return $L1List;
+        // return response()->json($L1List);
     }
 
     public function getChildren($id)
